@@ -2729,18 +2729,23 @@
           .filter(l => l > 0);
 
         // --- Filtro de Privacidad: Solo mostrar niveles permitidos ---
-        if (currentRole !== 'superadmin' && currentRole !== 'admin') {
-          const gBaseAssigned = extraerGradoBase(window.assignedGrade);
-          const esDePrimaria = window.assignedGrade === "Primaria" || (gBaseAssigned >= 1 && gBaseAssigned <= 5);
+        if (currentRole !== 'superadmin') {
+          let allowedLevels = [];
+          
+          if (currentRole === 'admin') {
+            // Regla para Administradores de Sede: Ver todos los niveles de su sede
+            allowedLevels = [...new Set(dataCombined.filter(d => detectarSede(d.grado) === userSede).map(d => extraerGradoBase(d.grado)))];
+          } else {
+            // Regla para Lectores (Docentes)
+            const gBaseAssigned = extraerGradoBase(window.assignedGrade);
+            const esDePrimaria = window.assignedGrade === "Primaria" || (gBaseAssigned >= 1 && gBaseAssigned <= 5);
+            const levelsDictan = userPermissions.filter(p => p.tipo === 'ASIGNACION').map(p => extraerGradoBase(p.grado));
+            const levelDireccion = gBaseAssigned > 0 ? [gBaseAssigned] : [];
+            allowedLevels = [...new Set([...levelsDictan, ...levelDireccion])];
 
-          const levelsDictan = userPermissions.filter(p => p.tipo === 'ASIGNACION').map(p => extraerGradoBase(p.grado));
-          const levelDireccion = gBaseAssigned > 0 ? [gBaseAssigned] : [];
-
-          let allowedLevels = [...new Set([...levelsDictan, ...levelDireccion])];
-
-          if (esDePrimaria) {
-            // Regla de Hermandad de Primaria: Acceso total a niveles 1-5
-            allowedLevels = [...new Set([...allowedLevels, 1, 2, 3, 4, 5])];
+            if (esDePrimaria) {
+              allowedLevels = [...new Set([...allowedLevels, 1, 2, 3, 4, 5])];
+            }
           }
 
           console.log("🎯 Niveles permitidos en Análisis:", allowedLevels);
@@ -4033,36 +4038,38 @@
         let allGroups = data ? [...new Set(data.map(d => extraerGrupo(d.zipgrade_id)))] : [];
 
         // --- Filtro de Privacidad: Solo mostrar grupos permitidos ---
-        if (currentRole === 'lector' || (currentRole !== 'superadmin' && currentRole !== 'admin')) {
-          const gBaseAssigned = extraerGradoBase(window.assignedGrade);
-          const esDePrimaria = window.assignedGrade === "Primaria" || (gBaseAssigned >= 1 && gBaseAssigned <= 5);
-
-          const isEnPestañaGrupal = ($('tab-grupal-item') && $('tab-grupal-item').classList.contains('active')) ||
-            ($('grupal-container') && $('grupal-container').style.display === 'block');
-
-          if (isEnPestañaGrupal) {
-            // Informe Grupal: Si es primaria, ve todo primaria. Si no, solo su grupo.
-            if (esDePrimaria) {
-              allGroups = allGroups.filter(g => extraerGradoBase(g) >= 1 && extraerGradoBase(g) <= 5);
-            } else {
-              allGroups = window.assignedGrade ? [window.assignedGrade.toString()] : [];
-            }
-            console.log("🔒 Filtro Grupal Activo. Permitidos:", allGroups);
+        if (currentRole !== 'superadmin') {
+          if (currentRole === 'admin') {
+            // Administradores de Sede: Solo ven grupos de su propia sede
+            allGroups = allGroups.filter(g => detectarSede(g) === userSede);
           } else {
-            // Informes Individuales / Asignatura: Ve lo que dicta (EVALUADO) + lo que dirige (o todo primaria)
-            const dictan = userPermissions
-              .filter(p => p.tipo === 'ASIGNACION' && isSubjectEvaluated(p.asignatura, p.grado))
-              .map(p => p.grado.toString());
-            const direccion = window.assignedGroups || [];
-            const allowedPool = [...new Set([...dictan, ...direccion])];
+            // Lectores (Docentes)
+            const gBaseAssigned = extraerGradoBase(window.assignedGrade);
+            const esDePrimaria = window.assignedGrade === "Primaria" || (gBaseAssigned >= 1 && gBaseAssigned <= 5);
 
-            allGroups = allGroups.filter(g => {
-              const gBase = extraerGradoBase(g);
-              if (esDePrimaria && gBase >= 1 && gBase <= 5) return true;
-              // Permitir match por nivel (ej. si dirige "6", ve todos los "6XX")
-              const matchDireccionNivel = direccion.some(d => d === g.toString() || d === gBase.toString());
-              return allowedPool.includes(g.toString()) || matchDireccionNivel;
-            });
+            const isEnPestañaGrupal = ($('tab-grupal-item') && $('tab-grupal-item').classList.contains('active')) ||
+              ($('grupal-container') && $('grupal-container').style.display === 'block');
+
+            if (isEnPestañaGrupal) {
+              if (esDePrimaria) {
+                allGroups = allGroups.filter(g => extraerGradoBase(g) >= 1 && extraerGradoBase(g) <= 5);
+              } else {
+                allGroups = window.assignedGrade ? [window.assignedGrade.toString()] : [];
+              }
+            } else {
+              const dictan = userPermissions
+                .filter(p => p.tipo === 'ASIGNACION' && isSubjectEvaluated(p.asignatura, p.grado))
+                .map(p => p.grado.toString());
+              const direccion = window.assignedGroups || [];
+              const allowedPool = [...new Set([...dictan, ...direccion])];
+
+              allGroups = allGroups.filter(g => {
+                const gBase = extraerGradoBase(g);
+                if (esDePrimaria && gBase >= 1 && gBase <= 5) return true;
+                const matchDireccionNivel = direccion.some(d => d === g.toString() || d === gBase.toString());
+                return allowedPool.includes(g.toString()) || matchDireccionNivel;
+              });
+            }
           }
           console.log("🎯 Grupos permitidos final en informes:", allGroups);
         }
