@@ -2056,12 +2056,18 @@
       if (!gradoStr) return 'Central';
       const clean = gradoStr.toString().trim().toUpperCase();
 
-      // 1. Detección por sufijo de letras (retrocompatibilidad)
+      // 1. Detección directa por nombre de sede
+      if (clean.includes('PUEBLILLO')) return 'Pueblillo';
+      if (clean.includes('SENDERO')) return 'Sendero';
+      if (clean.includes('YANACONA') || clean.includes('YANACONS')) return 'Yanaconas';
+      if (clean.includes('PISOJE')) return 'Pisoje Bajo';
+
+      // 2. Detección por sufijo de letras (retrocompatibilidad)
       for (const [key, val] of Object.entries(SEDES_MAP)) {
         if (clean.endsWith(key)) return val;
       }
 
-      // 2. Detección por el último dígito del grupo (ej. 305 -> 5 -> Yanaconas)
+      // 3. Detección por el último dígito del grupo (ej. 305 -> 5 -> Yanaconas)
       const match = clean.match(/\d+$/);
       if (match) {
         const lastDigit = match[0].slice(-1);
@@ -2071,7 +2077,6 @@
         if (lastDigit === '7') return 'Pueblillo';
       }
 
-      // Si termina en 1, 2, 3 o cualquier otro, es Central
       return 'Central';
     }
 
@@ -2540,7 +2545,9 @@
 
           // === ELEVACIÓN DE PERMISOS PARA SEDES RURALES ===
           const sedesRurales = ['Pueblillo', 'Sendero', 'Yanaconas', 'Pisoje Bajo'];
-          if (userSede && sedesRurales.includes(userSede)) {
+          const userSedeClean = userSede ? userSede.trim().toUpperCase() : '';
+          
+          if (userSede && sedesRurales.some(sr => sr.toUpperCase() === userSedeClean)) {
             console.log(`🌟 Elevando permisos a ADMIN por pertenecer a la sede: ${userSede}`);
             currentRole = 'admin';
             document.body.classList.add('is-admin');
