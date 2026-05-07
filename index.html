@@ -7,7 +7,7 @@
   <title>Evaluándonos - Análisis Estadístico</title>
 
   <!-- PWA Meta Tags -->
-  <link rel="manifest" href="app-manifest.json?v=2026.2">
+  <link rel="manifest" href="app-manifest.json?v=2026.3">
   <meta name="theme-color" content="#4f46e5">
 
   <!-- Estilo de Impresión Global Optimizado -->
@@ -5601,9 +5601,27 @@
       window.addEventListener('load', () => {
         navigator.serviceWorker.register('./sw.js').then(reg => {
           console.log('SW registrado con éxito');
+          
+          reg.addEventListener('updatefound', () => {
+            const newWorker = reg.installing;
+            newWorker.addEventListener('statechange', () => {
+              if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                console.log('Nueva actualización disponible. El Service Worker tomará el control.');
+              }
+            });
+          });
         }).catch(err => {
           console.log('Registro de SW falló:', err);
         });
+      });
+
+      // Recargar la página automáticamente cuando el nuevo Service Worker toma el control
+      let refreshing = false;
+      navigator.serviceWorker.addEventListener('controllerchange', () => {
+        if (!refreshing) {
+          refreshing = true;
+          window.location.reload();
+        }
       });
     }
   </script>

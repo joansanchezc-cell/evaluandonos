@@ -1,4 +1,4 @@
-const CACHE_NAME = 'evaluandonos-v2026-v2';
+const CACHE_NAME = 'evaluandonos-v2026-v3';
 const urlsToCache = [
   './',
   './index.html',
@@ -27,18 +27,29 @@ self.addEventListener('activate', event => {
       Promise.all(keys.filter(k => k !== CACHE_NAME).map(k => caches.delete(k)))
     )
   );
+  self.clients.claim(); // Toma el control inmediatamente
 });
 
+// Estrategia Network First (Red primero, luego caché)
 self.addEventListener('fetch', event => {
+  // Ignorar peticiones que no sean GET (ej. llamadas a Supabase)
+  if (event.request.method !== 'GET') return;
+
   event.respondWith(
-    caches.match(event.request)
+    fetch(event.request)
       .then(response => {
-        if (response) return response;
-        return fetch(event.request).catch(() => {
-          // Opcional: retornar fallback offline aquí
-        });
+        // Actualizamos la caché con la respuesta de red
+        if (response && response.status === 200) {
+          const responseToCache = response.clone();
+          caches.open(CACHE_NAME).then(cache => {
+            cache.put(event.request, responseToCache);
+          });
+        }
+        return response;
+      })
+      .catch(() => {
+        // Si no hay red, buscamos en la caché
+        return caches.match(event.request);
       })
   );
 });
-
-
