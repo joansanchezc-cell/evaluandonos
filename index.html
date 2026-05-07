@@ -2416,6 +2416,10 @@
       if (!user) return;
       currentUser = user;
 
+      // Limpiar rastro de estudiante para evitar conflictos al recargar
+      localStorage.removeItem('studentId');
+      localStorage.removeItem('studentName');
+
       // Ocultar máscara inmediatamente
       if ($('login-mask')) $('login-mask').style.display = 'none';
       if ($('loading')) $('loading').style.display = 'none';
@@ -2473,10 +2477,17 @@
         }
         // --------------------------------------
 
+        isStudentMode = false;
+        document.body.classList.remove('is-student');
+
         if ($('user-badge')) $('user-badge').style.display = 'flex';
         if ($('user-nombre')) $('user-nombre').innerText = userName;
         if ($('user-email')) $('user-email').innerText = user.email;
         if ($('user-avatar')) $('user-avatar').innerText = userName.charAt(0).toUpperCase();
+        if ($('user-role-label')) {
+            const roleTexts = { 'superadmin': 'Super Administrador', 'admin': 'Administrador Sede', 'lector': 'Docente' };
+            $('user-role-label').innerText = roleTexts[currentRole] || 'Docente';
+        }
 
         const adminBtn = document.querySelector('.admin-trigger');
         const adminElements = document.querySelectorAll('.admin-only');
