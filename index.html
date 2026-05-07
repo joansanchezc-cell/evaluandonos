@@ -2546,7 +2546,7 @@
           // === ELEVACIÓN DE PERMISOS PARA SEDES RURALES ===
           const sedesRurales = ['Pueblillo', 'Sendero', 'Yanaconas', 'Pisoje Bajo'];
           const userSedeClean = userSede ? userSede.trim().toUpperCase() : '';
-          
+
           if (userSede && sedesRurales.some(sr => sr.toUpperCase() === userSedeClean)) {
             console.log(`🌟 Elevando permisos a ADMIN por pertenecer a la sede: ${userSede}`);
             currentRole = 'admin';
