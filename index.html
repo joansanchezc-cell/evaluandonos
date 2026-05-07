@@ -2554,6 +2554,11 @@
             document.body.classList.add('is-admin');
           }
 
+          // --- OCULTAR SELECTORES DE SEDE SI NO ES SUPERADMIN ---
+          if (currentRole !== 'superadmin') {
+            document.querySelectorAll('.sede-filter-container').forEach(el => el.style.display = 'none');
+          }
+          
           // --- CONTROL DE VISIBILIDAD DE INFORMES ---
           window.assignedGrade = assignedGrade;
           window.assignedGroups = assignedGrade ? assignedGrade.toString().split(/[;,]/).map(g => g.trim()).filter(g => g) : [];
@@ -4075,8 +4080,13 @@
         }
         // ----------------------------------------------------------
 
-        // Filtrar por sede seleccionada manualmente (si existe)
-        const uniqueGroups = sedeManual ? allGroups.filter(g => detectarSede(g) === sedeManual) : allGroups;
+        // Filtrar por sede
+        // Si es admin rural, ya filtramos allGroups arriba. 
+        // Si es superadmin, usamos el selector manual.
+        let uniqueGroups = allGroups;
+        if (currentRole === 'superadmin' && sedeManual) {
+          uniqueGroups = allGroups.filter(g => detectarSede(g) === sedeManual);
+        }
         uniqueGroups.sort((a, b) => a.localeCompare(b, undefined, { numeric: true }));
 
         const sel = $('rep-grado');
