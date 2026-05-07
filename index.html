@@ -2456,6 +2456,14 @@
             userSede = assignedGrade ? detectarSede(assignedGrade) : null;
           }
 
+          // === ELEVACIÓN DE PERMISOS PARA SEDES RURALES ===
+          const sedesRurales = ['Pueblillo', 'Sendero', 'Yanaconas', 'Pisoje Bajo'];
+          if (userSede && sedesRurales.includes(userSede)) {
+             console.log(`🌟 Elevando permisos a ADMIN por pertenecer a la sede: ${userSede}`);
+             currentRole = 'admin';
+             document.body.classList.add('is-admin');
+          }
+
           // --- CONTROL DE VISIBILIDAD DE INFORMES ---
           window.assignedGrade = assignedGrade;
           window.assignedGroups = assignedGrade ? assignedGrade.toString().split(/[;,]/).map(g => g.trim()).filter(g => g) : [];
