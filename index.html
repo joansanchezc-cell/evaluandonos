@@ -2447,10 +2447,9 @@
           userPermissions = privData || [];
           console.log("🔒 Permisos cargados para", userName, ":", userPermissions);
           
-          // Buscar si tiene permiso explcito de SEDE
-          const sedePerm = userPermissions.find(p => p.tipo === 'SEDE');
-          if (sedePerm) {
-            userSede = sedePerm.sede;
+          // Obtener la sede del docente de cualquiera de sus permisos (todos tienen la columna 'sede')
+          if (userPermissions && userPermissions.length > 0) {
+            userSede = userPermissions[0].sede;
           } else {
             // Fallback: detectar sede del grado asignado si existe
             userSede = assignedGrade ? detectarSede(assignedGrade) : null;
