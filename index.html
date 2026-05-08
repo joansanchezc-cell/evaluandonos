@@ -1485,6 +1485,10 @@
         style="font-size:0.7rem; font-weight:800; color:#1e293b; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">Estudiante</span>
       <span id="user-role-label" style="font-size:0.6rem; color:#64748b; font-weight:600;">Estudiante</span>
     </div>
+    <button id="btn-install-desktop" onclick="instalarPWA()" 
+      style="display:none; background:#ecfdf5; border:none; color:#059669; cursor:pointer; padding:6px 12px; border-radius:20px; font-weight:800; font-size:0.6rem; align-items:center; gap:4px; transition:0.3s;">
+      📥 INSTALAR
+    </button>
     <button onclick="logout()"
       style="background:#fee2e2; border:none; color:#ef4444; cursor:pointer; padding:6px; border-radius:50%; display:flex; align-items:center; justify-content:center; transition:0.3s;"
       title="Cerrar Sesión">
@@ -5818,8 +5822,14 @@
     window.addEventListener('beforeinstallprompt', (e) => {
       e.preventDefault();
       deferredPrompt = e;
-      const installBtn = $('m-nav-install');
-      if (installBtn) installBtn.style.display = 'flex';
+      
+      // Mostrar botón en móvil
+      const installBtnMob = $('m-nav-install');
+      if (installBtnMob) installBtnMob.style.display = 'flex';
+      
+      // Mostrar botón en escritorio
+      const installBtnDesk = $('btn-install-desktop');
+      if (installBtnDesk) installBtnDesk.style.display = 'flex';
     });
 
     async function instalarPWA() {
@@ -5827,8 +5837,8 @@
       deferredPrompt.prompt();
       const { outcome } = await deferredPrompt.userChoice;
       if (outcome === 'accepted') {
-        const installBtn = $('m-nav-install');
-        if (installBtn) installBtn.style.display = 'none';
+        if ($('m-nav-install')) $('m-nav-install').style.display = 'none';
+        if ($('btn-install-desktop')) $('btn-install-desktop').style.display = 'none';
       }
       deferredPrompt = null;
     }
