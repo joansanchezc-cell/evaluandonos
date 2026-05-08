@@ -1486,7 +1486,7 @@
       <span id="user-role-label" style="font-size:0.6rem; color:#64748b; font-weight:600;">Estudiante</span>
     </div>
     <button id="btn-install-desktop" onclick="instalarPWA()" 
-      style="display:flex; background:#ecfdf5; border:none; color:#059669; cursor:pointer; padding:6px 12px; border-radius:20px; font-weight:800; font-size:0.6rem; align-items:center; gap:4px; transition:0.3s;">
+      style="display:none; background:#ecfdf5; border:none; color:#059669; cursor:pointer; padding:6px 12px; border-radius:20px; font-weight:800; font-size:0.6rem; align-items:center; gap:4px; transition:0.3s;">
       📥 INSTALAR
     </button>
     <button onclick="logout()"
@@ -1968,14 +1968,21 @@
     const SB_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InR4bmVjZGVjY2lhbmtscXF5cmF2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY0MDQzMDIsImV4cCI6MjA5MTk4MDMwMn0.e2ybyt2Y8yHsZwRC-MZqi_qK525-CWpk-huQcQy-icM";
     const supabaseClient = supabase.createClient(SB_URL, SB_KEY);
 
-    // --- LÓGICA DE INSTALACIÓN PWA (AL INICIO PARA NO PERDER EL EVENTO) ---
+    // --- ADVERTENCIA DE ENTORNO LOCAL ---
+    if (window.location.protocol === 'file:') {
+      setTimeout(() => {
+        alert("🚨 AVISO IMPORTANTE:\n\nEstás abriendo el archivo directamente desde tu computadora (carpeta).\n\nPara que el botón de 'INSTALAR' funcione, la aplicación debe estar publicada en internet (Vercel) o ejecutándose en un servidor local. Los navegadores prohíben instalar apps desde carpetas locales por seguridad.");
+      }, 2000);
+    }
+
+    // --- LÓGICA DE INSTALACIÓN PWA ---
     let deferredPrompt;
     window.addEventListener('beforeinstallprompt', (e) => {
       console.log('✨ PWA: Evento beforeinstallprompt capturado');
       e.preventDefault();
       deferredPrompt = e;
       
-      // Mostrar botones de instalación
+      // Mostrar todos los botones de instalación disponibles
       if ($('m-nav-install')) $('m-nav-install').style.setProperty('display', 'flex', 'important');
       if ($('btn-install-desktop')) $('btn-install-desktop').style.setProperty('display', 'flex', 'important');
     });
@@ -1988,28 +1995,9 @@
     });
 
     async function instalarPWA() {
-      if (!deferredPrompt) {
-        let errorMsg = "⚠️ LA INSTALACIÓN AUTOMÁTICA ESTÁ BLOQUEADA POR EL NAVEGADOR.\n\n";
-        
-        if (!window.isSecureContext) {
-          errorMsg += "RAZÓN: No estás usando una conexión segura (HTTPS). La instalación es IMPOSIBLE si no subes el archivo a Vercel o usas un servidor seguro.\n\n";
-        } else if (window.matchMedia('(display-mode: standalone)').matches) {
-          errorMsg += "RAZÓN: La aplicación YA ESTÁ INSTALADA en este equipo.\n\n";
-        } else {
-          errorMsg += "RAZÓN: El navegador no ha dado permiso aún. Intenta refrescar la página o usa la instalación manual.\n\n";
-        }
-        
-        errorMsg += "COMO INSTALAR MANUALMENTE:\n";
-        errorMsg += "1. Mira la barra de direcciones (donde escribes la URL).\n";
-        errorMsg += "2. Busca un icono de una computadora con una flecha (a la derecha).\n";
-        errorMsg += "3. Haz clic ahí para instalar.";
-        
-        alert(errorMsg);
-        return;
-      }
+      if (!deferredPrompt) return;
       deferredPrompt.prompt();
       const { outcome } = await deferredPrompt.userChoice;
-      console.log(`PWA: El usuario ${outcome === 'accepted' ? 'aceptó' : 'rechazó'} la instalación`);
       if (outcome === 'accepted') {
         if ($('m-nav-install')) $('m-nav-install').style.display = 'none';
         if ($('btn-install-desktop')) $('btn-install-desktop').style.display = 'none';
