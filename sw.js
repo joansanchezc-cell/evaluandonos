@@ -1,9 +1,8 @@
-const CACHE_NAME = 'evaluandonos-v2026-v11';
+const CACHE_NAME = 'evaluandonos-v2026-v12';
 const urlsToCache = [
   './',
   './index.html',
-  './manifest.json',
-  './icon.png'
+  './manifest.json'
 ];
 
 self.addEventListener('install', event => {
