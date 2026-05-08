@@ -254,9 +254,9 @@
     }
 
     .header-banner img {
-      width: auto;
+      width: 100%;
       max-width: 100%;
-      height: 280px;
+      height: 380px;
       object-fit: contain;
       display: block;
       transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
@@ -1486,7 +1486,7 @@
       <span id="user-role-label" style="font-size:0.6rem; color:#64748b; font-weight:600;">Estudiante</span>
     </div>
     <button id="btn-install-desktop" onclick="instalarPWA()" 
-      style="display:none; background:#ecfdf5; border:none; color:#059669; cursor:pointer; padding:6px 12px; border-radius:20px; font-weight:800; font-size:0.6rem; align-items:center; gap:4px; transition:0.3s;">
+      style="display:flex; background:#ecfdf5; border:none; color:#059669; cursor:pointer; padding:6px 12px; border-radius:20px; font-weight:800; font-size:0.6rem; align-items:center; gap:4px; transition:0.3s;">
       📥 INSTALAR
     </button>
     <button onclick="logout()"
@@ -1967,6 +1967,40 @@
     const SB_URL = "https://txnecdeccianklqqyrav.supabase.co";
     const SB_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InR4bmVjZGVjY2lhbmtscXF5cmF2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY0MDQzMDIsImV4cCI6MjA5MTk4MDMwMn0.e2ybyt2Y8yHsZwRC-MZqi_qK525-CWpk-huQcQy-icM";
     const supabaseClient = supabase.createClient(SB_URL, SB_KEY);
+
+    // --- LÓGICA DE INSTALACIÓN PWA (AL INICIO PARA NO PERDER EL EVENTO) ---
+    let deferredPrompt;
+    window.addEventListener('beforeinstallprompt', (e) => {
+      console.log('✨ PWA: Evento beforeinstallprompt capturado');
+      e.preventDefault();
+      deferredPrompt = e;
+      
+      // Mostrar botones de instalación
+      if ($('m-nav-install')) $('m-nav-install').style.setProperty('display', 'flex', 'important');
+      if ($('btn-install-desktop')) $('btn-install-desktop').style.setProperty('display', 'flex', 'important');
+    });
+
+    window.addEventListener('appinstalled', () => {
+      console.log('✅ PWA: Aplicación instalada correctamente');
+      if ($('m-nav-install')) $('m-nav-install').style.display = 'none';
+      if ($('btn-install-desktop')) $('btn-install-desktop').style.display = 'none';
+      deferredPrompt = null;
+    });
+
+    async function instalarPWA() {
+      if (!deferredPrompt) {
+        alert("⚠️ ATENCIÓN:\n\nTu navegador no ha disparado el evento de instalación automática. Esto sucede si:\n1. La app ya está instalada.\n2. Estás en modo incógnito.\n3. El navegador requiere instalación manual.\n\nPara instalar MANUALMENTE:\nEn Chrome/Edge: Clic en los 3 puntos (arriba a la derecha) -> 'Instalar Evaluándonos'.");
+        return;
+      }
+      deferredPrompt.prompt();
+      const { outcome } = await deferredPrompt.userChoice;
+      console.log(`PWA: El usuario ${outcome === 'accepted' ? 'aceptó' : 'rechazó'} la instalación`);
+      if (outcome === 'accepted') {
+        if ($('m-nav-install')) $('m-nav-install').style.display = 'none';
+        if ($('btn-install-desktop')) $('btn-install-desktop').style.display = 'none';
+      }
+      deferredPrompt = null;
+    }
 
     let currentPeriodo = 1;
     let pendingFiles = []; // Cola de archivos para procesar
@@ -5817,32 +5851,6 @@
 
 
 
-    // --- Lógica de Instalación PWA ---
-    let deferredPrompt;
-    window.addEventListener('beforeinstallprompt', (e) => {
-      e.preventDefault();
-      deferredPrompt = e;
-      
-      // Mostrar botón en móvil
-      const installBtnMob = $('m-nav-install');
-      if (installBtnMob) installBtnMob.style.display = 'flex';
-      
-      // Mostrar botón en escritorio
-      const installBtnDesk = $('btn-install-desktop');
-      if (installBtnDesk) installBtnDesk.style.display = 'flex';
-    });
-
-    async function instalarPWA() {
-      if (!deferredPrompt) return;
-      deferredPrompt.prompt();
-      const { outcome } = await deferredPrompt.userChoice;
-      if (outcome === 'accepted') {
-        if ($('m-nav-install')) $('m-nav-install').style.display = 'none';
-        if ($('btn-install-desktop')) $('btn-install-desktop').style.display = 'none';
-      }
-      deferredPrompt = null;
-    }
-
     // Registrar Service Worker
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
@@ -5896,7 +5904,7 @@
       <span class="material-symbols-outlined">subject</span>
       <span>Materia</span>
     </a>
-    <a href="javascript:void(0)" class="mobile-nav-item" id="m-nav-install" style="display:none; color:var(--primary);" onclick="instalarPWA()">
+    <a href="javascript:void(0)" class="mobile-nav-item" id="m-nav-install" style="display:flex; color:var(--primary);" onclick="instalarPWA()">
       <span class="material-symbols-outlined">download_for_offline</span>
       <span>Instalar</span>
     </a>

@@ -1,8 +1,8 @@
-const CACHE_NAME = 'evaluandonos-v2026-v4';
+const CACHE_NAME = 'evaluandonos-v2026-v6';
 const urlsToCache = [
   './',
   './index.html',
-  './app-manifest.json',
+  './manifest.json',
   './icon.png'
 ];
 
