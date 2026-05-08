@@ -1989,7 +1989,22 @@
 
     async function instalarPWA() {
       if (!deferredPrompt) {
-        alert("⚠️ ATENCIÓN:\n\nTu navegador no ha disparado el evento de instalación automática. Esto sucede si:\n1. La app ya está instalada.\n2. Estás en modo incógnito.\n3. El navegador requiere instalación manual.\n\nPara instalar MANUALMENTE:\nEn Chrome/Edge: Clic en los 3 puntos (arriba a la derecha) -> 'Instalar Evaluándonos'.");
+        let errorMsg = "⚠️ LA INSTALACIÓN AUTOMÁTICA ESTÁ BLOQUEADA POR EL NAVEGADOR.\n\n";
+        
+        if (!window.isSecureContext) {
+          errorMsg += "RAZÓN: No estás usando una conexión segura (HTTPS). La instalación es IMPOSIBLE si no subes el archivo a Vercel o usas un servidor seguro.\n\n";
+        } else if (window.matchMedia('(display-mode: standalone)').matches) {
+          errorMsg += "RAZÓN: La aplicación YA ESTÁ INSTALADA en este equipo.\n\n";
+        } else {
+          errorMsg += "RAZÓN: El navegador no ha dado permiso aún. Intenta refrescar la página o usa la instalación manual.\n\n";
+        }
+        
+        errorMsg += "COMO INSTALAR MANUALMENTE:\n";
+        errorMsg += "1. Mira la barra de direcciones (donde escribes la URL).\n";
+        errorMsg += "2. Busca un icono de una computadora con una flecha (a la derecha).\n";
+        errorMsg += "3. Haz clic ahí para instalar.";
+        
+        alert(errorMsg);
         return;
       }
       deferredPrompt.prompt();
