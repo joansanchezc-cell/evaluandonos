@@ -2824,12 +2824,20 @@
 
         // --- Filtro de Privacidad: Solo mostrar asignaturas que el docente DICTA en este nivel ---
         if (currentRole !== 'superadmin' && currentRole !== 'admin') {
-          const myPermissions = userPermissions
-            .filter(p => p.tipo === 'ASIGNACION' && extraerGradoBase(p.grado).toString() === nivel.toString())
-            .map(p => p.asignatura);
+          const gBaseAssigned = extraerGradoBase(window.assignedGrade);
+          const esDePrimaria = window.assignedGrade === "Primaria" || (gBaseAssigned >= 1 && gBaseAssigned <= 5);
+          const esNivelPrimaria = parseInt(nivel) >= 1 && parseInt(nivel) <= 5;
 
-          console.log("🎯 Materias permitidas para el nivel:", nivel, myPermissions);
-          unique = unique.filter(a => checkSubjectPermission(myPermissions, a, parseInt(nivel)));
+          if (!(esDePrimaria && esNivelPrimaria)) {
+            const myPermissions = userPermissions
+              .filter(p => p.tipo === 'ASIGNACION' && extraerGradoBase(p.grado).toString() === nivel.toString())
+              .map(p => p.asignatura);
+
+            console.log("🎯 Materias permitidas para el nivel:", nivel, myPermissions);
+            unique = unique.filter(a => checkSubjectPermission(myPermissions, a, parseInt(nivel)));
+          } else {
+            console.log("🌟 Docente de primaria en nivel primaria: Acceso total a asignaturas.");
+          }
         }
         // --------------------------------------------------------------------------------
 
@@ -4072,12 +4080,11 @@
             const gBaseAssigned = extraerGradoBase(window.assignedGrade);
             const esDePrimaria = window.assignedGrade === "Primaria" || (gBaseAssigned >= 1 && gBaseAssigned <= 5);
 
-            const isEnPestañaGrupal = ($('tab-grupal-item') && $('tab-grupal-item').classList.contains('active')) ||
-              ($('grupal-container') && $('grupal-container').style.display === 'block');
+            const mySede = window.userSede || 'Central';
 
             if (isEnPestañaGrupal) {
               if (esDePrimaria) {
-                allGroups = allGroups.filter(g => extraerGradoBase(g) >= 1 && extraerGradoBase(g) <= 5);
+                allGroups = allGroups.filter(g => extraerGradoBase(g) >= 1 && extraerGradoBase(g) <= 5 && detectarSede(g) === mySede);
               } else {
                 allGroups = window.assignedGrade ? [window.assignedGrade.toString()] : [];
               }
@@ -4090,7 +4097,9 @@
 
               allGroups = allGroups.filter(g => {
                 const gBase = extraerGradoBase(g);
-                if (esDePrimaria && gBase >= 1 && gBase <= 5) return true;
+                if (esDePrimaria && gBase >= 1 && gBase <= 5) {
+                  return detectarSede(g) === mySede;
+                }
                 const matchDireccionNivel = direccion.some(d => d === g.toString() || d === gBase.toString());
                 return allowedPool.includes(g.toString()) || matchDireccionNivel;
               });
@@ -4557,8 +4566,9 @@
             const gBaseAssigned = extraerGradoBase(window.assignedGrade);
             const esDePrimaria = window.assignedGrade === "Primaria" || (gBaseAssigned >= 1 && gBaseAssigned <= 5);
 
+            const mySede = window.userSede || 'Central';
             if (esDePrimaria) {
-              uniqueGroups = uniqueGroups.filter(g => extraerGradoBase(g) >= 1 && extraerGradoBase(g) <= 5);
+              uniqueGroups = uniqueGroups.filter(g => extraerGradoBase(g) >= 1 && extraerGradoBase(g) <= 5 && detectarSede(g) === mySede);
             } else if (window.assignedGrade) {
               uniqueGroups = [window.assignedGrade.toString()];
             } else {
@@ -4824,6 +4834,7 @@
             uniqueGroups = uniqueGroups.filter(g => detectarSede(g) === mySede);
           } else {
             // Lectores (Docentes)
+            const mySede = window.userSede || 'Central';
             const direccion = window.assignedGroups || [];
             const dictan = userPermissions
               .filter(p => p.tipo === 'ASIGNACION' && isSubjectEvaluated(p.asignatura, p.grado))
@@ -4832,7 +4843,14 @@
             const allowedPool = [...new Set([...direccion, ...dictan])];
             uniqueGroups = uniqueGroups.filter(g => {
               const gBase = extraerGradoBase(g);
-              return allowedPool.some(ap => ap === g.toString() || ap === gBase.toString());
+              const hasPermission = allowedPool.some(ap => ap === g.toString() || ap === gBase.toString());
+
+              // Si es primaria, forzamos filtro por sede
+              const esDePrimaria = window.assignedGrade === "Primaria" || (extraerGradoBase(window.assignedGrade) >= 1 && extraerGradoBase(window.assignedGrade) <= 5);
+              if (esDePrimaria && gBase <= 5) {
+                return detectarSede(g) === mySede;
+              }
+              return hasPermission;
             });
           }
         }
@@ -4860,19 +4878,27 @@
 
       // --- Filtro de Privacidad: Solo mostrar asignaturas permitidas ---
       if (currentRole === 'lector' || (currentRole !== 'superadmin' && currentRole !== 'admin')) {
-        // El usuario solicita que incluso los directores vean solo lo que dictan en este reporte específico
-        const myPermissions = userPermissions
-          .filter(p => {
-            if (p.tipo !== 'ASIGNACION') return false;
-            const pGrado = p.grado.toString().trim();
-            const targetGrado = grupo.toString().trim();
-            const targetBase = extraerGradoBase(targetGrado).toString();
-            return pGrado === targetGrado || pGrado === targetBase;
-          })
-          .map(p => p.asignatura);
+        const gBaseAssigned = extraerGradoBase(window.assignedGrade);
+        const esDePrimaria = window.assignedGrade === "Primaria" || (gBaseAssigned >= 1 && gBaseAssigned <= 5);
+        const esNivelPrimaria = gNum >= 1 && gNum <= 5;
 
-        console.log("🔍 [DEBUG] Permisos para el grupo", grupo, ":", myPermissions);
-        uniqueAsig = uniqueAsig.filter(a => checkSubjectPermission(myPermissions, a, gNum));
+        // Si es primaria y el grupo es de primaria, permitimos todas las asignaturas
+        if (!(esDePrimaria && esNivelPrimaria)) {
+          const myPermissions = userPermissions
+            .filter(p => {
+              if (p.tipo !== 'ASIGNACION') return false;
+              const pGrado = p.grado.toString().trim();
+              const targetGrado = grupo.toString().trim();
+              const targetBase = extraerGradoBase(targetGrado).toString();
+              return pGrado === targetGrado || pGrado === targetBase;
+            })
+            .map(p => p.asignatura);
+
+          console.log("🔍 [DEBUG] Permisos para el grupo", grupo, ":", myPermissions);
+          uniqueAsig = uniqueAsig.filter(a => checkSubjectPermission(myPermissions, a, gNum));
+        } else {
+          console.log("🌟 Docente de primaria: Acceso total a asignaturas en informe por asignatura.");
+        }
       }
       // -----------------------------------------------------------------
 
