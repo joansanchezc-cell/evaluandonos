@@ -89,7 +89,7 @@
   <script>
     window.MathJax = {
       tex: {
-        inlineMath: [['$', '$'], ['\\(', '\\)']],
+        inlineMath: [['\\(', '\\)']],
         displayMath: [['$$', '$$'], ['\\[', '\\]']],
         processEscapes: true,
         packages: { '[+]': ['base', 'ams', 'noerrors', 'noundefined'] }
@@ -1300,7 +1300,8 @@
       }
 
       .header-banner img {
-        height: 60px !important; /* Banner más pequeño en móvil */
+        height: 60px !important;
+        /* Banner más pequeño en móvil */
         margin-bottom: 5px;
       }
 
@@ -1403,6 +1404,106 @@
       letter-spacing: 0.5px;
     }
 
+    /* --- PREMIUM AESTHETICS --- */
+    :root {
+      --primary: #4f46e5;
+      --primary-dark: #4338ca;
+      --success: #10b981;
+      --warning: #f59e0b;
+      --danger: #ef4444;
+      --gray: #64748b;
+      --bg: #f8fafc;
+      --text: #1e293b;
+      --card-bg: rgba(255, 255, 255, 0.7);
+      --glass-border: rgba(255, 255, 255, 0.4);
+    }
+
+    body {
+      font-family: 'Plus Jakarta Sans', 'Outfit', sans-serif;
+      background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 50%, #f1f5f9 100%);
+      background-attachment: fixed;
+      transition: background 0.5s ease;
+    }
+
+    .card {
+      background: var(--card-bg);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid var(--glass-border);
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.05);
+      border-radius: 24px;
+      transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    .card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.1);
+      border-color: rgba(79, 70, 229, 0.2);
+    }
+
+    .tab-btn {
+      position: relative;
+      overflow: hidden;
+    }
+
+    .tab-btn::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      width: 0;
+      height: 3px;
+      background: var(--primary);
+      transition: all 0.3s ease;
+      transform: translateX(-50%);
+    }
+
+    .tab-btn.active::after {
+      width: 60%;
+    }
+
+    select,
+    input {
+      border: 2px solid #e2e8f0;
+      transition: all 0.3s ease;
+    }
+
+    select:focus,
+    input:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.1);
+      outline: none;
+    }
+
+    .mobile-nav-item {
+      position: relative;
+    }
+
+    .mobile-nav-item.active::before {
+      content: '';
+      position: absolute;
+      top: -12px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 40px;
+      height: 4px;
+      background: var(--primary);
+      border-radius: 0 0 10px 10px;
+      animation: navPulse 0.3s ease;
+    }
+
+    @keyframes navPulse {
+      from {
+        width: 0;
+        opacity: 0;
+      }
+
+      to {
+        width: 40px;
+        opacity: 1;
+      }
+    }
+
     /* Ocultar filtros para estudiantes de forma estricta */
     body.is-student #rep-filters {
       display: none !important;
@@ -1413,14 +1514,24 @@
     }
 
     /* Clases para reporte individual responsivo */
-    .show-mobile { display: none; }
+    .show-mobile {
+      display: none;
+    }
+
     @media (max-width: 600px) {
-      .show-mobile { display: inline; }
-      .hide-mobile { display: none; }
+      .show-mobile {
+        display: inline;
+      }
+
+      .hide-mobile {
+        display: none;
+      }
+
       .result-general-container {
         grid-template-columns: 1fr !important;
         gap: 10px !important;
       }
+
       .level-stairs-container {
         padding: 10px !important;
       }
@@ -1435,7 +1546,7 @@
     <div class="login-card">
       <img src="https://txnecdeccianklqqyrav.supabase.co/storage/v1/object/public/assets/evaluandonos.png"
         style="width: 180px; margin-bottom: 1.5rem;">
-      <h2 style="margin-bottom:1.5rem;">Evaluándonos</h2>
+      <h2 style="margin-bottom:1.5rem;"></h2>
 
       <div
         style="display:flex; background:#f1f5f9; border-radius:12px; padding:4px; margin-bottom:1.5rem; width:100%; box-sizing:border-box;">
@@ -1466,7 +1577,8 @@
 
   <header>
     <div class="header-banner">
-      <img src="https://txnecdeccianklqqyrav.supabase.co/storage/v1/object/public/assets/evaluandonos.png" alt="Logo Evaluándonos">
+      <img src="https://txnecdeccianklqqyrav.supabase.co/storage/v1/object/public/assets/evaluandonos.png"
+        alt="Logo Evaluándonos">
       <div class="header-sub">
         Evaluándonos — Análisis Estadístico
       </div>
@@ -1485,7 +1597,7 @@
         style="font-size:0.7rem; font-weight:800; color:#1e293b; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">Estudiante</span>
       <span id="user-role-label" style="font-size:0.6rem; color:#64748b; font-weight:600;">Estudiante</span>
     </div>
-    <button id="btn-install-desktop" onclick="instalarPWA()" 
+    <button id="btn-install-desktop" onclick="instalarPWA()"
       style="display:none; background:#ecfdf5; border:none; color:#059669; cursor:pointer; padding:6px 12px; border-radius:20px; font-weight:800; font-size:0.6rem; align-items:center; gap:4px; transition:0.3s;">
       📥 INSTALAR
     </button>
@@ -1764,7 +1876,7 @@
         </div>
 
         <div id="grupal-content"
-          style="overflow-x: auto; overflow-y: visible; background: white; border-radius: 12px; border: 1px solid #e2e8f0; -webkit-overflow-scrolling: touch; position: relative;">
+          style="overflow: auto; max-height: 75vh; background: white; border-radius: 12px; border: 1px solid #e2e8f0; -webkit-overflow-scrolling: touch; position: relative;">
           <p style="text-align:center; color:#64748b; padding:3rem;">Seleccione un grupo para generar el informe
             detallado.</p>
         </div>
@@ -1794,7 +1906,8 @@
           </div>
         </div>
 
-        <div id="asignatura-content" style="overflow-x: auto; overflow-y: visible; background: white; border-radius: 12px; border: 1px solid #e2e8f0; -webkit-overflow-scrolling: touch; position: relative;">
+        <div id="asignatura-content"
+          style="overflow: auto; max-height: 75vh; background: white; border-radius: 12px; border: 1px solid #e2e8f0; -webkit-overflow-scrolling: touch; position: relative;">
           <p style="text-align:center; color:#64748b; padding:3rem;">Seleccione un grupo y una asignatura para ver
             el detalle.</p>
         </div>
@@ -1966,9 +2079,124 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
-  <script src="./app.js"></script>
-
+  <script src="https://cdn.jsdelivr.net/npm/papaparse@5.3.2/papaparse.min.js"></script>
   <script>
+    // --- CONFIGURACIÓN Y ESTADO GLOBAL ---
+    const SB_URL = "https://txnecdeccianklqqyrav.supabase.co";
+    const SB_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InR4bmVjZGVjY2lhbmtscXF5cmF2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY0MDQzMDIsImV4cCI6MjA5MTk4MDMwMn0.e2ybyt2Y8yHsZwRC-MZqi_qK525-CWpk-huQcQy-icM";
+
+    let supabaseClient;
+    if (typeof supabase !== 'undefined') {
+      supabaseClient = supabase.createClient(SB_URL, SB_KEY);
+    }
+
+    // --- UTILIDADES GLOBALES ---
+    const $ = id => document.getElementById(id);
+    let currentPeriodo = parseInt(localStorage.getItem('currentPeriodo')) || 2;
+    let assignedGrade = null;
+    let userPermissions = [];
+    let userSede = null;
+    let currentUser = null;
+    let currentRole = 'lector';
+    let isEnPestañaGrupal = false;
+    let dataPeriodoActual = [];
+    let totalGradoMap = {};
+    let myChart = null;
+    let chartGrados = null, chartMaterias = null, chartSedes = null, chartComparativo = null;
+    let isStudentMode = false;
+    let studentId = "";
+
+    function triggerMath() {
+      if (window.MathJax && MathJax.typesetPromise) {
+        MathJax.typesetPromise().catch(err => console.warn("MathJax failed:", err));
+      }
+    }
+
+    function showLoading(show) {
+      const el = $('loading');
+      if (el) el.style.display = show ? 'flex' : 'none';
+    }
+
+    async function init() {
+      console.log("🚀 Iniciando aplicación...");
+      showLoading(true);
+      try {
+        // 1. Verificar si hay datos en el periodo actual
+        const { data: hasData } = await supabaseClient.from('eval_resultados').select('periodo').eq('periodo', currentPeriodo).limit(1);
+
+        if (!hasData || hasData.length === 0) {
+          // 2. Si no hay, buscar el periodo más reciente con datos
+          const { data: latestData } = await supabaseClient.from('eval_resultados').select('periodo').order('periodo', { ascending: false }).limit(1);
+          if (latestData && latestData.length > 0) {
+            currentPeriodo = latestData[0].periodo;
+            localStorage.setItem('currentPeriodo', currentPeriodo);
+            console.log("🔄 Auto-ajustando periodo detectado:", currentPeriodo);
+            // Actualizar pestañas de periodo en el DOM
+            document.querySelectorAll('.period-tab').forEach((t, i) => {
+              t.classList.toggle('active', (i + 1) === currentPeriodo);
+            });
+          }
+        }
+        await cargarGrados();
+      } catch (err) {
+        console.error("Error en init:", err);
+      } finally {
+        showLoading(false);
+      }
+    }
+
+    function normalizeText(str) {
+      if (!str) return "";
+      return str.toString()
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .toLowerCase()
+        .trim();
+    }
+
+    function getValoration(p) {
+      if (p >= 91) return { label: 'Superior', initial: 'S', color: '#a855f7', nivel: 'N4' };
+      if (p >= 71) return { label: 'Alto', initial: 'A', color: '#22c55e', nivel: 'N3' };
+      if (p >= 51) return { label: 'Básico', initial: 'Bs', color: '#facc15', nivel: 'N2' };
+      return { label: 'Bajo', initial: 'Bj', color: '#ef4444', nivel: 'N1' };
+    }
+
+    // --- MATRIZ DE RANGOS 2026 ---
+    const MATRIZ_RANGOS = {
+      '3-4': [
+        { start: 1, end: 10, label: 'Matemáticas' },
+        { start: 11, end: 20, label: 'Ciencias Sociales' },
+        { start: 21, end: 30, label: 'Lenguaje' },
+        { start: 31, end: 40, label: 'Biología' },
+        { start: 41, end: 45, label: 'Inglés' }
+      ],
+      '5': [
+        { start: 1, end: 20, label: 'Matemáticas' },
+        { start: 21, end: 40, label: 'Ciencias Sociales' },
+        { start: 41, end: 60, label: 'Lenguaje' },
+        { start: 61, end: 80, label: 'Biología' },
+        { start: 81, end: 90, label: 'Inglés' }
+      ],
+      '6-9': [
+        { start: 1, end: 20, label: 'Matemáticas' },
+        { start: 21, end: 40, label: 'Competencias Ciudadanas' },
+        { start: 41, end: 60, label: 'Ciencias Sociales' },
+        { start: 61, end: 80, label: 'Lenguaje' },
+        { start: 81, end: 100, label: 'Biología' },
+        { start: 101, end: 120, label: 'Inglés' }
+      ],
+      '10-11': [
+        { start: 1, end: 20, label: 'Matemáticas' },
+        { start: 21, end: 30, label: 'Competencias Ciudadanas' },
+        { start: 31, end: 50, label: 'Ciencias Sociales' },
+        { start: 51, end: 70, label: 'Lenguaje' },
+        { start: 71, end: 80, label: 'Biología' },
+        { start: 81, end: 90, label: 'Física' },
+        { start: 91, end: 100, label: 'Química' },
+        { start: 101, end: 120, label: 'Inglés' }
+      ]
+    };
+
     // --- LÓGICA DE INSTALACIÓN PWA ---
     let deferredPrompt;
     window.addEventListener('beforeinstallprompt', (e) => {
@@ -1996,10 +2224,6 @@
     }
 
     // El resto de la lógica se maneja en app.js
-  </script>
-
-
-
 
     function isSubjectEvaluated(subject, grade) {
       if (!subject) return false;
@@ -2119,26 +2343,13 @@
 
     async function switchMainTab(tab) {
       showLoading(true);
-      try {
-        const [resG, resD] = await Promise.all([
-          supabaseClient.from('eval_resultados').select('grado').eq('periodo', currentPeriodo),
-          supabaseClient.from('eval_estudiantes_notas').select('*').eq('periodo', currentPeriodo)
-        ]);
+      isEnPestañaGrupal = (tab === 'grupal');
 
-        let rawData = resD.data || [];
-        dataPeriodoActual = rawData;
-
-        // Cargar grados silenciosamente para los selectores
-        await cargarGrados(true);
-      } catch (e) { console.error("Error en auto-refresco:", e); }
-      showLoading(false);
-
-      // Remover clase active de todos los botones y del contenedor dropdown
+      // Update Tab Visuals
       document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
       const informesParent = $('tab-informes-parent');
       if (informesParent) informesParent.classList.remove('active');
 
-      // Activar el tab correspondiente
       if (['individual', 'grupal', 'asignatura'].includes(tab)) {
         if (informesParent) informesParent.classList.add('active');
       } else {
@@ -2146,8 +2357,11 @@
         if (activeBtn) activeBtn.classList.add('active');
       }
 
-      // Alternar visibilidad de los contenedores
-      const tabs = {
+      // Visibility Toggle
+      const containerIds = ['resultado-container', 'filtros-container', 'individual-container', 'estadisticas-container', 'grupal-container', 'asignatura-container'];
+      containerIds.forEach(id => { if ($(id)) $(id).style.display = 'none'; });
+
+      const tabMap = {
         'analisis': ['resultado-container', 'filtros-container'],
         'individual': ['individual-container'],
         'estadisticas': ['estadisticas-container'],
@@ -2155,41 +2369,39 @@
         'asignatura': ['asignatura-container']
       };
 
-      // Ocultar todos primero
-      ['resultado-container', 'filtros-container', 'individual-container', 'estadisticas-container', 'grupal-container', 'asignatura-container'].forEach(id => {
-        const el = $(id);
-        if (el) el.style.display = 'none';
-      });
-
-      // Mostrar los del tab activo
-      if (tabs[tab]) {
-        tabs[tab].forEach(id => {
-          const el = $(id);
-          if (el) el.style.display = 'block';
-        });
+      if (tabMap[tab]) {
+        tabMap[tab].forEach(id => { if ($(id)) $(id).style.display = 'block'; });
       }
 
-      // Efecto de atenuación de fondo si se está viendo un reporte
+      // Background Effect
       if (['individual', 'grupal', 'asignatura'].includes(tab)) {
         document.body.classList.add('blurred-bg');
       } else {
         document.body.classList.remove('blurred-bg');
       }
 
-      // Cargar/Refrescar vistas específicas
-      if (tab === 'individual') cargarGradosReporte();
-      if (tab === 'estadisticas') cargarEstadisticas();
-      if (tab === 'grupal') cargarGruposInformeGrupal();
-      if (tab === 'asignatura') {
-        cargarGruposInformeAsignatura();
-        filtrarMateriasEstaticas(); // Filtra las opciones del select estático
+      // Specific Loaders
+      try {
+        if (tab === 'individual') await cargarGradosReporte();
+        if (tab === 'estadisticas') await cargarEstadisticas();
+        if (tab === 'grupal') await cargarGruposInformeGrupal();
+        if (tab === 'asignatura') {
+          await cargarGruposInformeAsignatura();
+          filtrarMateriasEstaticas();
+        }
+        if (tab === 'analisis' && $('sel-grado').value && $('sel-pregunta').value) {
+          await mostrarAnalisis();
+        }
+      } catch (err) {
+        console.error("Error switching tab:", err);
       }
-      if (tab === 'analisis' && $('sel-grado').value && $('sel-pregunta').value) mostrarAnalisis();
 
       // Update Mobile Nav
       document.querySelectorAll('.mobile-nav-item').forEach(i => i.classList.remove('active'));
       const mobTab = $(`m-nav-${tab}`);
       if (mobTab) mobTab.classList.add('active');
+
+      showLoading(false);
     }
 
     function toggleAdmin() {
@@ -2252,14 +2464,7 @@
       } catch (e) { console.error("Error cargando grados admin:", e); }
     }
 
-    let myChart = null;
-    let chartGrados = null, chartMaterias = null, chartSedes = null, chartComparativo = null;
-    let dataPeriodoActual = [];
-    let totalGradoMap = {};
-    let userPermissions = [];
-    let userSede = null;
-    let currentUser = null;
-    let currentRole = 'lector';
+    // Variables globales movidas al inicio del script.
 
     function calcularPuestoNivel(zipId, gradoBase) {
       if (!dataPeriodoActual || dataPeriodoActual.length === 0) return "-";
@@ -2304,10 +2509,7 @@
       return ASIGNATURA_COLORES[normalizado] || "#94a3b8";
     }
 
-    const $ = id => document.getElementById(id);
-
-    let isStudentMode = false;
-    let studentId = "";
+    // Variables globales movidas al inicio del script.
 
     function switchLoginMode(mode) {
       const isEst = mode === 'estudiante';
@@ -2558,12 +2760,12 @@
           const sedesRurales = ['PUEBLILLO', 'SENDERO', 'YANACONAS', 'PISOJE BAJO'];
           const userSedeClean = userSede ? userSede.trim().toUpperCase() : '';
           const profileSede = assignedGrade ? detectarSede(assignedGrade).trim().toUpperCase() : '';
-          
+
           if (sedesRurales.includes(userSedeClean) || sedesRurales.includes(profileSede)) {
             console.log(`🌟 Elevando permisos a ADMIN por pertenecer a sede rural: ${userSedeClean || profileSede}`);
             currentRole = 'admin';
             document.body.classList.add('is-admin');
-            
+
             // Normalizar la sede para que coincida con la detección de grupos
             const sedeBruta = userSede || profileSede || assignedGrade || 'Central';
             window.userSede = detectarSede(sedeBruta);
@@ -2576,11 +2778,11 @@
           if (currentRole !== 'superadmin') {
             document.querySelectorAll('.sede-filter-container').forEach(el => el.style.display = 'none');
           }
-          
+
           // --- OCULTAR SELECTORES DE SEDE SI NO ES SUPERADMIN ---
           if (currentRole !== 'superadmin') {
-             const style = document.createElement('style');
-             style.innerHTML = `
+            const style = document.createElement('style');
+            style.innerHTML = `
                #sel-sede, #rep-sede, 
                label[for="sel-sede"], label[for="rep-sede"],
                .filter-item:has(#sel-sede), .filter-item:has(#rep-sede),
@@ -2588,13 +2790,13 @@
                  display: none !important; 
                }
              `;
-             document.head.appendChild(style);
-             
-             // Intento secundario por ID si el CSS falla
-             if ($('sel-sede')) $('sel-sede').parentElement.style.display = 'none';
-             if ($('rep-sede')) $('rep-sede').parentElement.style.display = 'none';
+            document.head.appendChild(style);
+
+            // Intento secundario por ID si el CSS falla
+            if ($('sel-sede')) $('sel-sede').parentElement.style.display = 'none';
+            if ($('rep-sede')) $('rep-sede').parentElement.style.display = 'none';
           }
-          
+
           // --- CONTROL DE VISIBILIDAD DE INFORMES ---
           window.assignedGrade = assignedGrade;
           window.assignedGroups = assignedGrade ? assignedGrade.toString().split(/[;,]/).map(g => g.trim()).filter(g => g) : [];
@@ -2683,6 +2885,7 @@
 
     async function setPeriodo(p) {
       currentPeriodo = p;
+      localStorage.setItem('currentPeriodo', p);
       document.querySelectorAll('.period-tab').forEach((t, i) => {
         t.classList.toggle('active', (i + 1) === p);
       });
@@ -2701,9 +2904,7 @@
       }
     }
 
-    async function init() {
-      await cargarGrados();
-    }
+    // init duplicado removido.
 
 
 
@@ -2751,21 +2952,34 @@
       return url;
     }
 
-    function showLoading(show) {
-      const el = $('loading');
-      if (el) el.style.display = show ? 'flex' : 'none';
-    }
+    // showLoading se movió al inicio del script para evitar duplicación.
 
     async function cargarGrados(silent = false) {
       if (!silent) showLoading(true);
       try {
+        if (!supabaseClient) {
+          console.error("Supabase client not initialized");
+          return;
+        }
+
         const [resResults, resPreguntas] = await Promise.all([
           supabaseClient.from('eval_resultados').select('grado').eq('periodo', currentPeriodo),
           supabaseClient.from('eval_preguntas').select('grado').eq('periodo', currentPeriodo)
         ]);
 
         let dataCombined = (resResults.data || []).concat(resPreguntas.data || []);
-        // --- LÓGICA DE NIVELES (Análisis General solo muestra 1, 2, 3... 11) ---
+
+        // Fallback: Si no hay datos en el periodo actual (ej. P2), intentar en P1 silenciosamente
+        if (dataCombined.length === 0 && currentPeriodo === 2) {
+          console.log("⚠️ No hay datos en P2, intentando P1...");
+          const [r1, p1] = await Promise.all([
+            supabaseClient.from('eval_resultados').select('grado').eq('periodo', 1),
+            supabaseClient.from('eval_preguntas').select('grado').eq('periodo', 1)
+          ]);
+          dataCombined = (r1.data || []).concat(p1.data || []);
+        }
+
+        // --- LÓGICA DE NIVELES ---
         let uniqueLevels = [...new Set(dataCombined.map(d => extraerGradoBase(d.grado)))]
           .filter(l => l > 0);
 
@@ -3075,16 +3289,13 @@
       let combinedHtml = "";
       let imageCounter = 0;
 
-      // Paleta de colores para recuadros de instrucciones
+      // Paleta de colores para recuadros de instrucciones (Premium glassmorphism)
       const INSTRUCCION_COLORS = [
-        { bg: '#eff6ff', border: '#3b82f6', text: '#1e40af' },
-        { bg: '#f0fdf4', border: '#22c55e', text: '#14532d' },
-        { bg: '#fff7ed', border: '#f97316', text: '#7c2d12' },
-        { bg: '#fdf4ff', border: '#a855f7', text: '#581c87' },
-        { bg: '#fef9c3', border: '#eab308', text: '#713f12' },
-      ];
-      const INSTRUCCION_PREFIXES = [
-        /^\s*(responde|responda|resuelve|resolvé|resolver|lea|lee|leer|observa|analiza|mira|de acuerdo|según|a partir|con base|la siguiente|el siguiente|para (los|las|la|el)|enunciado|contexto|instrucción|tenga en cuenta|atención|contesta|conteste|contesté|ejercicio|problema)/i
+        { bg: 'rgba(239, 246, 255, 0.9)', border: '#3b82f6', text: '#1e40af' },
+        { bg: 'rgba(240, 253, 244, 0.9)', border: '#22c55e', text: '#14532d' },
+        { bg: 'rgba(255, 247, 237, 0.9)', border: '#f97316', text: '#7c2d12' },
+        { bg: 'rgba(253, 244, 255, 0.9)', border: '#a855f7', text: '#581c87' },
+        { bg: 'rgba(254, 249, 195, 0.9)', border: '#eab308', text: '#713f12' },
       ];
       let instruccionColorIdx = 0;
 
@@ -3095,15 +3306,38 @@
         if (isEven) {
           // Bloque de TEXTO
           if (contentPart) {
-            const firstLine = contentPart.split(/\n/)[0].trim();
-            const isInstruccion = INSTRUCCION_PREFIXES.some(rx => rx.test(contentPart));
-            const formattedContent = contentPart.replace(/\n/g, '<br>');
-            if (isInstruccion) {
+            const triggerWords = ["responde", "responda", "resuelve", "resolvé", "resolver", "contesta", "conteste", "contesté", "pregunta:", "preguntas:"];
+            let lastIdx = -1;
+            let bestMatch = null;
+
+            triggerWords.forEach(word => {
+              const regex = new RegExp("\\b" + word + "\\b", "gi");
+              let m;
+              while ((m = regex.exec(contentPart)) !== null) {
+                if (m.index > lastIdx) {
+                  lastIdx = m.index;
+                  bestMatch = m;
+                }
+              }
+            });
+
+            if (bestMatch && lastIdx !== -1) {
+              const contextText = contentPart.substring(0, lastIdx).trim();
+              const instructionText = contentPart.substring(lastIdx).trim();
+
+              if (contextText) {
+                combinedHtml += `<div style="margin-bottom:12px; line-height:1.5; color:#334155;">${contextText.replace(/\n/g, '<br>')}</div>`;
+              }
+
               const c = INSTRUCCION_COLORS[instruccionColorIdx % INSTRUCCION_COLORS.length];
               instruccionColorIdx++;
-              combinedHtml += `<div style="margin-bottom:10px; padding:10px 14px; background:${c.bg}; border-left:4px solid ${c.border}; border-radius:8px; color:${c.text}; font-weight:600; font-size:0.95em;">${formattedContent}</div>`;
+              combinedHtml += `
+                <div style="margin-bottom:14px; padding:10px 16px; background:${c.bg}; border:1px solid ${c.border}44; border-left:6px solid ${c.border}; border-radius:10px; color:${c.text}; font-weight:700; font-size:1em; box-shadow: 0 2px 4px rgba(0,0,0,0.05); line-height:1.4;">
+                  <span style="display:block; font-size:0.6rem; text-transform:uppercase; margin-bottom:2px; opacity:0.7; font-weight:900; letter-spacing:0.5px;">Acción requerida</span>
+                  ${instructionText.replace(/\n/g, '<br>')}
+                </div>`;
             } else {
-              combinedHtml += `<div style="margin-bottom:10px;">${formattedContent}</div>`;
+              combinedHtml += `<div style="margin-bottom:12px; line-height:1.5; color:#334155;">${contentPart.replace(/\n/g, '<br>')}</div>`;
             }
           }
         } else {
@@ -3117,9 +3351,9 @@
 
           if (imgUrl) {
             combinedHtml += `
-              <div style="display:flex; flex-direction:column; gap:8px; align-items:center; width:100%; margin: 15px 0;">
+              <div style="display:flex; flex-direction:column; gap:8px; align-items:center; width:100%; margin: 18px 0;">
                 <img src="${imgUrl}" 
-                     style="max-width:100%; border-radius:12px; border:1px solid #e2e8f0; box-shadow: 0 4px 10px rgba(0,0,0,0.05);" 
+                     style="max-width:100%; border-radius:16px; border:1px solid #e2e8f0; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1);" 
                      title="Imagen ${imageCounter}"
                      onerror="this.style.display='none';">
               </div>`;
@@ -3173,9 +3407,7 @@
       });
     }
 
-    function showLoading(show) {
-      $('loading').style.display = show ? 'flex' : 'none';
-    }
+    // Duplicado de showLoading removido.
 
 
     async function cargarAsignaturasAdminImg() {
@@ -4136,6 +4368,17 @@
               });
             }
           }
+
+          // --- FALLBACK PARA SEDES RURALES SIN ASIGNACIÓN EXPLÍCITA ---
+          if (allGroups.length === 0 && currentRole === 'admin') {
+            const mySede = window.userSede || 'Central';
+            // Intentar recuperar TODOS los grupos de la sede si no hay asignación específica pero es admin
+            const { data: sedeData } = await supabaseClient.from('eval_estudiantes_notas').select('zipgrade_id').eq('periodo', currentPeriodo);
+            if (sedeData) {
+              allGroups = [...new Set(sedeData.map(d => extraerGrupo(d.zipgrade_id)))].filter(g => detectarSede(g) === mySede);
+            }
+          }
+
           console.log("🎯 Grupos permitidos final en informes:", allGroups);
         }
         // ----------------------------------------------------------
@@ -4649,9 +4892,9 @@
 
         let html = `
                 <table style="width:100%; border-collapse:separate; border-spacing:0; font-size:0.85rem;">
-                        <thead style="position:sticky; top:var(--header-top); z-index:99;">
+                        <thead style="position:sticky; top:0; z-index:99; background:white;">
                             <tr>
-                                <th style="padding:12px 8px; text-align:left; position:sticky; top:var(--header-top); left:0; background:white; z-index:100; min-width:180px; border-bottom:2px solid #e2e8f0; box-shadow: 0 4px 6px -2px rgba(0,0,0,0.1);">ESTUDIANTE</th>
+                                <th style="padding:12px 8px; text-align:left; position:sticky; top:0; left:0; background:white; z-index:100; min-width:180px; border-bottom:2px solid #e2e8f0; box-shadow: 0 4px 6px -2px rgba(0,0,0,0.1);">ESTUDIANTE</th>
                                 ${config.map(s => {
           const labelsMap = {
             'Matemáticas': 'Matemáticas',
@@ -4668,15 +4911,15 @@
           };
           const displayLabel = labelsMap[s.label] || s.label;
           return `
-                                    <th style="padding:12px 4px; text-align:center; min-width:60px; font-size:0.75rem; color:#1e293b; border-bottom:2px solid #e2e8f0; position:sticky; top:var(--header-top); background:white; z-index:99; box-shadow: 0 4px 6px -2px rgba(0,0,0,0.1);">
+                                    <th style="padding:12px 4px; text-align:center; min-width:60px; font-size:0.75rem; color:#1e293b; border-bottom:2px solid #e2e8f0; position:sticky; top:0; background:white; z-index:99; box-shadow: 0 4px 6px -2px rgba(0,0,0,0.1);">
                                         ${displayLabel}
                                     </th>
                                 `;
         }).join('')}
-                                <th style="padding:12px 8px; text-align:center; min-width:70px; background:white; border-bottom:2px solid #e2e8f0; position:sticky; top:var(--header-top); z-index:99; box-shadow: 0 4px 6px -2px rgba(0,0,0,0.1);">PROM.</th>
+                                <th style="padding:12px 8px; text-align:center; min-width:70px; background:white; border-bottom:2px solid #e2e8f0; position:sticky; top:0; z-index:99; box-shadow: 0 4px 6px -2px rgba(0,0,0,0.1);">PROM.</th>
                             </tr>
                         </thead>
-                    <tbody style="position:relative; z-index:1;">
+                    <tbody style="z-index:1;">
             `;
 
         alumnosGrupo.forEach(est => {
@@ -4992,17 +5235,17 @@
 
         let html = `
                 <table style="width:100%; border-collapse:separate; border-spacing:0; font-size:0.85rem;">
-                    <thead style="position:sticky; top:var(--header-top); z-index:99;">
+                    <thead style="position:sticky; top:0; z-index:99; background:white;">
                         <tr style="background:#f8fafc; border-bottom:2px solid #e2e8f0;">
-                            <th class="estudiante-col-base" style="padding:10px 8px; text-align:left; position:sticky; top:var(--header-top); left:0; background:#f8fafc; z-index:100; min-width:200px; border-bottom:2px solid #e2e8f0;">ESTUDIANTE</th>
+                            <th class="estudiante-col-base" style="padding:10px 8px; text-align:left; position:sticky; top:0; left:0; background:#f8fafc; z-index:100; min-width:200px; border-bottom:2px solid #e2e8f0;">ESTUDIANTE</th>
                             ${config.map(s => {
           const displayLabel = (labelsMap[s.label] || s.label).toUpperCase();
-          return `<th class="subject-col-base" style="padding:10px; text-align:center; position:sticky; top:var(--header-top); background:#f8fafc; border-bottom:2px solid #e2e8f0;">${displayLabel}</th>`;
+          return `<th class="subject-col-base" style="padding:10px; text-align:center; position:sticky; top:0; background:#f8fafc; border-bottom:2px solid #e2e8f0;">${displayLabel}</th>`;
         }).join('')}
-                            <th class="promedio-col-base" style="padding:10px; text-align:center; font-weight:800; background:#f0f9ff; position:sticky; top:var(--header-top); border-bottom:2px solid #e2e8f0;">PROM.</th>
+                            <th class="promedio-col-base" style="padding:10px; text-align:center; font-weight:800; background:#f0f9ff; position:sticky; top:0; border-bottom:2px solid #e2e8f0;">PROM.</th>
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody style="z-index:1;">
             `;
 
         alumnosGrupo.forEach(est => {
@@ -5020,13 +5263,13 @@
             sumaPct += pct;
             const val = getValoration(pct);
             html += `<td class="subject-col-base" style="padding:8px; text-align:center;">
-                        <div class="val-box" title="${pct}%" style="background:${val.color}; color:${val.color === '#facc15' ? '#1e293b' : 'white'}; cursor:help;">${val.initial}</div>
+                        <div class="val-box" title="${pct}" style="background:${val.color}; color:${val.color === '#facc15' ? '#1e293b' : 'white'}; cursor:help;">${val.initial}</div>
                     </td>`;
           });
 
           const prom = Math.round(sumaPct / config.length);
           const valGen = getValoration(prom);
-          html += `<td class="promedio-col-base" title="${prom}%" style="padding:8px; text-align:center; background:#f0f9ff; font-weight:900; color:${valGen.color}; cursor:help;">${prom}</td></tr>`;
+          html += `<td class="promedio-col-base" title="${prom}" style="padding:8px; text-align:center; background:#f0f9ff; font-weight:900; color:${valGen.color}; cursor:help;">${prom}</td></tr>`;
         });
 
         // Resumen Grupal
@@ -5479,28 +5722,181 @@
         if (error) throw error;
         let dataTemp = data || [];
 
+        if (dataTemp.length === 0 && currentPeriodo === 2) {
+          const { data: fallbackData } = await supabaseClient.from('eval_estudiantes_notas').select('*').eq('periodo', 1);
+          if (fallbackData && fallbackData.length > 0) dataTemp = fallbackData;
+        }
+
         dataPeriodoActual = dataTemp;
 
         if (dataPeriodoActual.length === 0) {
-          alert("No hay datos suficientes para generar estadísticas según sus permisos en este periodo.");
+          alert("No hay datos suficientes para generar estadísticas en este periodo.");
           showLoading(false);
           return;
         }
 
-        // --- LÓGICA DE VISIBILIDAD (Estadísticas Comparativas) ---
-        // Admin ve todo. Los demás ven TODOS los grupos pero filtrados por su materia
-        let gruposUnicos = [...new Set(dataPeriodoActual.map(d => extraerGrupo(d.zipgrade_id)))]
+        // 1. Poblar selectores del Dashboard
+        const gruposUnicos = [...new Set(dataPeriodoActual.map(d => extraerGrupo(d.zipgrade_id)))]
           .sort((a, b) => a.localeCompare(b, undefined, { numeric: true }));
 
-        let gradosUnicos = [...new Set(dataPeriodoActual.map(d => extraerGradoBase(d.grado)))]
+        const gradosUnicos = [...new Set(dataPeriodoActual.map(d => extraerGradoBase(extraerGrupo(d.zipgrade_id))))]
           .filter(g => g > 0)
           .sort((a, b) => a - b);
 
-        // Ya no filtramos gruposUnicos ni gradosUnicos para permitir la comparativa global
-        // El filtro se aplicará en el CÁLCULO de los promedios de los gráficos.
-        // -----------------------------------------------------
+        const selAsig = $('est-sel-grado');
+        if (selAsig) {
+          selAsig.innerHTML = gruposUnicos.map(g => `<option value="${g}">${g}</option>`).join('');
+        }
 
-    // Lógica migrada a app.js
+        const selComp = $('comp-sel-grado');
+        if (selComp) {
+          selComp.innerHTML = gradosUnicos.map(g => `<option value="${g}">${g}°</option>`).join('');
+        }
+
+        // 2. Gráfico: Promedio Detallado por Grupo (Grados)
+        const promediosGrado = {};
+        const conteoGrado = {};
+        dataPeriodoActual.forEach(d => {
+          const g = extraerGradoBase(extraerGrupo(d.zipgrade_id));
+          if (!promediosGrado[g]) { promediosGrado[g] = 0; conteoGrado[g] = 0; }
+          promediosGrado[g] += (d.porcentaje || 0);
+          conteoGrado[g]++;
+        });
+
+        const labelsG = Object.keys(promediosGrado).sort((a, b) => a - b);
+        const dataG = labelsG.map(l => Math.round(promediosGrado[l] / conteoGrado[l]));
+
+        if (chartGrados) chartGrados.destroy();
+        const ctxG = $('chart-grados').getContext('2d');
+        chartGrados = new Chart(ctxG, {
+          type: 'bar',
+          plugins: [ChartDataLabels],
+          data: {
+            labels: labelsG.map(l => l + "°"),
+            datasets: [{
+              label: 'Promedio General',
+              data: dataG,
+              backgroundColor: '#4f46e5',
+              borderRadius: 8
+            }]
+          },
+          options: {
+            responsive: true, maintainAspectRatio: false,
+            plugins: {
+              legend: { display: false },
+              datalabels: { color: '#fff', font: { weight: 'bold', size: 12 }, anchor: 'end', align: 'bottom', formatter: v => v + '%' }
+            },
+            scales: { y: { min: 0, max: 100, ticks: { callback: v => v + '%' } } }
+          }
+        });
+
+        // 3. Inicializar sub-gráficos
+        actualizarGraficoAsignaturas();
+        actualizarGraficoComparativoGrupos();
+
+      } catch (error) {
+        console.error("Error al cargar estadísticas:", error);
+      } finally {
+        showLoading(false);
+      }
+    }
+
+    function actualizarGraficoAsignaturas() {
+      const grupo = $('est-sel-grado').value;
+      if (!grupo) return;
+
+      const alumnos = dataPeriodoActual.filter(d => extraerGrupo(d.zipgrade_id) === grupo);
+      const gNum = extraerGradoBase(grupo);
+      let mKey = '6-9';
+      if (gNum <= 4) mKey = '3-4'; else if (gNum === 5) mKey = '5'; else if (gNum >= 10) mKey = '10-11';
+      const config = MATRIZ_RANGOS[mKey];
+
+      const labels = config.map(c => c.label);
+      const data = config.map(subj => {
+        let suma = 0;
+        let validos = 0;
+        alumnos.forEach(est => {
+          let ok = 0;
+          for (let i = subj.start; i <= subj.end; i++) { if (est.respuestas && est.respuestas[i] === 1) ok++; }
+          suma += Math.round((ok / (subj.end - subj.start + 1)) * 100);
+          validos++;
+        });
+        return validos > 0 ? Math.round(suma / validos) : 0;
+      });
+
+      if (chartMaterias) chartMaterias.destroy();
+      const ctxM = $('chart-materias').getContext('2d');
+      chartMaterias = new Chart(ctxM, {
+        type: 'bar',
+        plugins: [ChartDataLabels],
+        data: {
+          labels: labels,
+          datasets: [{
+            data: data,
+            backgroundColor: labels.map(l => obtenerColorAsignatura(l)),
+            borderRadius: 8
+          }]
+        },
+        options: {
+          indexAxis: 'y',
+          responsive: true, maintainAspectRatio: false,
+          plugins: {
+            legend: { display: false },
+            datalabels: { color: '#1e293b', font: { weight: 'bold', size: 11 }, anchor: 'end', align: 'right', formatter: v => v + '%' }
+          },
+          scales: { x: { min: 0, max: 100 } }
+        }
+      });
+    }
+
+    function actualizarGraficoComparativoGrupos() {
+      const gBase = parseInt($('comp-sel-grado').value);
+      if (!gBase) return;
+
+      const alumnosNivel = dataPeriodoActual.filter(d => extraerGradoBase(extraerGrupo(d.zipgrade_id)) === gBase);
+      const gruposMap = {};
+      alumnosNivel.forEach(d => {
+        const g = extraerGrupo(d.zipgrade_id);
+        if (!gruposMap[g]) { gruposMap[g] = { suma: 0, count: 0 }; }
+        gruposMap[g].suma += (d.porcentaje || 0);
+        gruposMap[g].count++;
+      });
+
+      const labels = Object.keys(gruposMap).sort((a, b) => a.localeCompare(b, undefined, { numeric: true }));
+      const data = labels.map(l => Math.round(gruposMap[l].suma / gruposMap[l].count));
+
+      if (chartComparativo) chartComparativo.destroy();
+      const ctxC = $('chart-comparativo-grupos').getContext('2d');
+      chartComparativo = new Chart(ctxC, {
+        type: 'bar',
+        plugins: [ChartDataLabels],
+        data: {
+          labels: labels,
+          datasets: [{
+            label: 'Promedio Grupo',
+            data: data,
+            backgroundColor: labels.map(l => {
+              const s = detectarSede(l);
+              if (s === 'Central') return '#4f46e5';
+              if (s === 'Yanaconas') return '#10b981';
+              if (s === 'Sendero') return '#f59e0b';
+              if (s === 'Pisoje Bajo') return '#ef4444';
+              if (s === 'Pueblillo') return '#06b6d4';
+              return '#6366f1';
+            }),
+            borderRadius: 8
+          }]
+        },
+        options: {
+          responsive: true, maintainAspectRatio: false,
+          plugins: {
+            legend: { display: false },
+            datalabels: { color: '#fff', font: { weight: 'bold' }, anchor: 'center', formatter: v => v + '%' }
+          },
+          scales: { y: { min: 0, max: 100 } }
+        }
+      });
+    }
   </script>
   <nav class="mobile-nav">
     <a href="javascript:void(0)" class="mobile-nav-item active" id="m-nav-analisis" onclick="switchMainTab('analisis')">
@@ -5511,7 +5907,8 @@
       <span class="material-symbols-outlined">person</span>
       <span>Reporte</span>
     </a>
-    <a href="javascript:void(0)" class="mobile-nav-item" id="m-nav-estadisticas" onclick="switchMainTab('estadisticas')">
+    <a href="javascript:void(0)" class="mobile-nav-item" id="m-nav-estadisticas"
+      onclick="switchMainTab('estadisticas')">
       <span class="material-symbols-outlined">bar_chart</span>
       <span>Dashboard</span>
     </a>
@@ -5523,7 +5920,8 @@
       <span class="material-symbols-outlined">subject</span>
       <span>Materia</span>
     </a>
-    <a href="javascript:void(0)" class="mobile-nav-item" id="m-nav-install" style="display:flex; color:var(--primary);" onclick="instalarPWA()">
+    <a href="javascript:void(0)" class="mobile-nav-item" id="m-nav-install" style="display:flex; color:var(--primary);"
+      onclick="instalarPWA()">
       <span class="material-symbols-outlined">download_for_offline</span>
       <span>Instalar</span>
     </a>
@@ -5533,12 +5931,6 @@
     </a>
   </nav>
 
-  <!-- Scripts y Dependencias -->
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
-  <script src="https://cdn.jsdelivr.net/npm/papaparse@5.3.2/papaparse.min.js"></script>
-  <script src="app.js"></script>
 
   <script>
     if ('serviceWorker' in navigator) {
@@ -5549,17 +5941,9 @@
       });
     }
     window.addEventListener('DOMContentLoaded', () => {
-       if (typeof checkSession === 'function') checkSession();
+      if (typeof checkSession === 'function') checkSession();
     });
   </script>
 </body>
+
 </html>
-
-
-
-
-
-
-
-
-
