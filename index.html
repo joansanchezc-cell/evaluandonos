@@ -1304,10 +1304,14 @@
         padding: 10px 0;
       }
 
-      .header-banner img {
-        height: 60px !important;
+      .header-banner {
+        padding: 6px 12px !important;
+      }
+
+      .header-banner img.header-logo-img {
+        height: 45px !important;
         /* Banner más pequeño en móvil */
-        margin-bottom: 5px;
+        margin-bottom: 0;
       }
 
       .header-sub {
@@ -1586,11 +1590,11 @@
   </div>
 
   <header>
-    <div class="header-banner" style="display: flex; justify-content: space-between; align-items: center; padding: 6px 12px; background: white; border-bottom: 2px solid #f1f5f9; gap: 5px;">
-      <div style="display: flex; align-items: center; gap: 12px;">
+    <div class="header-banner" style="display: flex; justify-content: space-between; align-items: center; padding: 12px 24px; background: white; border-bottom: 2px solid #f1f5f9; gap: 5px;">
+      <div style="display: flex; align-items: center; gap: 15px;">
         <img src="https://txnecdeccianklqqyrav.supabase.co/storage/v1/object/public/assets/evaluandonos.png"
-          alt="Logo Evaluándonos" style="height: 42px; width: auto;">
-        <div class="header-sub" style="position: static !important; transform: none !important; margin: 0 !important; padding: 2px 6px !important; background: #f8fafc !important; color: #64748b; font-weight: 800; font-size: 0.65rem; border-radius: 6px; border: 1px solid #e2e8f0 !important; white-space: nowrap;">
+          alt="Logo Evaluándonos" style="height: 68px; width: auto;" class="header-logo-img">
+        <div class="header-sub" style="position: static !important; transform: none !important; margin: 0 !important; padding: 6px 16px !important; background: #f8fafc !important; color: #64748b; font-weight: 800; font-size: 1rem; border-radius: 8px; border: 1px solid #e2e8f0 !important; white-space: nowrap;">
           Análisis
         </div>
       </div>
@@ -5993,7 +5997,7 @@
 
     <script>
       // LIMPIEZA PROFUNDA DE CACHÉ SI CAMBIA VERSIÓN
-      const CURRENT_APP_VERSION = 'v26';
+      const CURRENT_APP_VERSION = 'v27';
       if (localStorage.getItem('app_version') !== CURRENT_APP_VERSION) {
         if ('serviceWorker' in navigator) {
           navigator.serviceWorker.getRegistrations().then(registrations => {
