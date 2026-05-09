@@ -532,9 +532,7 @@ function renderMedia(textId, mediaId, content, grado, asig, num, opcion = "") {
     { bg: '#fef9c3', border: '#eab308', text: '#713f12' },
   ];
   const INSTRUCCION_PREFIXES = [
-    /^responde\b/i, /^de acuerdo (a|con)\b/i, /^según\b/i, /^lee\b/i,
-    /^observa\b/i, /^analiza\b/i, /^a partir de\b/i, /^con base en\b/i,
-    /^la siguiente\b/i, /^el siguiente\b/i, /^para (las|los|la|el)\b/i
+    /^(responde|responda|resuelve|resolvé|lea|lee|observa|analiza|mira|de acuerdo|según|a partir|con base|la siguiente|el siguiente|para (los|las|la|el)|enunciado|contexto|instrucción|tenga en cuenta|atención)/i
   ];
   let instruccionColorIdx = 0;
 
@@ -544,7 +542,7 @@ function renderMedia(textId, mediaId, content, grado, asig, num, opcion = "") {
     if (isEven) {
       if (contentPart) {
         const firstLine = contentPart.split(/\n/)[0].trim();
-        const isInstruccion = INSTRUCCION_PREFIXES.some(rx => rx.test(firstLine));
+        const isInstruccion = INSTRUCCION_PREFIXES.some(rx => rx.test(contentPart));
         const formattedContent = contentPart.replace(/\n/g, '<br>');
         if (isInstruccion) {
           const c = INSTRUCCION_COLORS[instruccionColorIdx % INSTRUCCION_COLORS.length];
