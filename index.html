@@ -1099,17 +1099,26 @@
     /* Resto de estilos del reporte */
 
 
-    /* --- ESTILOS EQUILIBRADOS PARA ESCRITORIO (WEB) --- */
+    /* --- DISEÑO BANNER CENTRAL WEB (ESCRITORIO) --- */
     @media (min-width: 769px) {
+      header {
+        background: white !important;
+      }
       .header-banner {
-        padding: 8px 30px !important;
+        justify-content: center !important; /* Centrado horizontal */
+        padding: 25px !important;
+        height: 160px !important; /* Más altura para el logo grande */
+        position: relative !important;
       }
       .header-logo-img {
-        height: 60px !important;
+        height: 110px !important; /* Tamaño grande solicitado */
       }
       #user-badge {
-        padding: 6px 15px !important;
-        gap: 12px !important;
+        position: absolute !important;
+        right: 40px !important;
+        top: 50% !important;
+        transform: translateY(-50%) !important;
+        background: #f1f5f9 !important;
       }
     }
 
@@ -1597,10 +1606,10 @@
   </div>
 
   <header>
-    <div class="header-banner" style="display: flex; justify-content: space-between; align-items: center; padding: 10px 25px; background: white; border-bottom: 2px solid #f1f5f9; gap: 5px;">
-      <div style="display: flex; align-items: center;">
+    <div class="header-banner" style="display: flex; align-items: center; background: white; border-bottom: 2px solid #f1f5f9;">
+      <div style="display: flex; align-items: center; justify-content: center; width: 100%;">
         <img src="https://txnecdeccianklqqyrav.supabase.co/storage/v1/object/public/assets/evaluandonos.png"
-          alt="Logo Evaluándonos" style="height: 60px; width: auto;" class="header-logo-img">
+          alt="Logo Evaluándonos" style="height: 110px; width: auto;" class="header-logo-img">
       </div>
       
       <!-- Badge de usuario integrado y fijo -->
@@ -6001,7 +6010,7 @@
 
     <script>
       // LIMPIEZA PROFUNDA DE CACHÉ SI CAMBIA VERSIÓN
-      const CURRENT_APP_VERSION = 'v29';
+      const CURRENT_APP_VERSION = 'v30';
       if (localStorage.getItem('app_version') !== CURRENT_APP_VERSION) {
         if ('serviceWorker' in navigator) {
           navigator.serviceWorker.getRegistrations().then(registrations => {
