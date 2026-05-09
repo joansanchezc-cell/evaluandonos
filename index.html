@@ -291,7 +291,7 @@
       padding: 0 2rem;
     }
 
-    @media (max-width: 991px) {
+    @media (max-width: 1100px) {
       .container {
         padding: 0 1rem;
         max-width: 100%;
@@ -390,7 +390,7 @@
     }
 
     /* 📱 Optimizaciones para Celular */
-    @media (max-width: 991px) {
+    @media (max-width: 1100px) {
       .header-banner img {
         height: 180px;
         object-fit: contain;
@@ -1227,26 +1227,24 @@
       }
     }
 
-    /* 📱 Barra de Navegación Móvil (Solo visible en móviles) */
+    /* 📱 Barra de Navegación Móvil Forzada */
     .mobile-nav {
       display: none;
     }
 
-    @media (max-width: 991px) {
+    @media (max-width: 1100px) {
       .mobile-nav {
-        display: flex;
-        position: fixed;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        background: rgba(255, 255, 255, 0.85);
-        backdrop-filter: blur(25px);
-        -webkit-backdrop-filter: blur(25px);
-        border-top: 1px solid rgba(255, 255, 255, 0.3);
-        justify-content: space-around;
-        padding: 12px 10px 20px;
-        z-index: 5000;
-        box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.1);
+        display: flex !important;
+        position: fixed !important;
+        bottom: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        background: #ffffff !important;
+        border-top: 1px solid #e2e8f0 !important;
+        justify-content: space-around !important;
+        padding: 10px 5px 25px !important;
+        z-index: 9999 !important;
+        box-shadow: 0 -5px 20px rgba(0, 0, 0, 0.1) !important;
       }
 
       .mobile-nav-item {
@@ -1279,12 +1277,9 @@
 
 
       .mobile-nav-item .material-symbols-outlined {
-        font-size: 26px;
-        font-variation-settings: 'FILL' 0, 'wght' 400;
-      }
-
-      .mobile-nav-item.active .material-symbols-outlined {
-        font-variation-settings: 'FILL' 1, 'wght' 400;
+        font-size: 28px !important;
+        display: block !important;
+        margin-bottom: 2px !important;
       }
 
       body {
@@ -1520,7 +1515,7 @@
       display: none;
     }
 
-    @media (max-width: 991px) {
+    @media (max-width: 1100px) {
       .show-mobile {
         display: inline;
       }
