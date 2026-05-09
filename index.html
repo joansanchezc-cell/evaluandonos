@@ -1764,7 +1764,7 @@
         </div>
 
         <div id="grupal-content"
-          style="overflow: visible; background: white; border-radius: 12px; border: 1px solid #e2e8f0;">
+          style="overflow-x: auto; overflow-y: visible; background: white; border-radius: 12px; border: 1px solid #e2e8f0; -webkit-overflow-scrolling: touch; position: relative;">
           <p style="text-align:center; color:#64748b; padding:3rem;">Seleccione un grupo para generar el informe
             detallado.</p>
         </div>
@@ -1794,7 +1794,7 @@
           </div>
         </div>
 
-        <div id="asignatura-content" style="background: white; border-radius: 12px; border: 1px solid #e2e8f0;">
+        <div id="asignatura-content" style="overflow-x: auto; overflow-y: visible; background: white; border-radius: 12px; border: 1px solid #e2e8f0; -webkit-overflow-scrolling: touch; position: relative;">
           <p style="text-align:center; color:#64748b; padding:3rem;">Seleccione un grupo y una asignatura para ver
             el detalle.</p>
         </div>
@@ -1968,12 +1968,7 @@
     const SB_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InR4bmVjZGVjY2lhbmtscXF5cmF2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY0MDQzMDIsImV4cCI6MjA5MTk4MDMwMn0.e2ybyt2Y8yHsZwRC-MZqi_qK525-CWpk-huQcQy-icM";
     const supabaseClient = supabase.createClient(SB_URL, SB_KEY);
 
-    // --- ADVERTENCIA DE ENTORNO LOCAL ---
-    if (window.location.protocol === 'file:') {
-      setTimeout(() => {
-        alert("🚨 AVISO IMPORTANTE:\n\nEstás abriendo el archivo directamente desde tu computadora (carpeta).\n\nPara que el botón de 'INSTALAR' funcione, la aplicación debe estar publicada en internet (Vercel) o ejecutándose en un servidor local. Los navegadores prohíben instalar apps desde carpetas locales por seguridad.");
-      }, 2000);
-    }
+    // Advertencia de entorno local desactivada (producción)
 
     // --- LÓGICA DE INSTALACIÓN PWA ---
     let deferredPrompt;
@@ -3142,6 +3137,21 @@
       let combinedHtml = "";
       let imageCounter = 0;
 
+      // Paleta de colores para recuadros de instrucciones
+      const INSTRUCCION_COLORS = [
+        { bg: '#eff6ff', border: '#3b82f6', text: '#1e40af' },
+        { bg: '#f0fdf4', border: '#22c55e', text: '#14532d' },
+        { bg: '#fff7ed', border: '#f97316', text: '#7c2d12' },
+        { bg: '#fdf4ff', border: '#a855f7', text: '#581c87' },
+        { bg: '#fef9c3', border: '#eab308', text: '#713f12' },
+      ];
+      const INSTRUCCION_PREFIXES = [
+        /^responde\b/i, /^de acuerdo (a|con)\b/i, /^según\b/i, /^lee\b/i,
+        /^observa\b/i, /^analiza\b/i, /^a partir de\b/i, /^con base en\b/i,
+        /^la siguiente\b/i, /^el siguiente\b/i, /^para (las|los|la|el)\b/i
+      ];
+      let instruccionColorIdx = 0;
+
       parts.forEach((part, index) => {
         const isEven = (index % 2 === 0);
         const contentPart = part.trim();
@@ -3149,8 +3159,16 @@
         if (isEven) {
           // Bloque de TEXTO
           if (contentPart) {
-            let formattedContent = contentPart.replace(/\n/g, '<br>');
-            combinedHtml += `<div style="margin-bottom:10px;">${formattedContent}</div>`;
+            const firstLine = contentPart.split(/\n/)[0].trim();
+            const isInstruccion = INSTRUCCION_PREFIXES.some(rx => rx.test(firstLine));
+            const formattedContent = contentPart.replace(/\n/g, '<br>');
+            if (isInstruccion) {
+              const c = INSTRUCCION_COLORS[instruccionColorIdx % INSTRUCCION_COLORS.length];
+              instruccionColorIdx++;
+              combinedHtml += `<div style="margin-bottom:10px; padding:10px 14px; background:${c.bg}; border-left:4px solid ${c.border}; border-radius:8px; color:${c.text}; font-weight:600; font-size:0.95em;">${formattedContent}</div>`;
+            } else {
+              combinedHtml += `<div style="margin-bottom:10px;">${formattedContent}</div>`;
+            }
           }
         } else {
           // Bloque de IMAGEN
