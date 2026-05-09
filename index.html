@@ -1572,6 +1572,11 @@
 
       <div id="login-err" style="color: #ef4444; font-size: 0.8rem; margin-top: 1rem; display: none; font-weight:600;">
       </div>
+
+      <button id="btn-install-login" onclick="instalarPWA()" 
+        style="display:none; width:100%; margin-top:20px; background:#ecfdf5; color:#059669; border:2px dashed #059669; border-radius:16px; padding:12px; font-weight:800; cursor:pointer; align-items:center; justify-content:center; gap:8px;">
+        📥 INSTALAR APLICACIÓN EN ESTE EQUIPO
+      </button>
     </div>
   </div>
 
@@ -1642,6 +1647,10 @@
               </div>
             </div>
           </div>
+          <button id="btn-install-top" onclick="instalarPWA()" 
+            style="display:none; background:#ecfdf5; border:none; color:#059669; cursor:pointer; padding:10px 20px; border-radius:12px; font-weight:800; font-size:0.85rem; align-items:center; gap:8px; transition:0.3s; margin-left:10px;">
+            📥 INSTALAR APP
+          </button>
         </div>
 
         <div class="period-tabs" style="margin: 0;">
@@ -2202,13 +2211,21 @@
       window.addEventListener('beforeinstallprompt', (e) => {
         e.preventDefault();
         deferredPrompt = e;
-        if (document.getElementById('m-nav-install')) document.getElementById('m-nav-install').style.setProperty('display', 'flex', 'important');
-        if (document.getElementById('btn-install-desktop')) document.getElementById('btn-install-desktop').style.setProperty('display', 'flex', 'important');
+        console.log('PWA: Ready to install');
+        const triggers = ['m-nav-install', 'btn-install-desktop', 'btn-install-login', 'btn-install-top'];
+        triggers.forEach(id => {
+          const el = document.getElementById(id);
+          if (el) el.style.setProperty('display', 'flex', 'important');
+        });
       });
 
       window.addEventListener('appinstalled', () => {
-        if (document.getElementById('m-nav-install')) document.getElementById('m-nav-install').style.display = 'none';
-        if (document.getElementById('btn-install-desktop')) document.getElementById('btn-install-desktop').style.display = 'none';
+        console.log('PWA: Installed');
+        const triggers = ['m-nav-install', 'btn-install-desktop', 'btn-install-login', 'btn-install-top'];
+        triggers.forEach(id => {
+          const el = document.getElementById(id);
+          if (el) el.style.display = 'none';
+        });
         deferredPrompt = null;
       });
 
