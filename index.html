@@ -1099,32 +1099,17 @@
     /* Resto de estilos del reporte */
 
 
-    /* --- ESTILOS REFORZADOS PARA ESCRITORIO (WEB) --- */
+    /* --- ESTILOS EQUILIBRADOS PARA ESCRITORIO (WEB) --- */
     @media (min-width: 769px) {
       .header-banner {
-        padding: 15px 40px !important;
+        padding: 8px 30px !important;
       }
       .header-logo-img {
-        height: 100px !important;
-      }
-      .header-sub {
-        font-size: 1.4rem !important;
-        padding: 8px 25px !important;
-        border-radius: 12px !important;
-        margin-left: 10px !important;
+        height: 60px !important;
       }
       #user-badge {
-        padding: 8px 20px !important;
-        gap: 15px !important;
-        border-radius: 16px !important;
-      }
-      #user-avatar {
-        width: 42px !important;
-        height: 42px !important;
-        font-size: 1.1rem !important;
-      }
-      #user-nombre {
-        font-size: 0.9rem !important;
+        padding: 6px 15px !important;
+        gap: 12px !important;
       }
     }
 
@@ -1339,19 +1324,11 @@
       }
 
       .header-banner img.header-logo-img {
-        height: 45px !important;
+        height: 40px !important;
         /* Banner más pequeño en móvil */
         margin-bottom: 0;
       }
 
-      .header-sub {
-        font-size: 0.65rem !important;
-        padding: 4px 10px !important;
-        transform: none !important;
-        position: static !important;
-        display: inline-block;
-        margin-top: 5px;
-      }
 
       /* Stacking filter headers on mobile */
       .card>div[style*="display: flex"] {
@@ -1620,13 +1597,10 @@
   </div>
 
   <header>
-    <div class="header-banner" style="display: flex; justify-content: space-between; align-items: center; padding: 12px 24px; background: white; border-bottom: 2px solid #f1f5f9; gap: 5px;">
-      <div style="display: flex; align-items: center; gap: 15px;">
+    <div class="header-banner" style="display: flex; justify-content: space-between; align-items: center; padding: 10px 25px; background: white; border-bottom: 2px solid #f1f5f9; gap: 5px;">
+      <div style="display: flex; align-items: center;">
         <img src="https://txnecdeccianklqqyrav.supabase.co/storage/v1/object/public/assets/evaluandonos.png"
-          alt="Logo Evaluándonos" style="height: 68px; width: auto;" class="header-logo-img">
-        <div class="header-sub" style="position: static !important; transform: none !important; margin: 0 !important; padding: 6px 16px !important; background: #f8fafc !important; color: #64748b; font-weight: 800; font-size: 1rem; border-radius: 8px; border: 1px solid #e2e8f0 !important; white-space: nowrap;">
-          Análisis
-        </div>
+          alt="Logo Evaluándonos" style="height: 60px; width: auto;" class="header-logo-img">
       </div>
       
       <!-- Badge de usuario integrado y fijo -->
@@ -6027,7 +6001,7 @@
 
     <script>
       // LIMPIEZA PROFUNDA DE CACHÉ SI CAMBIA VERSIÓN
-      const CURRENT_APP_VERSION = 'v28';
+      const CURRENT_APP_VERSION = 'v29';
       if (localStorage.getItem('app_version') !== CURRENT_APP_VERSION) {
         if ('serviceWorker' in navigator) {
           navigator.serviceWorker.getRegistrations().then(registrations => {
