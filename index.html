@@ -1177,12 +1177,23 @@
       }
 
       #user-badge {
-        top: 10px !important;
+        top: 15px !important;
+        right: 15px !important;
         bottom: auto !important;
-        right: 10px !important;
-        padding: 4px 12px !important;
-        transform: scale(0.85);
-        transform-origin: right top;
+        background: rgba(255, 255, 255, 0.9) !important;
+        backdrop-filter: blur(10px) !important;
+        border: 1px solid rgba(255, 255, 255, 0.5) !important;
+        padding: 5px 12px !important;
+        border-radius: 16px !important;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1) !important;
+        transform: scale(0.9);
+        z-index: 9999 !important;
+      }
+
+      #user-avatar {
+        background: linear-gradient(135deg, #4f46e5 0%, #7e22ce 100%) !important;
+        box-shadow: 0 2px 5px rgba(79, 70, 229, 0.3) !important;
+        border: 2px solid white !important;
       }
 
       .question-title {
@@ -1240,11 +1251,12 @@
         left: 0 !important;
         right: 0 !important;
         background: #ffffff !important;
-        border-top: 1px solid #e2e8f0 !important;
+        border-top: 1px solid #e5e7eb !important;
         justify-content: space-around !important;
         padding: 10px 5px 25px !important;
         z-index: 9999 !important;
-        box-shadow: 0 -5px 20px rgba(0, 0, 0, 0.1) !important;
+        box-shadow: 0 -8px 25px rgba(0, 0, 0, 0.12) !important;
+        height: 75px !important;
       }
 
       .mobile-nav-item {
