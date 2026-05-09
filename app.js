@@ -523,11 +523,37 @@ function renderMedia(textId, mediaId, content, grado, asig, num, opcion = "") {
   let combinedHtml = "";
   let imageCounter = 0;
 
+  // Paleta de colores para recuadros de instrucciones
+  const INSTRUCCION_COLORS = [
+    { bg: '#eff6ff', border: '#3b82f6', text: '#1e40af' },
+    { bg: '#f0fdf4', border: '#22c55e', text: '#14532d' },
+    { bg: '#fff7ed', border: '#f97316', text: '#7c2d12' },
+    { bg: '#fdf4ff', border: '#a855f7', text: '#581c87' },
+    { bg: '#fef9c3', border: '#eab308', text: '#713f12' },
+  ];
+  const INSTRUCCION_PREFIXES = [
+    /^responde\b/i, /^de acuerdo (a|con)\b/i, /^según\b/i, /^lee\b/i,
+    /^observa\b/i, /^analiza\b/i, /^a partir de\b/i, /^con base en\b/i,
+    /^la siguiente\b/i, /^el siguiente\b/i, /^para (las|los|la|el)\b/i
+  ];
+  let instruccionColorIdx = 0;
+
   parts.forEach((part, index) => {
     const isEven = (index % 2 === 0);
     const contentPart = part.trim();
     if (isEven) {
-      if (contentPart) combinedHtml += `<div style="margin-bottom:10px;">${contentPart.replace(/\n/g, '<br>')}</div>`;
+      if (contentPart) {
+        const firstLine = contentPart.split(/\n/)[0].trim();
+        const isInstruccion = INSTRUCCION_PREFIXES.some(rx => rx.test(firstLine));
+        const formattedContent = contentPart.replace(/\n/g, '<br>');
+        if (isInstruccion) {
+          const c = INSTRUCCION_COLORS[instruccionColorIdx % INSTRUCCION_COLORS.length];
+          instruccionColorIdx++;
+          combinedHtml += `<div style="margin-bottom:10px; padding:10px 14px; background:${c.bg}; border-left:4px solid ${c.border}; border-radius:8px; color:${c.text}; font-weight:600; font-size:0.95em;">${formattedContent}</div>`;
+        } else {
+          combinedHtml += `<div style="margin-bottom:10px;">${formattedContent}</div>`;
+        }
+      }
     } else {
       imageCounter++;
       let imgUrl = contentPart;
@@ -538,6 +564,7 @@ function renderMedia(textId, mediaId, content, grado, asig, num, opcion = "") {
 
   textElem.innerHTML = combinedHtml;
   if (mediaElem) mediaElem.innerHTML = "";
+
   triggerMath();
 }
 
