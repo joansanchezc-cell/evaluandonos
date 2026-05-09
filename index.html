@@ -1240,23 +1240,19 @@
 
     .mobile-nav {
       display: flex !important;
+      visibility: visible !important;
+      opacity: 1 !important;
       position: fixed !important;
       bottom: 0 !important;
       left: 0 !important;
       right: 0 !important;
       background: #ffffff !important;
-      border-top: 1px solid #e5e7eb !important;
+      border-top: 2px solid #4f46e5 !important; /* Borde azul para confirmar visibilidad */
       justify-content: space-around !important;
       padding: 10px 5px 25px !important;
-      z-index: 9999 !important;
-      box-shadow: 0 -8px 25px rgba(0, 0, 0, 0.1) !important;
-      height: 75px !important;
-    }
-
-    @media (min-width: 1101px) {
-      .mobile-nav {
-        display: none !important;
-      }
+      z-index: 999999 !important;
+      box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.2) !important;
+      height: 80px !important;
     }
 
       .mobile-nav-item {
@@ -1590,12 +1586,12 @@
   </div>
 
   <header>
-    <div class="header-banner" style="display: flex; justify-content: space-between; align-items: center; padding: 8px 15px; background: white; border-bottom: 2px solid #f1f5f9;">
+    <div class="header-banner" style="display: flex; justify-content: space-between; align-items: center; padding: 6px 12px; background: white; border-bottom: 2px solid #f1f5f9; gap: 5px;">
       <div style="display: flex; align-items: center; gap: 12px;">
         <img src="https://txnecdeccianklqqyrav.supabase.co/storage/v1/object/public/assets/evaluandonos.png"
           alt="Logo Evaluándonos" style="height: 42px; width: auto;">
-        <div class="header-sub" style="position: static !important; transform: none !important; margin: 0 !important; padding: 4px 8px !important; background: #f8fafc !important; color: #64748b; font-weight: 800; font-size: 0.75rem; border-radius: 8px; border: 1px solid #e2e8f0 !important;">
-          Análisis Estadístico
+        <div class="header-sub" style="position: static !important; transform: none !important; margin: 0 !important; padding: 2px 6px !important; background: #f8fafc !important; color: #64748b; font-weight: 800; font-size: 0.65rem; border-radius: 6px; border: 1px solid #e2e8f0 !important; white-space: nowrap;">
+          Análisis
         </div>
       </div>
       
@@ -1604,10 +1600,10 @@
         <div id="user-avatar"
           style="width:34px; height:34px; background: linear-gradient(135deg, #4f46e5 0%, #7e22ce 100%); color:white; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:800; font-size:0.85rem; border: 2px solid white; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
           ST</div>
-        <div style="display:flex; flex-direction:column; max-width: 150px;" class="hide-mobile">
+        <div style="display:flex; flex-direction:column; max-width: 120px;" class="hide-mobile">
           <span id="user-nombre"
-            style="font-size:0.75rem; font-weight:800; color:#1e293b; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">Usuario</span>
-          <span id="user-role-label" style="font-size:0.6rem; color:#64748b; font-weight:600; margin-top:-2px;">Cargando...</span>
+            style="font-size:0.7rem; font-weight:800; color:#1e293b; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">Usuario</span>
+          <span id="user-role-label" style="font-size:0.55rem; color:#64748b; font-weight:600; margin-top:-2px;">Cargando...</span>
         </div>
         <button onclick="logout()"
           style="background:#fee2e2; border:none; color:#ef4444; cursor:pointer; padding:6px; border-radius:10px; display:flex; align-items:center; justify-content:center; transition:0.3s;"
@@ -5947,7 +5943,7 @@
 
     <script>
       // LIMPIEZA PROFUNDA DE CACHÉ SI CAMBIA VERSIÓN
-      const CURRENT_APP_VERSION = 'v22';
+      const CURRENT_APP_VERSION = 'v23';
       if (localStorage.getItem('app_version') !== CURRENT_APP_VERSION) {
         if ('serviceWorker' in navigator) {
           navigator.serviceWorker.getRegistrations().then(registrations => {
