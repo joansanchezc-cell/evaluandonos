@@ -421,11 +421,18 @@ button.primary:hover {
 
 /* Extra table styles */
 .estudiante-col-base {
-  width: 200px;
+  min-width: 160px;
+  max-width: 200px;
 }
 
 .subject-col-base {
-  width: 80px;
+  min-width: 55px;
+  max-width: 70px;
+  text-align: center;
+}
+
+.promedio-col-base {
+  min-width: 60px;
 }
 
 .val-box {
