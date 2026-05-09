@@ -5533,43 +5533,33 @@
     </a>
   </nav>
 
-</body>
-</html>
+  <!-- Scripts y Dependencias -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
+  <script src="https://cdn.jsdelivr.net/npm/papaparse@5.3.2/papaparse.min.js"></script>
+  <script src="app.js"></script>
 
-
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('sw.js')
+          .then(reg => console.log('SW registrado', reg))
+          .catch(err => console.log('SW error', err));
+      });
+    }
+    window.addEventListener('DOMContentLoaded', () => {
+       if (typeof checkSession === 'function') checkSession();
+    });
   </script>
-  <nav class="mobile-nav">
-    <a href="javascript:void(0)" class="mobile-nav-item active" id="m-nav-analisis" onclick="switchMainTab('analisis')">
-      <span class="material-symbols-outlined">analytics</span>
-      <span>Análisis</span>
-    </a>
-    <a href="javascript:void(0)" class="mobile-nav-item" id="m-nav-individual" onclick="switchMainTab('individual')">
-      <span class="material-symbols-outlined">person</span>
-      <span>Reporte</span>
-    </a>
-    <a href="javascript:void(0)" class="mobile-nav-item" id="m-nav-estadisticas"
-      onclick="switchMainTab('estadisticas')">
-      <span class="material-symbols-outlined">bar_chart</span>
-      <span>Dashboard</span>
-    </a>
-    <a href="javascript:void(0)" class="mobile-nav-item" id="m-nav-grupal" onclick="switchMainTab('grupal')">
-      <span class="material-symbols-outlined">group</span>
-      <span>Grupal</span>
-    </a>
-    <a href="javascript:void(0)" class="mobile-nav-item" id="m-nav-asignatura" onclick="switchMainTab('asignatura')">
-      <span class="material-symbols-outlined">subject</span>
-      <span>Materia</span>
-    </a>
-    <a href="javascript:void(0)" class="mobile-nav-item" id="m-nav-install" style="display:flex; color:var(--primary);" onclick="instalarPWA()">
-      <span class="material-symbols-outlined">download_for_offline</span>
-      <span>Instalar</span>
-    </a>
-    <a href="javascript:void(0)" class="mobile-nav-item" style="color:#ef4444;" onclick="logout()">
-      <span class="material-symbols-outlined">logout</span>
-      <span>Salir</span>
-    </a>
-  </nav>
-
 </body>
-
 </html>
+
+
+
+
+
+
+
+
+

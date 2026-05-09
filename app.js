@@ -239,7 +239,7 @@ async function checkSession() {
   }
 }
 
-async function login() {
+async function intentarLogin() {
   const userVal = $('li-user').value.trim();
   const pass = $('li-pass').value;
   const btn = $('btn-login');
@@ -263,6 +263,18 @@ async function login() {
     if (err) { err.innerText = "Error de conexión"; err.style.display = 'block'; }
     btn.disabled = false; btn.innerText = "Ingresar";
   }
+}
+
+function switchLoginMode(mode) {
+  const isDoc = mode === 'docente';
+  $('form-docente').style.display = isDoc ? 'block' : 'none';
+  $('form-estudiante').style.display = isDoc ? 'none' : 'block';
+  $('mode-docente').style.background = isDoc ? 'white' : 'transparent';
+  $('mode-docente').style.color = isDoc ? '#4f46e5' : '#64748b';
+  $('mode-docente').style.boxShadow = isDoc ? '0 2px 8px rgba(0,0,0,0.1)' : 'none';
+  $('mode-estudiante').style.background = isDoc ? 'transparent' : 'white';
+  $('mode-estudiante').style.color = isDoc ? '#64748b' : '#10b981';
+  $('mode-estudiante').style.boxShadow = isDoc ? 'none' : '0 2px 8px rgba(0,0,0,0.1)';
 }
 
 async function logout() {
@@ -475,6 +487,31 @@ function filtrarMateriasEstaticas() {
 // --- LÓGICA DE APLICACIÓN ---
 async function init() {
   await cargarGrados();
+}
+
+function setPeriodo(p) {
+  currentPeriodo = p;
+  document.querySelectorAll('.period-tab').forEach(t => t.classList.remove('active'));
+  const targetTab = $(`tab-${p}`);
+  if (targetTab) targetTab.classList.add('active');
+  init();
+}
+
+let deferredPrompt;
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault();
+  deferredPrompt = e;
+  if ($('btn-install-desktop')) $('btn-install-desktop').style.display = 'flex';
+});
+
+async function instalarPWA() {
+  if (!deferredPrompt) return;
+  deferredPrompt.prompt();
+  const { outcome } = await deferredPrompt.userChoice;
+  if (outcome === 'accepted') {
+    if ($('btn-install-desktop')) $('btn-install-desktop').style.display = 'none';
+  }
+  deferredPrompt = null;
 }
 
 const AUTO_IMG_BASE_URL = "https://txnecdeccianklqqyrav.supabase.co/storage/v1/object/public/assets/Preguntas/";
