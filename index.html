@@ -1614,6 +1614,34 @@
     </div>
   </header>
 
+  <!-- Navegación Móvil (Movida al inicio para prioridad de carga) -->
+  <nav class="mobile-nav">
+    <a href="javascript:void(0)" class="mobile-nav-item active" id="m-nav-analisis" onclick="switchMainTab('analisis')">
+      <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18M7 16l3-4 4 2 4-6"/></svg>
+      <span>Análisis</span>
+    </a>
+    <a href="javascript:void(0)" class="mobile-nav-item" id="m-nav-individual" onclick="switchMainTab('individual')">
+      <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      <span>Reporte</span>
+    </a>
+    <a href="javascript:void(0)" class="mobile-nav-item" id="m-nav-estadisticas" onclick="switchMainTab('estadisticas')">
+      <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="4" height="10"/><rect x="10" y="3" width="4" height="18"/><rect x="17" y="7" width="4" height="14"/></svg>
+      <span>Dashboard</span>
+    </a>
+    <a href="javascript:void(0)" class="mobile-nav-item" id="m-nav-grupal" onclick="switchMainTab('grupal')">
+      <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+      <span>Grupal</span>
+    </a>
+    <a href="javascript:void(0)" class="mobile-nav-item" id="m-nav-asignatura" onclick="switchMainTab('asignatura')">
+      <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+      <span>Materia</span>
+    </a>
+    <a href="javascript:void(0)" class="mobile-nav-item" style="color:#ef4444;" onclick="logout()">
+      <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+      <span>Salir</span>
+    </a>
+  </nav>
+
   <div class="top-nav-container"
     style="background: white; border-bottom: 2px solid #f1f5f9; padding: 1rem 0; margin-bottom: 1rem;">
     <div class="container" style="display: flex; flex-direction: column; gap: 0.5rem;">
@@ -5913,37 +5941,11 @@
         });
       }
     </script>
-    <nav class="mobile-nav">
-      <a href="javascript:void(0)" class="mobile-nav-item active" id="m-nav-analisis" onclick="switchMainTab('analisis')">
-        <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18M7 16l3-4 4 2 4-6"/></svg>
-        <span>Análisis</span>
-      </a>
-      <a href="javascript:void(0)" class="mobile-nav-item" id="m-nav-individual" onclick="switchMainTab('individual')">
-        <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-        <span>Reporte</span>
-      </a>
-      <a href="javascript:void(0)" class="mobile-nav-item" id="m-nav-estadisticas" onclick="switchMainTab('estadisticas')">
-        <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="4" height="10"/><rect x="10" y="3" width="4" height="18"/><rect x="17" y="7" width="4" height="14"/></svg>
-        <span>Dashboard</span>
-      </a>
-      <a href="javascript:void(0)" class="mobile-nav-item" id="m-nav-grupal" onclick="switchMainTab('grupal')">
-        <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-        <span>Grupal</span>
-      </a>
-      <a href="javascript:void(0)" class="mobile-nav-item" id="m-nav-asignatura" onclick="switchMainTab('asignatura')">
-        <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
-        <span>Materia</span>
-      </a>
-      <a href="javascript:void(0)" class="mobile-nav-item" style="color:#ef4444;" onclick="logout()">
-        <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
-        <span>Salir</span>
-      </a>
-    </nav>
 
 
     <script>
       // LIMPIEZA PROFUNDA DE CACHÉ SI CAMBIA VERSIÓN
-      const CURRENT_APP_VERSION = 'v23';
+      const CURRENT_APP_VERSION = 'v24';
       if (localStorage.getItem('app_version') !== CURRENT_APP_VERSION) {
         if ('serviceWorker' in navigator) {
           navigator.serviceWorker.getRegistrations().then(registrations => {
