@@ -1963,29 +1963,24 @@
     </div>
   </footer>
 
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
+  <script src="./app.js"></script>
+
   <script>
-    const SB_URL = "https://txnecdeccianklqqyrav.supabase.co";
-    const SB_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InR4bmVjZGVjY2lhbmtscXF5cmF2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY0MDQzMDIsImV4cCI6MjA5MTk4MDMwMn0.e2ybyt2Y8yHsZwRC-MZqi_qK525-CWpk-huQcQy-icM";
-    const supabaseClient = supabase.createClient(SB_URL, SB_KEY);
-
-    // Advertencia de entorno local desactivada (producción)
-
     // --- LÓGICA DE INSTALACIÓN PWA ---
     let deferredPrompt;
     window.addEventListener('beforeinstallprompt', (e) => {
-      console.log('✨ PWA: Evento beforeinstallprompt capturado');
       e.preventDefault();
       deferredPrompt = e;
-      
-      // Mostrar todos los botones de instalación disponibles
-      if ($('m-nav-install')) $('m-nav-install').style.setProperty('display', 'flex', 'important');
-      if ($('btn-install-desktop')) $('btn-install-desktop').style.setProperty('display', 'flex', 'important');
+      if (document.getElementById('m-nav-install')) document.getElementById('m-nav-install').style.setProperty('display', 'flex', 'important');
+      if (document.getElementById('btn-install-desktop')) document.getElementById('btn-install-desktop').style.setProperty('display', 'flex', 'important');
     });
 
     window.addEventListener('appinstalled', () => {
-      console.log('✅ PWA: Aplicación instalada correctamente');
-      if ($('m-nav-install')) $('m-nav-install').style.display = 'none';
-      if ($('btn-install-desktop')) $('btn-install-desktop').style.display = 'none';
+      if (document.getElementById('m-nav-install')) document.getElementById('m-nav-install').style.display = 'none';
+      if (document.getElementById('btn-install-desktop')) document.getElementById('btn-install-desktop').style.display = 'none';
       deferredPrompt = null;
     });
 
@@ -1994,74 +1989,17 @@
       deferredPrompt.prompt();
       const { outcome } = await deferredPrompt.userChoice;
       if (outcome === 'accepted') {
-        if ($('m-nav-install')) $('m-nav-install').style.display = 'none';
-        if ($('btn-install-desktop')) $('btn-install-desktop').style.display = 'none';
+        if (document.getElementById('m-nav-install')) document.getElementById('m-nav-install').style.display = 'none';
+        if (document.getElementById('btn-install-desktop')) document.getElementById('btn-install-desktop').style.display = 'none';
       }
       deferredPrompt = null;
     }
 
-    let currentPeriodo = 1;
-    let pendingFiles = []; // Cola de archivos para procesar
+    // El resto de la lógica se maneja en app.js
+  </script>
 
-    // --- LOGICA DE SEDES ---
-    const SEDES_MAP = {
-      'YA': 'Yanaconas',
-      'Y': 'Yanaconas',
-      'PJ': 'Pisoje Bajo',
-      'PU': 'Pueblillo',
-      'SE': 'Sendero',
-      'S': 'Sendero'
-    };
 
-    const MATRIZ_RANGOS = {
-      '3-4': [
-        { start: 1, end: 10, label: 'Matemáticas' },
-        { start: 11, end: 20, label: 'Ciencias Sociales' },
-        { start: 21, end: 30, label: 'Lenguaje' },
-        { start: 31, end: 40, label: 'Biología' },
-        { start: 41, end: 45, label: 'Inglés' }
-      ],
-      '5': [
-        { start: 1, end: 20, label: 'Matemáticas' },
-        { start: 21, end: 40, label: 'Ciencias Sociales' },
-        { start: 41, end: 60, label: 'Lenguaje' },
-        { start: 61, end: 80, label: 'Biología' },
-        { start: 81, end: 90, label: 'Inglés' }
-      ],
-      '6-9': [
-        { start: 1, end: 20, label: 'Matemáticas' },
-        { start: 21, end: 40, label: 'Competencias Ciudadanas' },
-        { start: 41, end: 60, label: 'Ciencias Sociales' },
-        { start: 61, end: 80, label: 'Lenguaje' },
-        { start: 81, end: 100, label: 'Biología' },
-        { start: 101, end: 120, label: 'Inglés' }
-      ],
-      '10-11': [
-        { start: 1, end: 20, label: 'Matemáticas' },
-        { start: 21, end: 30, label: 'Competencias Ciudadanas' },
-        { start: 31, end: 50, label: 'Ciencias Sociales' },
-        { start: 51, end: 70, label: 'Lenguaje' },
-        { start: 71, end: 80, label: 'Biología' },
-        { start: 81, end: 90, label: 'Física' },
-        { start: 91, end: 100, label: 'Química' },
-        { start: 101, end: 120, label: 'Inglés' }
-      ]
-    };
 
-    const getValoration = (p) => {
-      if (p >= 91) return { label: 'Superior', nivel: 'N4', initial: 'S', color: '#7e22ce', icon: '🟣' };
-      if (p >= 71) return { label: 'Alto', nivel: 'N3', initial: 'A', color: '#15803d', icon: '🟢' };
-      if (p >= 51) return { label: 'Básico', nivel: 'N2', initial: 'B', color: '#eab308', icon: '🟡' };
-      return { label: 'Bajo', nivel: 'N1', initial: 'Bj', color: '#b91c1c', icon: '🔴' };
-    };
-
-    function normalizeText(text) {
-      if (!text) return "";
-      return text.toLowerCase()
-        .normalize("NFD")
-        .replace(/[\u0300-\u036f]/g, "")
-        .trim();
-    }
 
     function isSubjectEvaluated(subject, grade) {
       if (!subject) return false;
@@ -5562,343 +5500,43 @@
         // El filtro se aplicará en el CÁLCULO de los promedios de los gráficos.
         // -----------------------------------------------------
 
-        const selM = $('est-sel-grado');
-        selM.innerHTML = gruposUnicos.map(g => `<option value="${g}">${g}</option>`).join('');
+    // Lógica migrada a app.js
+  </script>
+  <nav class="mobile-nav">
+    <a href="javascript:void(0)" class="mobile-nav-item active" id="m-nav-analisis" onclick="switchMainTab('analisis')">
+      <span class="material-symbols-outlined">analytics</span>
+      <span>Análisis</span>
+    </a>
+    <a href="javascript:void(0)" class="mobile-nav-item" id="m-nav-individual" onclick="switchMainTab('individual')">
+      <span class="material-symbols-outlined">person</span>
+      <span>Reporte</span>
+    </a>
+    <a href="javascript:void(0)" class="mobile-nav-item" id="m-nav-estadisticas" onclick="switchMainTab('estadisticas')">
+      <span class="material-symbols-outlined">bar_chart</span>
+      <span>Dashboard</span>
+    </a>
+    <a href="javascript:void(0)" class="mobile-nav-item" id="m-nav-grupal" onclick="switchMainTab('grupal')">
+      <span class="material-symbols-outlined">group</span>
+      <span>Grupal</span>
+    </a>
+    <a href="javascript:void(0)" class="mobile-nav-item" id="m-nav-asignatura" onclick="switchMainTab('asignatura')">
+      <span class="material-symbols-outlined">subject</span>
+      <span>Materia</span>
+    </a>
+    <a href="javascript:void(0)" class="mobile-nav-item" id="m-nav-install" style="display:flex; color:var(--primary);" onclick="instalarPWA()">
+      <span class="material-symbols-outlined">download_for_offline</span>
+      <span>Instalar</span>
+    </a>
+    <a href="javascript:void(0)" class="mobile-nav-item" style="color:#ef4444;" onclick="logout()">
+      <span class="material-symbols-outlined">logout</span>
+      <span>Salir</span>
+    </a>
+  </nav>
 
-        const selC = $('comp-sel-grado');
-        selC.innerHTML = gradosUnicos.map(g => `<option value="${g}">${g}° Grado</option>`).join('');
-
-        // 2. Renderizar Gráfico de Grupos
-        renderizarGraficoGrupos(dataPeriodoActual);
-
-        // 4. Renderizar Detalle de Materias (primer grado por defecto)
-        if (gruposUnicos.length > 0) {
-          actualizarGraficoAsignaturas();
-          actualizarGraficoComparativoGrupos();
-        }
-
-      } catch (e) {
-        console.error("Error cargando estadísticas:", e);
-      }
-      showLoading(false);
-    }
-
-    function renderizarGraficoGrupos(data) {
-      const promedios = {};
-      const isPrivileged = currentRole === 'superadmin' || currentRole === 'admin';
-      const myAsigs = userPermissions.filter(p => p.tipo === 'ASIGNACION').map(p => p.asignatura.toLowerCase());
-      const gBaseAssigned = extraerGradoBase(window.assignedGrade);
-      const esDePrimaria = window.assignedGrade === "Primaria" || (gBaseAssigned >= 1 && gBaseAssigned <= 5);
-
-      data.forEach(d => {
-        let groupLabel = extraerGrupo(d.zipgrade_id);
-        if (!promedios[groupLabel]) promedios[groupLabel] = { suma: 0, cont: 0 };
-
-        if (isPrivileged) {
-          promedios[groupLabel].suma += (d.porcentaje || 0);
-          promedios[groupLabel].cont++;
-        } else {
-          // Docente: Calcular promedio del grupo SOLO con sus materias (Globales)
-          const gBase = extraerGradoBase(groupLabel);
-          let mKey = '6-9';
-          if (gBase <= 4) mKey = '3-4'; else if (gBase === 5) mKey = '5'; else if (gBase >= 10) mKey = '10-11';
-          let configFull = MATRIZ_RANGOS[mKey];
-          let config = configFull;
-
-          const esAccesoTotalPrimaria = esDePrimaria && gBase >= 1 && gBase <= 5;
-          if (!esAccesoTotalPrimaria) {
-            // Filtrar por sus materias globales (si enseña Física, ve Física en todo el colegio)
-            config = configFull.filter(s => {
-              const normS = normalizeText(s.label);
-              return myAsigs.some(a => {
-                const normA = normalizeText(a);
-                return normS.includes(normA) || normA.includes(normS);
-              });
-            });
-          }
-
-          if (config.length > 0) {
-            let sumaStudent = 0;
-            config.forEach(s => {
-              let ok = 0, tot = 0;
-              for (let i = s.start; i <= s.end; i++) {
-                tot++;
-                if (d.respuestas && d.respuestas[i] === 1) ok++;
-              }
-              sumaStudent += (ok / tot) * 100;
-            });
-            promedios[groupLabel].suma += (sumaStudent / config.length);
-            promedios[groupLabel].cont++;
-          }
-        }
-      });
-
-      // Ordenar alfanuméricamente
-      const allLabels = Object.keys(promedios).sort((a, b) => a.localeCompare(b, undefined, { numeric: true, sensitivity: 'base' }));
-      // Filtrar labels que no tengan datos para este usuario (ej: grupos donde no da clase y no es primaria)
-      const labels = allLabels.filter(l => promedios[l].cont > 0);
-      const values = labels.map(l => Math.round(promedios[l].suma / promedios[l].cont));
-
-      const colorsArr = labels.map(l => {
-        const g = extraerGradoBase(l);
-        if (g <= 5) return 'rgba(59, 130, 246, 0.8)'; // Primaria - Azul
-        if (g <= 9) return 'rgba(16, 185, 129, 0.8)'; // Básica - Verde
-        return 'rgba(245, 158, 11, 0.8)'; // Media - Naranja
-      });
-
-      if (chartGrados) chartGrados.destroy();
-      const ctx = $('chart-grados').getContext('2d');
-      chartGrados = new Chart(ctx, {
-        type: 'bar',
-        plugins: [ChartDataLabels],
-        data: {
-          labels: labels,
-          datasets: [{
-            label: 'Promedio %',
-            data: values,
-            backgroundColor: colorsArr,
-            borderColor: colorsArr.map(c => c.replace('0.8', '1')),
-            borderWidth: 2,
-            borderRadius: 10
-          }]
-        },
-        options: {
-          responsive: true, maintainAspectRatio: false,
-          plugins: {
-            legend: { display: false },
-            datalabels: {
-              color: '#fff',
-              anchor: 'center',
-              align: 'center',
-              font: { weight: 'bold', size: 14 },
-              formatter: (v) => v
-            }
-          },
-          scales: {
-            y: { beginAtZero: true, max: 100 },
-            x: { ticks: { font: { weight: 'bold', size: 11 }, autoSkip: false, maxRotation: 45, minRotation: 45 } }
-          }
-        }
-      });
-    }
-
-    async function actualizarGraficoAsignaturas() {
-      const grupo = $('est-sel-grado').value;
-      if (!grupo) return;
-
-      const gNum = extraerGradoBase(grupo);
-      let mKey = '6-9';
-      if (gNum <= 4) mKey = '3-4';
-      else if (gNum === 5) mKey = '5';
-      else if (gNum >= 10) mKey = '10-11';
-      let config = MATRIZ_RANGOS[mKey];
-
-      // --- Filtro de Privacidad: Solo mostrar barras de materias asignadas ---
-      if (currentRole !== 'superadmin' && currentRole !== 'admin') {
-        const gBaseAssigned = extraerGradoBase(window.assignedGrade);
-        const esDePrimaria = window.assignedGrade === "Primaria" || (gBaseAssigned >= 1 && gBaseAssigned <= 5);
-        const gBaseGrupoActual = extraerGradoBase(grupo);
-
-        const isDirectorDeEsteGrupo = window.assignedGrade && window.assignedGrade.toString() === grupo.toString();
-        const esAccesoTotalPrimaria = esDePrimaria && gBaseGrupoActual >= 1 && gBaseGrupoActual <= 5;
-
-        if (!isDirectorDeEsteGrupo && !esAccesoTotalPrimaria) {
-          const myAsigs = userPermissions.filter(p => p.tipo === 'ASIGNACION').map(p => p.asignatura);
-          if (myAsigs.length > 0) {
-            config = config.filter(s => {
-              const normS = normalizeText(s.label);
-              return myAsigs.some(a => {
-                const normA = normalizeText(a);
-                return normS.includes(normA) || normA.includes(normS);
-              });
-            });
-          }
-        } else {
-          console.log("👑 [ACCESO TOTAL] Viendo todas las estadísticas para el grupo:", grupo);
-        }
-      }
-      // -----------------------------------------------------------------------
-
-      const filtrados = dataPeriodoActual.filter(d => extraerGrupo(d.zipgrade_id) === grupo);
-      const materiasStats = config.map(subj => {
-        let sumaPct = 0, totalEst = 0;
-        filtrados.forEach(est => {
-          let ok = 0, totalPreg = 0;
-          for (let i = subj.start; i <= subj.end; i++) {
-            totalPreg++;
-            if (est.respuestas && est.respuestas[i] === 1) ok++;
-          }
-          sumaPct += (ok / totalPreg) * 100;
-          totalEst++;
-        });
-        return { label: subj.label, val: totalEst > 0 ? Math.round(sumaPct / totalEst) : 0 };
-      });
-
-      if (chartMaterias) chartMaterias.destroy();
-      const ctx = $('chart-materias').getContext('2d');
-      const M_COLORS = config.map(c => obtenerColorAsignatura(c.label));
-      chartMaterias = new Chart(ctx, {
-        type: 'bar',
-        plugins: [ChartDataLabels],
-        data: {
-          labels: materiasStats.map(m => m.label),
-          datasets: [{
-            label: 'Promedio por Materia',
-            data: materiasStats.map(m => m.val),
-            backgroundColor: M_COLORS,
-            borderRadius: 10
-          }]
-        },
-        options: {
-          indexAxis: 'y',
-          responsive: true, maintainAspectRatio: false,
-          plugins: {
-            legend: { display: false },
-            datalabels: { color: '#000', anchor: 'end', align: 'right', font: { weight: 'bold' }, formatter: (v) => v }
-          },
-          scales: { x: { beginAtZero: true, max: 100 } }
-        }
-      });
-    }
-
-    async function actualizarGraficoComparativoGrupos() {
-      const gNum = parseInt($('comp-sel-grado').value);
-      if (!gNum) return;
-
-      let mKey = '6-9';
-      if (gNum <= 4) mKey = '3-4';
-      else if (gNum === 5) mKey = '5';
-      else if (gNum >= 10) mKey = '10-11';
-      let config = MATRIZ_RANGOS[mKey];
-
-      // --- Filtro de Privacidad: Solo mostrar materias asignadas ---
-      if (currentRole !== 'superadmin' && currentRole !== 'admin') {
-        const myAsigs = userPermissions.filter(p => p.tipo === 'ASIGNACION').map(p => p.asignatura);
-        if (myAsigs.length > 0) {
-          config = config.filter(s => {
-            const normS = normalizeText(s.label);
-            return myAsigs.some(a => {
-              const normA = normalizeText(a);
-              return normS.includes(normA) || normA.includes(normS);
-            });
-          });
-        }
-      }
-      // -----------------------------------------------------------
-
-      const filtrados = dataPeriodoActual.filter(d => extraerGradoBase(d.grado) === gNum);
-      const gruposDelNivel = [...new Set(filtrados.map(f => extraerGrupo(f.zipgrade_id)))].sort();
-
-      const datasets = gruposDelNivel.map((grupo, idx) => {
-        const colors = ['rgba(79, 70, 229, 0.7)', 'rgba(16, 185, 129, 0.7)', 'rgba(245, 158, 11, 0.7)', 'rgba(239, 68, 68, 0.7)', 'rgba(107, 114, 128, 0.7)'];
-        const dataForGrupo = config.map(subj => {
-          const alumnosGrupo = filtrados.filter(f => extraerGrupo(f.zipgrade_id) === grupo);
-          if (alumnosGrupo.length === 0) return 0;
-
-          let sumaPct = 0;
-          alumnosGrupo.forEach(est => {
-            let ok = 0, totalPreg = 0;
-            for (let i = subj.start; i <= subj.end; i++) {
-              totalPreg++;
-              if (est.respuestas && est.respuestas[i] === 1) ok++;
-            }
-            sumaPct += (ok / totalPreg) * 100;
-          });
-          return Math.round(sumaPct / alumnosGrupo.length);
-        });
-
-        return {
-          label: grupo,
-          data: dataForGrupo,
-          backgroundColor: colors[idx % colors.length],
-          borderRadius: 5
-        };
-      });
-
-      if (chartComparativo) chartComparativo.destroy();
-      const ctx = $('chart-comparativo-grupos').getContext('2d');
-      chartComparativo = new Chart(ctx, {
-        type: 'bar',
-        plugins: [ChartDataLabels],
-        data: {
-          labels: config.map(m => m.label),
-          datasets: datasets
-        },
-        options: {
-          responsive: true, maintainAspectRatio: false,
-          plugins: {
-            legend: { position: 'top' },
-            tooltip: { mode: 'index', intersect: false },
-            datalabels: {
-              labels: {
-                value: {
-                  color: '#fff',
-                  anchor: 'center',
-                  align: 'center',
-                  font: { weight: 'bold', size: 11 },
-                  formatter: (v) => v
-                },
-                group: {
-                  color: '#444',
-                  anchor: 'start',
-                  align: 'bottom',
-                  offset: 8,
-                  font: { weight: 'bold', size: 10 },
-                  formatter: (v, context) => context.dataset.label
-                }
-              }
-            }
-          },
-          scales: {
-            y: { beginAtZero: true, max: 115, title: { display: true, text: 'Promedio' } },
-            x: {
-              grid: { display: false },
-              ticks: {
-                padding: 30,
-                font: { size: 10, weight: 'bold' },
-                maxRotation: 0,
-                minRotation: 0
-              }
-            }
-          }
-        }
-      });
-    }
-
-    checkSession();
+</body>
+</html>
 
 
-
-    // Registrar Service Worker
-    if ('serviceWorker' in navigator) {
-      window.addEventListener('load', () => {
-        navigator.serviceWorker.register('./sw.js').then(reg => {
-          console.log('SW registrado con éxito');
-
-          // Detectar actualizaciones automáticas
-          reg.onupdatefound = () => {
-            const installingWorker = reg.installing;
-            installingWorker.onstatechange = () => {
-              if (installingWorker.state === 'installed' && navigator.serviceWorker.controller) {
-                // Hay una nueva versión. skiptWaiting está en sw.js, 
-                // así que controllerchange se disparará automáticamente.
-                console.log('Nueva versión detectada y aplicada automáticamente.');
-              }
-            };
-          };
-        }).catch(err => {
-          console.log('Registro de SW falló:', err);
-        });
-      });
-
-      let refreshing = false;
-      navigator.serviceWorker.addEventListener('controllerchange', () => {
-        if (!refreshing) {
-          refreshing = true;
-          window.location.reload();
-        }
-      });
-    }
   </script>
   <nav class="mobile-nav">
     <a href="javascript:void(0)" class="mobile-nav-item active" id="m-nav-analisis" onclick="switchMainTab('analisis')">

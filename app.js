@@ -5,7 +5,7 @@
 
 // --- CONFIGURACIÓN Y ESTADO GLOBAL ---
 const SB_URL = "https://txnecdeccianklqqyrav.supabase.co";
-const SB_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InR4bmVjZGVjY2lhbmtscXlyYXYiLCJyb2xlIjoiYW5vbiIsImlhdCI6MTcxNDEwOTM2MiwiZXhwIjoyMDI5Njg1MzYyfQ.1-0_v-O-5_y_o_w_z_x_y_z_w_v_u_t_s_r_q_p_o_n_m_l_k_j_i_h_g_f_e_d_c_b_a";
+const SB_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InR4bmVjZGVjY2lhbmtscXF5cmF2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY0MDQzMDIsImV4cCI6MjA5MTk4MDMwMn0.e2ybyt2Y8yHsZwRC-MZqi_qK525-CWpk-huQcQy-icM";
 
 let supabaseClient;
 if (typeof supabase !== 'undefined') {
@@ -32,38 +32,64 @@ let isStudentMode = false;
 // --- MATRIZ DE RANGOS 2026 ---
 const MATRIZ_RANGOS = {
   '3-4': [
-    { label: 'Matemáticas', start: 1, end: 15 },
-    { label: 'Lenguaje', start: 16, end: 30 }
+    { start: 1, end: 10, label: 'Matemáticas' },
+    { start: 11, end: 20, label: 'Ciencias Sociales' },
+    { start: 21, end: 30, label: 'Lenguaje' },
+    { start: 31, end: 40, label: 'Biología' },
+    { start: 41, end: 45, label: 'Inglés' }
   ],
   '5': [
-    { label: 'Matemáticas', start: 1, end: 15 },
-    { label: 'Lenguaje', start: 16, end: 30 },
-    { label: 'Ciencias Naturales', start: 31, end: 45 },
-    { label: 'Competencias Ciudadanas', start: 46, end: 60 }
+    { start: 1, end: 20, label: 'Matemáticas' },
+    { start: 21, end: 40, label: 'Ciencias Sociales' },
+    { start: 41, end: 60, label: 'Lenguaje' },
+    { start: 61, end: 80, label: 'Biología' },
+    { start: 81, end: 90, label: 'Inglés' }
   ],
   '6-9': [
-    { label: 'Matemáticas', start: 1, end: 20 },
-    { label: 'Lenguaje', start: 21, end: 40 },
-    { label: 'Ciencias Naturales', start: 41, end: 60 },
-    { label: 'Ciencias Sociales', start: 61, end: 80 },
-    { label: 'Competencias Ciudadanas', start: 81, end: 100 },
-    { label: 'Inglés', start: 101, end: 120 }
+    { start: 1, end: 20, label: 'Matemáticas' },
+    { start: 21, end: 40, label: 'Competencias Ciudadanas' },
+    { start: 41, end: 60, label: 'Ciencias Sociales' },
+    { start: 61, end: 80, label: 'Lenguaje' },
+    { start: 81, end: 100, label: 'Biología' },
+    { start: 101, end: 120, label: 'Inglés' }
   ],
   '10-11': [
-    { label: 'Matemáticas', start: 1, end: 25 },
-    { label: 'Lectura Crítica', start: 26, end: 50 },
-    { label: 'Sociales y Ciudadanas', start: 51, end: 75 },
-    { label: 'Ciencias Naturales', start: 76, end: 100 },
-    { label: 'Inglés', start: 101, end: 120 }
+    { start: 1, end: 20, label: 'Matemáticas' },
+    { start: 21, end: 30, label: 'Competencias Ciudadanas' },
+    { start: 31, end: 50, label: 'Ciencias Sociales' },
+    { start: 51, end: 70, label: 'Lenguaje' },
+    { start: 71, end: 80, label: 'Biología' },
+    { start: 81, end: 90, label: 'Física' },
+    { start: 91, end: 100, label: 'Química' },
+    { start: 101, end: 120, label: 'Inglés' }
   ]
 };
 
 // --- UTILIDADES ---
-function normalizeText(str) {
-  return (str || "").toString()
-    .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
-    .replace(/^\ufeff/, "")
-    .trim().toLowerCase();
+function extraerGradoBase(grado) {
+  if (!grado) return 0;
+  const match = grado.toString().match(/^(\d+)/);
+  return match ? parseInt(match[1]) : 0;
+}
+
+function extraerGrupo(zipId) {
+  if (!zipId) return "";
+  const parts = zipId.split('-');
+  return parts[0] || "";
+}
+
+function getValoration(p) {
+  if (p >= 91) return { label: 'Superior', nivel: 'N4', color: '#7e22ce', initial: 'S' };
+  if (p >= 71) return { label: 'Alto', nivel: 'N3', color: '#15803d', initial: 'A' };
+  if (p >= 51) return { label: 'Básico', nivel: 'N2', color: '#b45309', initial: 'B' };
+  return { label: 'Bajo', nivel: 'N1', color: '#b91c1c', initial: 'Bj' };
+}
+function normalizeText(text) {
+  if (!text) return "";
+  return text.toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .trim();
 }
 
 function triggerMath() {
@@ -72,71 +98,134 @@ function triggerMath() {
   }
 }
 
-function getValoration(p) {
-  if (p >= 91) return { label: 'Superior', nivel: 'N4', color: '#7e22ce', initial: 'S' };
-  if (p >= 71) return { label: 'Alto', nivel: 'N3', color: '#15803d', initial: 'A' };
-  if (p >= 51) return { label: 'Básico', nivel: 'N2', color: '#b45309', initial: 'Bs' };
-  return { label: 'Bajo', nivel: 'N1', color: '#b91c1c', initial: 'Bj' };
-}
+function isSubjectEvaluated(subject, grade) {
+  if (!subject) return false;
+  const gNum = extraerGradoBase(grade);
 
-function extraerGrupo(zipId) {
-  if (!zipId) return "";
-  const parts = zipId.split('-');
-  return parts.length > 0 ? parts[0].toUpperCase() : "";
-}
+  const normTarget = normalizeText(subject);
+  if (gNum >= 6 && (normTarget.includes("fisica") || normTarget.includes("quimica"))) {
+    return true;
+  }
 
-function extraerGradoBase(grupo) {
-  if (!grupo) return 0;
-  const match = grupo.toString().match(/^(\d+)/);
-  return match ? parseInt(match[1]) : 0;
-}
-
-function detectarSede(grupo) {
-  const g = (grupo || "").toString().toUpperCase();
-  if (g.includes("YA") || g.includes("PJ")) return "Yanaconas";
-  if (g.includes("SE")) return "Sendero";
-  return "Central";
-}
-
-function detectarPeriodo(text) {
-  const t = text.toUpperCase();
-  if (t.includes("E2") || t.includes("P2") || t.includes("PERIODO 2")) return 2;
-  if (t.includes("EF") || t.includes("P3") || t.includes("PERIODO 3") || t.includes("FINAL")) return 3;
-  return 1;
-}
-
-function checkSubjectPermission(myAsigs, targetAsig, grado) {
-  const normTarget = normalizeText(targetAsig);
-  return myAsigs.some(a => {
-    const normA = normalizeText(a);
-    if (normTarget.includes("naturales") && (normA.includes("biologia") || normA.includes("fisica") || normA.includes("quimica"))) return true;
-    if (normTarget.includes("biologia") && normA.includes("naturales")) return true;
-    if (normTarget.includes("sociales") && normA.includes("ciudadanas")) return true;
-    if (normTarget.includes("ciudadanas") && normA.includes("sociales")) return true;
-    return normTarget.includes(normA) || normA.includes(normTarget);
-  });
-}
-
-function isSubjectEvaluated(asignatura, grado) {
-  const gNum = extraerGradoBase(grado);
   let mKey = '6-9';
-  if (gNum <= 4) mKey = '3-4'; else if (gNum === 5) mKey = '5'; else if (gNum >= 10) mKey = '10-11';
+  if (gNum <= 4) mKey = '3-4';
+  else if (gNum === 5) mKey = '5';
+  else if (gNum >= 10) mKey = '10-11';
+
   const config = MATRIZ_RANGOS[mKey];
-  const normAsig = normalizeText(asignatura);
   return config.some(c => {
-    const normC = normalizeText(c.label);
-    return normAsig.includes(normC) || normC.includes(normAsig);
+    const normLabel = normalizeText(c.label);
+    if ((normTarget.includes("naturales") || normTarget.includes("biologia") || normTarget.includes("fisica") || normTarget.includes("quimica")) &&
+      (normLabel.includes("naturales") || normLabel.includes("biologia") || normLabel.includes("fisica") || normLabel.includes("quimica"))) return true;
+
+    return normLabel.includes(normTarget) || normTarget.includes(normLabel);
   });
 }
 
-function obtenerColorAsignatura(name) {
-  const n = normalizeText(name);
-  if (n.includes('mat')) return '#3b82f6';
-  if (n.includes('leng') || n.includes('lect')) return '#ef4444';
-  if (n.includes('ciud') || n.includes('soci')) return '#f59e0b';
-  if (n.includes('naturales') || n.includes('bio') || n.includes('qui') || n.includes('fis')) return '#10b981';
-  if (n.includes('ingl')) return '#8b5cf6';
-  return '#6366f1';
+function checkSubjectPermission(allowedAsigs, targetAsig, gBase) {
+  if (!allowedAsigs || allowedAsigs.length === 0) return false;
+  const subTerms = ["biologia", "fisica", "quimica"];
+  const natTerms = ["ciencias naturales", "naturales"];
+  const t = normalizeText(targetAsig);
+
+  return allowedAsigs.some(perm => {
+    const p = normalizeText(perm);
+    if (!p) return false;
+
+    const isP_Nat = natTerms.some(term => p.includes(term));
+    const isT_Nat = natTerms.some(term => t.includes(term));
+    const isP_Sub = subTerms.some(term => p.includes(term));
+    const isT_Sub = subTerms.some(term => t.includes(term));
+
+    if (gBase < 6) {
+      if ((isT_Nat || t.includes("biologia")) && (isP_Nat || isP_Sub)) return true;
+    } else {
+      if ((isT_Sub || isT_Nat || t.includes("biologia")) && (isP_Nat || isP_Sub)) return true;
+    }
+
+    if (t.includes(p) || p.includes(t)) return true;
+
+    try {
+      const regex = new RegExp(`\\b${p}\\b`, 'i');
+      return regex.test(t);
+    } catch (e) { return false; }
+  });
+}
+
+function detectarSede(gradoStr) {
+  if (!gradoStr) return 'Central';
+  const clean = gradoStr.toString().trim().toUpperCase();
+
+  if (clean.includes('YANACONA') || clean.includes('YANACONS')) return 'Yanaconas';
+  if (clean.includes('PUEBLILLO')) return 'Pueblillo';
+  if (clean.includes('SENDERO')) return 'Sendero';
+  if (clean.includes('PISOJE')) return 'Pisoje Bajo';
+
+  if (clean.endsWith('PU')) return 'Pueblillo';
+  if (clean.endsWith('PJ')) return 'Pisoje Bajo';
+  if (clean.endsWith('YA') || clean.endsWith('Y')) return 'Yanaconas';
+  if (clean.endsWith('SE') || (clean.endsWith('S') && clean.length <= 3)) return 'Sendero';
+
+  const match = clean.match(/\d+$/);
+  if (match) {
+    const lastDigit = match[0].slice(-1);
+    if (lastDigit === '4') return 'Pisoje Bajo';
+    if (lastDigit === '5') return 'Yanaconas';
+    if (lastDigit === '6') return 'Sendero';
+    if (lastDigit === '7') return 'Pueblillo';
+  }
+
+  return 'Central';
+}
+
+function detectarPeriodo(quizName) {
+  if (!quizName) return parseInt(currentPeriodo) || 1;
+  const name = quizName.toString().toUpperCase();
+
+  if (/(?:1P|P1|PERIODO\s*1|[ _\-]1(?!\d))/i.test(name)) return 1;
+  if (/(?:2P|P2|PERIODO\s*2|[ _\-]2(?!\d))/i.test(name)) return 2;
+  if (/(?:3P|P3|PERIODO\s*3|[ _\-]3(?!\d)|FINAL|FIN)/i.test(name)) return 3;
+
+  if (name.includes("EVALUANDONOS")) {
+    if (/\b1\b/.test(name)) return 1;
+    if (/\b2\b/.test(name)) return 2;
+    if (/\b3\b/.test(name)) return 3;
+  }
+
+  return parseInt(currentPeriodo) || 1;
+}
+
+const ASIGNATURA_COLORES = {
+  "MATEMATICAS": "#2563eb",
+  "CIENCIAS NATURALES": "#059669",
+  "BIOLOGIA": "#059669",
+  "QUIMICA": "#f59e0b",
+  "FISICA": "#ef4444",
+  "LENGUAJE": "#d946ef",
+  "LECTURA CRITICA": "#8b5cf6",
+  "CIENCIAS SOCIALES": "#7c3aed",
+  "COMPETENCIAS CIUDADANAS": "#ca8a04",
+  "INGLES": "#06b6d4",
+  "FILOSOFIA": "#6366f1",
+  "ETICA": "#84cc16"
+};
+
+function obtenerColorAsignatura(nombre) {
+  if (!nombre) return "#cbd5e1";
+  const normalizado = nombre.toString()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toUpperCase()
+    .trim();
+
+  if (normalizado.includes("COMPETENCIAS")) return ASIGNATURA_COLORES["COMPETENCIAS CIUDADANAS"];
+  if (normalizado.includes("SOCIALES")) return ASIGNATURA_COLORES["CIENCIAS SOCIALES"];
+  if (normalizado.includes("LECTURA")) return ASIGNATURA_COLORES["LECTURA CRITICA"];
+  if (normalizado.includes("MATEMATICA")) return ASIGNATURA_COLORES["MATEMATICAS"];
+  if (normalizado.includes("NATURALES")) return ASIGNATURA_COLORES["CIENCIAS NATURALES"];
+  if (normalizado.includes("BIOLOGIA")) return ASIGNATURA_COLORES["BIOLOGIA"];
+
+  return ASIGNATURA_COLORES[normalizado] || "#94a3b8";
 }
 
 // --- AUTENTICACIÓN ---
@@ -151,24 +240,112 @@ async function checkSession() {
 }
 
 async function login() {
-  const email = $('email').value.trim();
-  const pass = $('password').value;
-  if (!email || !pass) return alert("Por favor ingresa correo y contraseña.");
+  const userVal = $('li-user').value.trim();
+  const pass = $('li-pass').value;
+  const btn = $('btn-login');
+  const err = $('login-err');
+  if (!userVal || !pass) return alert("Completa los datos");
 
-  showLoading(true);
-  const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password: pass });
-  if (error) {
-    alert("Error de acceso: " + error.message);
-    showLoading(false);
-  } else {
-    currentUser = data.user;
-    await loadUserProfile(data.user.id);
+  if (err) err.style.display = 'none';
+  btn.disabled = true; btn.innerText = "Verificando...";
+
+  try {
+    const email = userVal.includes('@') ? userVal : `${userVal}@andresan.com`;
+    const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password: pass });
+    if (error) {
+      if (err) { err.innerText = "Usuario o contraseña incorrectos"; err.style.display = 'block'; }
+      btn.disabled = false; btn.innerText = "Ingresar";
+    } else {
+      loguearExitoso(data.user);
+    }
+  } catch (e) {
+    console.error(e);
+    if (err) { err.innerText = "Error de conexión"; err.style.display = 'block'; }
+    btn.disabled = false; btn.innerText = "Ingresar";
   }
 }
 
 async function logout() {
+  localStorage.removeItem('studentId');
+  localStorage.removeItem('studentName');
   await supabaseClient.auth.signOut();
   location.reload();
+}
+
+async function loguearExitoso(user) {
+  if (!user) return;
+  currentUser = user;
+  localStorage.removeItem('studentId');
+  localStorage.removeItem('studentName');
+
+  if ($('login-mask')) $('login-mask').style.display = 'none';
+  if ($('loading')) $('loading').style.display = 'none';
+
+  try {
+    const { data: perfil } = await supabaseClient.from('perfiles').select('rol, nombre, grado_asignado').eq('email', user.email).maybeSingle();
+    const userName = perfil?.nombre || user.email.split('@')[0];
+    const assignedGrade = perfil?.grado_asignado || "";
+    let role = (perfil && perfil.rol) ? perfil.rol.toLowerCase() : 'lector';
+
+    const { data: privData } = await supabaseClient.from('docentes_privacidad').select('*').ilike('nombre', `%${userName.trim()}%`);
+    userPermissions = privData || [];
+    
+    if (userPermissions.length > 0) userSede = userPermissions[0].sede;
+    else userSede = assignedGrade ? detectarSede(assignedGrade) : 'Central';
+
+    const sedesRurales = ['PUEBLILLO', 'SENDERO', 'YANACONAS', 'PISOJE BAJO'];
+    if (sedesRurales.includes(userSede.toUpperCase())) {
+      role = 'admin';
+      window.userSede = detectarSede(userSede);
+    } else {
+      window.userSede = userSede;
+    }
+    currentRole = role;
+    window.assignedGrade = assignedGrade;
+
+    if (currentRole === 'admin' || currentRole === 'superadmin') document.body.classList.add('is-admin');
+    else document.body.classList.remove('is-admin');
+
+    if ($('user-badge')) $('user-badge').style.display = 'flex';
+    if ($('user-nombre')) $('user-nombre').innerText = userName;
+    if ($('user-avatar')) $('user-avatar').innerText = userName.charAt(0).toUpperCase();
+
+    if (currentRole !== 'superadmin') {
+      const style = document.createElement('style');
+      style.innerHTML = "#sel-sede, #rep-sede { display: none !important; }";
+      document.head.appendChild(style);
+    }
+  } catch (e) { console.error(e); }
+  init();
+}
+
+async function intentarLoginEstudiante() {
+  const nombre = $('li-st-name').value.trim();
+  const id = $('li-st-id').value.trim();
+  if (!nombre || !id) return alert("Ingresa nombre y código");
+  showLoading(true);
+  const { data } = await supabaseClient.from('eval_estudiantes_notas').select('estudiante_nombre, zipgrade_id').ilike('estudiante_nombre', `%${nombre}%`).eq('zipgrade_id', id).maybeSingle();
+  if (data) {
+    localStorage.setItem('studentId', id);
+    localStorage.setItem('studentName', data.estudiante_nombre);
+    loguearExitosoEstudiante(data.estudiante_nombre, id);
+  } else {
+    alert("No se encontró el estudiante.");
+    showLoading(false);
+  }
+}
+
+function loguearExitosoEstudiante(nombre, id) {
+  if ($('login-mask')) $('login-mask').style.display = 'none';
+  currentUser = { email: 'estudiante@liceo.edu', isStudent: true };
+  currentRole = 'estudiante';
+  isStudentMode = true;
+  if ($('user-badge')) $('user-badge').style.display = 'flex';
+  if ($('user-nombre')) $('user-nombre').innerText = nombre;
+  if ($('st-display-name')) $('st-display-name').innerText = nombre;
+  document.body.classList.add('is-student');
+  switchMainTab('individual');
+  setTimeout(() => generarReporteIndividual(id), 800);
 }
 
 async function loadUserProfile(userId) {
@@ -211,28 +388,88 @@ function showLogin(show) {
 }
 
 // --- NAVEGACIÓN ---
-function switchMainTab(tabId) {
-  const tabs = document.querySelectorAll('.tab-content');
-  const navItems = document.querySelectorAll('.mobile-nav-item');
+async function switchMainTab(tab) {
+  showLoading(true);
+  try {
+    const [resG, resD] = await Promise.all([
+      supabaseClient.from('eval_resultados').select('grado').eq('periodo', currentPeriodo),
+      supabaseClient.from('eval_estudiantes_notas').select('*').eq('periodo', currentPeriodo)
+    ]);
 
-  tabs.forEach(t => t.classList.remove('active'));
-  navItems.forEach(n => n.classList.remove('active'));
+    let rawData = resD.data || [];
+    dataPeriodoActual = rawData;
 
-  const activeTab = $(`tab-${tabId}`);
-  if (activeTab) activeTab.classList.add('active');
+    await cargarGrados(true);
+  } catch (e) { console.error("Error en auto-refresco:", e); }
+  showLoading(false);
 
-  const activeNav = $(`m-nav-${tabId}`);
-  if (activeNav) activeNav.classList.add('active');
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  const informesParent = $('tab-informes-parent');
+  if (informesParent) informesParent.classList.remove('active');
 
-  isEnPestañaGrupal = (tabId === 'grupal');
+  if (['individual', 'grupal', 'asignatura'].includes(tab)) {
+    if (informesParent) informesParent.classList.add('active');
+  } else {
+    const activeBtn = $(`tab-${tab}`);
+    if (activeBtn) activeBtn.classList.add('active');
+  }
 
-  if (tabId === 'analisis') cargarGrados();
-  if (tabId === 'individual') cargarGradosReporte();
-  if (tabId === 'estadisticas') cargarEstadisticas();
-  if (tabId === 'grupal') cargarGruposInformeGrupal();
-  if (tabId === 'asignatura') cargarGruposInformeAsignatura();
+  const tabs = {
+    'analisis': ['resultado-container', 'filtros-container'],
+    'individual': ['individual-container'],
+    'estadisticas': ['estadisticas-container'],
+    'grupal': ['grupal-container'],
+    'asignatura': ['asignatura-container']
+  };
+
+  ['resultado-container', 'filtros-container', 'individual-container', 'estadisticas-container', 'grupal-container', 'asignatura-container'].forEach(id => {
+    const el = $(id);
+    if (el) el.style.display = 'none';
+  });
+
+  if (tabs[tab]) {
+    tabs[tab].forEach(id => {
+      const el = $(id);
+      if (el) el.style.display = 'block';
+    });
+  }
+
+  if (['individual', 'grupal', 'asignatura'].includes(tab)) {
+    document.body.classList.add('blurred-bg');
+  } else {
+    document.body.classList.remove('blurred-bg');
+  }
+
+  if (tab === 'individual') cargarGradosReporte();
+  if (tab === 'estadisticas') cargarEstadisticas();
+  if (tab === 'grupal') cargarGruposInformeGrupal();
+  if (tab === 'asignatura') {
+    cargarGruposInformeAsignatura();
+    filtrarMateriasEstaticas();
+  }
+  if (tab === 'analisis' && $('sel-grado').value && $('sel-pregunta').value) mostrarAnalisis();
+
+  document.querySelectorAll('.mobile-nav-item').forEach(i => i.classList.remove('active'));
+  const mobTab = $(`m-nav-${tab}`);
+  if (mobTab) mobTab.classList.add('active');
 
   window.scrollTo(0, 0);
+}
+
+function toggleAdmin() {
+  const modal = $('admin-modal');
+  const isOpening = modal.style.display !== 'flex';
+  modal.style.display = isOpening ? 'flex' : 'none';
+  if (isOpening) {
+    cargarGradosAdminSelects();
+  }
+}
+
+function filtrarMateriasEstaticas() {
+  const sel = $('asig-sel-materia');
+  if (!sel) return;
+  const options = sel.querySelectorAll('option');
+  options.forEach(opt => opt.style.display = 'block');
 }
 
 // --- LÓGICA DE APLICACIÓN ---
@@ -272,6 +509,109 @@ function obtenerUrlPredictiva(grado, materia, num, opcion = "", index = 1) {
   const fileName = `${num}${cod}${gNum}${opcion.toUpperCase()}${suffix}.png`;
 
   return `${AUTO_IMG_BASE_URL}${anio}/${examen}/${fileName}`;
+}
+
+function renderMedia(content, elementId, asig, num, opcion, grado) {
+  const textElem = $(elementId);
+  if (!textElem) return;
+  if (!content) {
+    textElem.innerHTML = "";
+    return;
+  }
+
+  const parts = content.split(/(\|\|\||\/\/)/);
+  textElem.innerHTML = "";
+  let combinedHtml = "";
+  let imageCounter = 0;
+
+  const INSTRUCCION_COLORS = [
+    { bg: '#eff6ff', border: '#3b82f6', text: '#1e40af' },
+    { bg: '#f0fdf4', border: '#22c55e', text: '#14532d' },
+    { bg: '#fff7ed', border: '#f97316', text: '#7c2d12' },
+    { bg: '#fdf4ff', border: '#a855f7', text: '#581c87' },
+    { bg: '#fef9c3', border: '#eab308', text: '#713f12' },
+  ];
+  const INSTRUCCION_PREFIXES = [
+    /^\s*(responde|responda|resuelve|resolvé|resolver|lea|lee|leer|observa|analiza|mira|de acuerdo|según|a partir|con base|la siguiente|el siguiente|para (los|las|la|el)|enunciado|contexto|instrucción|tenga en cuenta|atención|contesta|conteste|contesté|ejercicio|problema)/i
+  ];
+  let instruccionColorIdx = 0;
+
+  parts.forEach((part, index) => {
+    const isEven = (index % 2 === 0);
+    const contentPart = part.trim();
+
+    if (isEven) {
+      if (contentPart) {
+        const isInstruccion = INSTRUCCION_PREFIXES.some(rx => rx.test(contentPart));
+        const formattedContent = contentPart.replace(/\n/g, '<br>');
+        if (isInstruccion) {
+          const c = INSTRUCCION_COLORS[instruccionColorIdx % INSTRUCCION_COLORS.length];
+          instruccionColorIdx++;
+          combinedHtml += `<div style="margin-bottom:10px; padding:10px 14px; background:${c.bg}; border-left:4px solid ${c.border}; border-radius:8px; color:${c.text}; font-weight:600; font-size:0.95em;">${formattedContent}</div>`;
+        } else {
+          combinedHtml += `<div style="margin-bottom:10px;">${formattedContent}</div>`;
+        }
+      }
+    } else {
+      imageCounter++;
+      let imgUrl = contentPart;
+      if (!imgUrl.toLowerCase().startsWith("http")) {
+        imgUrl = obtenerUrlPredictiva(grado, asig, num, opcion, imageCounter);
+      }
+      if (imgUrl) {
+        combinedHtml += `
+          <div style="display:flex; flex-direction:column; gap:8px; align-items:center; width:100%; margin: 15px 0;">
+            <img src="${imgUrl}" 
+                 style="max-width:100%; border-radius:12px; border:1px solid #e2e8f0; box-shadow: 0 4px 10px rgba(0,0,0,0.05);" 
+                 title="Imagen ${imageCounter}"
+                 onerror="this.style.display='none';">
+          </div>`;
+      }
+    }
+  });
+
+  textElem.innerHTML = combinedHtml;
+  triggerMath();
+}
+
+function updateChart(counts, key) {
+  if (myChart) myChart.destroy();
+  const barCanvas = $('barChart');
+  if (!barCanvas) return;
+  const ctx = barCanvas.getContext('2d');
+  const labels = ['A', 'B', 'C', 'D'];
+  const colors = labels.map(o => o === key ? '#10b981' : '#6366f1');
+
+  myChart = new Chart(ctx, {
+    type: 'bar',
+    plugins: [ChartDataLabels],
+    data: {
+      labels: labels,
+      datasets: [{
+        label: 'Respuestas',
+        data: counts,
+        backgroundColor: colors,
+        borderRadius: 8
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        datalabels: {
+          color: '#1e293b', font: { weight: 'bold', size: 16 },
+          anchor: 'end', align: 'top',
+          formatter: (v) => v > 0 ? v : ''
+        }
+      },
+      layout: { padding: { top: 25 } },
+      scales: {
+        y: { beginAtZero: true, ticks: { precision: 0 }, grid: { display: false } },
+        x: { grid: { display: false } }
+      }
+    }
+  });
 }
 
 async function cargarGrados(silent = false) {
@@ -467,7 +807,11 @@ async function mostrarAnalisis() {
     };
 
     $('pregunta-display-num').innerText = `Pregunta #${n} - ${a}`;
-    renderMedia('pregunta-texto', 'pregunta-media', mapping.texto_pregunta, g, a, n);
+    renderMedia(mapping.texto_pregunta, 'pregunta-text', a, n, "", g);
+    renderMedia(mapping.opcion_a, 'opt-a-text', a, n, "a", g);
+    renderMedia(mapping.opcion_b, 'opt-b-text', a, n, "b", g);
+    renderMedia(mapping.opcion_c, 'opt-c-text', a, n, "c", g);
+    renderMedia(mapping.opcion_d, 'opt-d-text', a, n, "d", g);
 
     const labels = ["opcion_a", "opcion_b", "opcion_c", "opcion_d"];
     const opts = ["A", "B", "C", "D"];
@@ -943,28 +1287,422 @@ async function generarReporteIndividual(forcedId) {
   showLoading(false);
 }
 
-// ... Resto de funciones (imprimirTodoElGrado, generarInformeGrupal, etc.) se omiten por espacio, pero deben estar aquí.
-// Aquí iría el resto de la lógica de reportes y estadísticas.
+function construirHTMLBoletin(est, puesto, total, puestosMaterias, config, historico = [], puestoNivel = null, totalNivel = null) {
+  const curP = parseInt(est.periodo) || 1;
+  const gBase = extraerGradoBase(extraerGrupo(est.zipgrade_id));
+  const histMaterias = {};
+  historico.forEach(h => {
+    if (h.periodo >= curP) return;
+    config.forEach(subj => {
+      let ok = 0;
+      for (let i = subj.start; i <= subj.end; i++) if (h.respuestas && h.respuestas[i] === 1) ok++;
+      const pct = Math.round((ok / (subj.end - subj.start + 1)) * 100);
+      if (!histMaterias[subj.label]) histMaterias[subj.label] = {};
+      histMaterias[subj.label][h.periodo] = pct;
+    });
+  });
+
+  const roundedPct = Math.round(est.porcentaje || 0);
+  const general = getValoration(roundedPct);
+  const materias = config.map(subj => {
+    let ok = 0, totalSub = 0;
+    for (let i = subj.start; i <= subj.end; i++) { totalSub++; if (est.respuestas && est.respuestas[i] === 1) ok++; }
+    const pct = Math.round((ok / totalSub) * 100);
+    const val = getValoration(pct);
+    const label = subj.label.toUpperCase();
+    let iconSubject = '📝';
+    if (label.includes('MAT')) iconSubject = '🧮';
+    else if (label.includes('LENG') || label.includes('LECTOR')) iconSubject = '📖';
+    else if (label.includes('CIUD')) iconSubject = '🤝';
+    else if (label.includes('SOC')) iconSubject = '🏛️';
+    else if (label.includes('BIO')) iconSubject = '🧬';
+    else if (label.includes('QUI')) iconSubject = '🧪';
+    else if (label.includes('FÍS')) iconSubject = '⚛️';
+    else if (label.includes('ING')) iconSubject = '🗣️';
+    else if (label.includes('NAT')) iconSubject = '🔬';
+
+    return { name: subj.label, ok, total: totalSub, pct, val, icon: iconSubject, puesto: puestosMaterias[subj.label], hist: histMaterias[subj.label] || {} };
+  });
+
+  const logoLiceo = "https://txnecdeccianklqqyrav.supabase.co/storage/v1/object/public/assets/logo%20solo%20copia.png";
+  const logoEvaluandonos = "https://txnecdeccianklqqyrav.supabase.co/storage/v1/object/public/assets/evaluandonos.png";
+  const logoEscudo = "https://txnecdeccianklqqyrav.supabase.co/storage/v1/object/public/assets/Escudo%20liceo.png";
+
+  return `
+    <div class="report-card" style="font-family:'Outfit', sans-serif; color:#1e293b; line-height:1.15; padding:12px; border:1px solid #e2e8f0; border-radius:10px; background:#fff; width:100%; max-width:820px; margin: 0 auto; box-sizing:border-box;">
+      <div class="header-print-info" style="border: 1px solid #cbd5e1; border-radius: 12px; padding: 4px 12px; margin-bottom: 5px;">
+        <div style="display:grid; grid-template-columns: 80px 1fr 80px; align-items:center; gap: 5px;">
+          <img src="${logoLiceo}" style="height:40px; object-fit:contain;">
+          <div style="text-align:center;">
+            <h1 style="margin:0; font-size:1.1rem; color:#16a34a; font-weight:900; text-transform:uppercase;">I.E. Liceo Alejandro de Humboldt</h1>
+            <img src="${logoEvaluandonos}" style="height:50px;">
+          </div>
+          <img src="${logoEscudo}" style="height:40px; object-fit:contain;">
+        </div>
+      </div>
+      <div style="border:1px solid #cbd5e1; border-radius:8px; padding:2px 10px; margin-bottom:5px; background:#f8fafc; display:flex; justify-content:space-between; font-size:0.9rem; font-weight:800;">
+        <div>ESTUDIANTE: <span style="color:#1e293b;">${est.estudiante_nombre}</span></div>
+        <div>GRADO: <span style="color:#1e293b;">${extraerGrupo(est.zipgrade_id)}°</span></div>
+      </div>
+      <div style="display:grid; grid-template-columns: 1.15fr 0.85fr; gap:8px; margin-bottom:5px;">
+         <div style="border:1px solid #2563eb; border-radius:12px; padding:6px 10px; display:flex; justify-content:space-around; align-items:center;">
+            <div>
+               <h4 style="margin:0; color:#2563eb; font-size:0.8rem; text-transform:uppercase;">Resultado general</h4>
+               <span style="font-weight:900; color:#2563eb; font-size:1.5rem;">${roundedPct}</span>/100
+               <div style="font-weight:900; color:#f97316;">${general.nivel}</div>
+            </div>
+            <div style="display:flex; gap:6px;">
+               <div style="border:2px solid #2563eb; border-radius:8px; padding:4px 8px; text-align:center;">
+                  <div style="font-size:0.55rem; font-weight:900; color:#3b82f6;">Puesto Grupo</div>
+                  <span style="font-size:1.4rem; font-weight:900; color:#ef4444;">${puesto}</span>/${total}
+               </div>
+            </div>
+         </div>
+      </div>
+      <table style="width:100%; border-collapse:collapse; font-size:0.75rem;">
+        <thead><tr style="background:#f8fafc;"><th style="text-align:left;">ASIGNATURA</th><th>PUNTAJE</th><th>NIVEL</th><th>PUESTO</th></tr></thead>
+        <tbody>
+          ${materias.map(m => `
+            <tr style="border-bottom:1px solid #f1f5f9;">
+              <td style="padding:4px;">${m.icon} ${m.name}</td>
+              <td style="text-align:center; font-weight:900;">${m.pct}</td>
+              <td style="text-align:center;">${m.val.nivel}</td>
+              <td style="text-align:center;">${m.puesto}</td>
+            </tr>
+          `).join('')}
+        </tbody>
+      </table>
+      ${historico.length > 1 ? `<div style="height:60px;"><canvas id="chart-tendencia-${est.zipgrade_id}"></canvas></div>` : ''}
+    </div>
+  `;
+}
+
+function renderizarGraficoTendencia(historico) {
+  if (!historico || historico.length < 1) return;
+  const est = historico[0];
+  const canvas = document.getElementById(`chart-tendencia-${est.zipgrade_id}`);
+  if (!canvas) return;
+  const curP = parseInt(currentPeriodo) || 1;
+  const hist = historico.filter(h => h.periodo <= curP).sort((a, b) => a.periodo - b.periodo);
+  new Chart(canvas, {
+    type: 'line',
+    data: {
+      labels: hist.map(h => 'E' + h.periodo),
+      datasets: [{ data: hist.map(h => Math.round(h.porcentaje)), borderColor: '#4f46e5', tension: 0.3, fill: true }]
+    },
+    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
+  });
+}
+
+async function generarInformeGrupal() {
+  const grupo = $('gru-sel-grado').value;
+  if (!grupo) return;
+  showLoading(true);
+  try {
+    const { data: todosData } = await supabaseClient.from('eval_estudiantes_notas').select('*').eq('periodo', currentPeriodo);
+    const alumnosGrupo = (todosData || []).filter(t => extraerGrupo(t.zipgrade_id) === grupo).sort((a, b) => a.estudiante_nombre.localeCompare(b.estudiante_nombre));
+    if (alumnosGrupo.length === 0) { $('grupal-content').innerHTML = "No hay datos."; showLoading(false); return; }
+
+    const gNum = extraerGradoBase(grupo);
+    let mKey = gNum <= 4 ? '3-4' : (gNum === 5 ? '5' : (gNum >= 10 ? '10-11' : '6-9'));
+    const config = MATRIZ_RANGOS[mKey];
+
+    let html = `<table style="width:100%; border-collapse:collapse; font-size:0.8rem;"><thead><tr style="background:#f8fafc;"><th style="text-align:left; padding:8px;">ESTUDIANTE</th>`;
+    config.forEach(s => { html += `<th style="text-align:center; padding:8px;">${s.label}</th>`; });
+    html += `<th style="text-align:center; padding:8px;">PROM.</th></tr></thead><tbody>`;
+
+    alumnosGrupo.forEach(est => {
+      let sumaPct = 0;
+      html += `<tr style="border-bottom:1px solid #f1f5f9;"><td style="padding:8px; font-weight:700;">${est.estudiante_nombre}</td>`;
+      config.forEach(subj => {
+        let ok = 0, totalSub = 0;
+        for (let i = subj.start; i <= subj.end; i++) { totalSub++; if (est.respuestas && est.respuestas[i] === 1) ok++; }
+        const pct = Math.round((ok / totalSub) * 100);
+        sumaPct += pct;
+        const val = getValoration(pct);
+        html += `<td style="text-align:center; padding:4px;"><div style="background:${val.color}; color:white; border-radius:4px; font-weight:900;">${val.initial}</div></td>`;
+      });
+      const prom = Math.round(sumaPct / config.length);
+      html += `<td style="text-align:center; font-weight:900; background:#f0f9ff;">${prom}</td></tr>`;
+    });
+    html += `</tbody></table>`;
+    $('grupal-content').innerHTML = html;
+  } catch (e) { console.error(e); }
+  showLoading(false);
+}
+
+async function imprimirInformeGrupal() {
+  const content = $('grupal-content').innerHTML;
+  if (!content) return;
+  const printWindow = window.open('', '_blank');
+  printWindow.document.write(`<html><head><title>Informe Grupal</title><style>body{font-family:sans-serif;} table{width:100%; border-collapse:collapse;} th,td{border:1px solid #cbd5e1; padding:4px; font-size:0.7rem;}</style></head><body>${content}</body></html>`);
+  printWindow.document.close();
+  setTimeout(() => printWindow.print(), 500);
+}
+
+async function cargarEstadisticas() {
+  showLoading(true);
+  try {
+    const { data } = await supabaseClient.from('eval_estudiantes_notas').select('*').eq('periodo', currentPeriodo);
+    dataPeriodoActual = data || [];
+    if (dataPeriodoActual.length === 0) return alert("No hay datos para este periodo.");
+
+    let grupos = [...new Set(dataPeriodoActual.map(d => extraerGrupo(d.zipgrade_id)))].sort((a,b) => a.localeCompare(b, undefined, {numeric:true}));
+    let grados = [...new Set(dataPeriodoActual.map(d => extraerGradoBase(extraerGrupo(d.zipgrade_id))))].sort((a,b) => a-b);
+
+    $('est-sel-grado').innerHTML = grupos.map(g => `<option value="${g}">${g}</option>`).join('');
+    $('comp-sel-grado').innerHTML = grados.map(g => `<option value="${g}">${g}° Grado</option>`).join('');
+
+    renderizarGraficoGrupos(dataPeriodoActual);
+    actualizarGraficoAsignaturas();
+    actualizarGraficoComparativoGrupos();
+  } catch (e) { console.error(e); }
+  showLoading(false);
+}
+
+function renderizarGraficoGrupos(data) {
+  const promedios = {};
+  data.forEach(d => {
+    let g = extraerGrupo(d.zipgrade_id);
+    if (!promedios[g]) promedios[g] = { s: 0, c: 0 };
+    promedios[g].s += (d.porcentaje || 0); promedios[g].c++;
+  });
+  const labels = Object.keys(promedios).sort((a,b) => a.localeCompare(b, undefined, {numeric:true}));
+  const vals = labels.map(l => Math.round(promedios[l].s / promedios[l].c));
+
+  if (chartGrados) chartGrados.destroy();
+  chartGrados = new Chart($('chart-grados'), {
+    type: 'bar',
+    data: { labels, datasets: [{ label: 'Promedio', data: vals, backgroundColor: '#4f46e5', borderRadius: 6 }] },
+    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
+  });
+}
+
+async function actualizarGraficoAsignaturas() {
+  const grupo = $('est-sel-grado').value;
+  if (!grupo) return;
+  const config = MATRIZ_RANGOS[extraerGradoBase(grupo) <= 4 ? '3-4' : (extraerGradoBase(grupo) === 5 ? '5' : (extraerGradoBase(grupo) >= 10 ? '10-11' : '6-9'))];
+  const alumnos = dataPeriodoActual.filter(d => extraerGrupo(d.zipgrade_id) === grupo);
+  
+  const labels = config.map(s => s.label);
+  const vals = config.map(s => {
+    let suma = 0;
+    alumnos.forEach(a => {
+      let ok = 0; for (let i = s.start; i <= s.end; i++) if (a.respuestas && a.respuestas[i] === 1) ok++;
+      suma += Math.round((ok / (s.end - s.start + 1)) * 100);
+    });
+    return Math.round(suma / alumnos.length);
+  });
+
+  if (chartMaterias) chartMaterias.destroy();
+  chartMaterias = new Chart($('chart-asignaturas'), {
+    type: 'bar',
+    data: { labels, datasets: [{ label: 'Promedio', data: vals, backgroundColor: '#10b981', borderRadius: 6 }] },
+    options: { responsive: true, maintainAspectRatio: false, indexAxis: 'y' }
+  });
+}
+
+async function actualizarGraficoComparativoGrupos() {
+  const gradoBase = parseInt($('comp-sel-grado').value);
+  if (!gradoBase) return;
+  const alumnosNivel = dataPeriodoActual.filter(d => extraerGradoBase(extraerGrupo(d.zipgrade_id)) === gradoBase);
+  const grupos = [...new Set(alumnosNivel.map(d => extraerGrupo(d.zipgrade_id)))].sort((a,b) => a.localeCompare(b, undefined, {numeric:true}));
+
+  const config = MATRIZ_RANGOS[gradoBase <= 4 ? '3-4' : (gradoBase === 5 ? '5' : (gradoBase >= 10 ? '10-11' : '6-9'))];
+  const datasets = config.map((s, idx) => {
+    return {
+      label: s.label,
+      data: grupos.map(g => {
+        const al = alumnosNivel.filter(a => extraerGrupo(a.zipgrade_id) === g);
+        let suma = 0;
+        al.forEach(a => {
+          let ok = 0; for (let i = s.start; i <= s.end; i++) if (a.respuestas && a.respuestas[i] === 1) ok++;
+          suma += Math.round((ok / (s.end - s.start + 1)) * 100);
+        });
+        return Math.round(suma / al.length);
+      }),
+      backgroundColor: `hsl(${idx * 40}, 70%, 50%)`
+    };
+  });
+
+  if (chartComparativo) chartComparativo.destroy();
+  chartComparativo = new Chart($('chart-comparativo'), {
+    type: 'bar',
+    data: { labels: grupos, datasets },
+    options: { responsive: true, maintainAspectRatio: false }
+  });
+}
+async function resetearBaseDeDatos() {
+  const resp = confirm("⚠️ ¿ESTÁS SEGURO?\n\nEsto borrará TOTALMENTE los datos de:\n- Análisis General\n- Notas de Estudiantes\n- Banco de Preguntas\n\nEsta acción NO se puede deshacer.");
+  if (!resp) return;
+
+  const confirm2 = confirm("¿REALMENTE SEGURO? Estás a punto de vaciar TODA la aplicación.");
+  if (!confirm2) return;
+
+  showLoading(true);
+  try {
+    await Promise.all([
+      supabaseClient.from('eval_resultados').delete().neq('grado', -1),
+      supabaseClient.from('eval_estudiantes_notas').delete().neq('grado', -1),
+      supabaseClient.from('eval_preguntas').delete().neq('grado', -1)
+    ]);
+    alert("✅ Base de datos reseteada correctamente. La página se recargará.");
+    location.reload();
+  } catch (e) {
+    console.error(e);
+    alert("Error al resetear: " + e.message);
+  } finally {
+    showLoading(false);
+  }
+}
+
+async function corregirNombresBaseDeDatos() {
+  const resp = confirm("⚠️ ¿Quieres corregir el formato de los nombres?\n\nEsto buscará nombres como 'ANA CRISTINA MUÑOZ SANABRIA' y los convertirá en 'MUÑOZ SANABRIA ANA CRISTINA'.");
+  if (!resp) return;
+
+  showLoading(true);
+  try {
+    const { data, error } = await supabaseClient.from('eval_estudiantes_notas').select('zipgrade_id, estudiante_nombre, quiz_name, periodo, grado');
+    if (error) throw error;
+
+    let actualizados = 0;
+    for (let rec of data) {
+      const original = rec.estudiante_nombre;
+      if (!original) continue;
+      const parts = original.trim().split(/\s+/);
+      if (parts.length < 3) continue;
+      const apellidos = parts.slice(-2).join(' ');
+      const nombres = parts.slice(0, -2).join(' ');
+      const nuevoNombre = (apellidos + " " + nombres).toUpperCase();
+      if (nuevoNombre === original.toUpperCase()) continue;
+
+      await supabaseClient.from('eval_estudiantes_notas').update({ estudiante_nombre: nuevoNombre })
+        .eq('zipgrade_id', rec.zipgrade_id).eq('quiz_name', rec.quiz_name).eq('periodo', rec.periodo).eq('grado', rec.grado);
+      actualizados++;
+    }
+    alert(`✅ ¡Proceso completado! Se corregieron ${actualizados} nombres.`);
+    location.reload();
+  } catch (e) {
+    console.error(e);
+    alert("Error al corregir nombres: " + e.message);
+  } finally {
+    showLoading(false);
+  }
+}
+
+async function cargarGradosAdminSelects() {
+  try {
+    const { data } = await supabaseClient.from('eval_preguntas').select('grado');
+    const unique = data ? [...new Set(data.map(d => extraerGradoBase(d.grado)))].sort((a, b) => a - b) : [];
+    const sel = $('aimg-grado');
+    if (sel) {
+      sel.innerHTML = '<option value="">Grado...</option>' + unique.map(g => `<option value="${g}">${g}°</option>`).join('');
+    }
+  } catch (e) { console.error("Error cargando grados admin:", e); }
+}
+
+async function cargarAsignaturasAdminImg() {
+  const g = $('aimg-grado').value;
+  const p = $('aimg-periodo').value;
+  if (!g) return;
+  $('aimg-status').innerText = "Cargando asignaturas...";
+  const { data } = await supabaseClient.from('eval_preguntas').select('asignatura').eq('grado', g).eq('periodo', p);
+  if (data) {
+    const distinct = [...new Set(data.map(i => i.asignatura))].sort((a, b) => a.localeCompare(b, 'es'));
+    $('aimg-asig').innerHTML = '<option value="">Asignatura...</option>' + distinct.map(a => `<option value="${a}">${a}</option>`).join('');
+  }
+  $('aimg-preg').innerHTML = '<option value="">Pregunta...</option>';
+  $('aimg-detalle').style.display = 'none';
+  $('aimg-status').innerText = "";
+}
+
+async function cargarPreguntasAdminImg() {
+  const g = $('aimg-grado').value;
+  const p = $('aimg-periodo').value;
+  const a = $('aimg-asig').value;
+  if (!a) return;
+  $('aimg-status').innerText = "Cargando pregs...";
+  const { data } = await supabaseClient.from('eval_preguntas').select('pregunta_num').eq('grado', g).eq('periodo', p).eq('asignatura', a).order('pregunta_num');
+  if (data) {
+    const distinct = [...new Set(data.map(i => i.pregunta_num))].sort((x, y) => x - y);
+    $('aimg-preg').innerHTML = '<option value="">Pregunta...</option>' + distinct.map(x => `<option value="${x}">#${x}</option>`).join('');
+  }
+  $('aimg-detalle').style.display = 'none';
+  $('aimg-status').innerText = "";
+}
+
+async function verDetallePreguntaAdmin() {
+  const g = $('aimg-grado').value, p = $('aimg-periodo').value, a = $('aimg-asig').value, num = $('aimg-preg').value;
+  if (!num) { $('aimg-detalle').style.display = 'none'; return; }
+  $('aimg-status').innerText = "Cargando mapeo...";
+  const { data } = await supabaseClient.from('eval_preguntas').select('*').eq('grado', g).eq('periodo', p).eq('asignatura', a).eq('pregunta_num', num).maybeSingle();
+  if (!data) { $('aimg-status').innerText = "No se halló mapeo."; $('aimg-detalle').style.display = 'none'; return; }
+
+  $('aimg-detalle').style.display = 'block';
+  if ($('aimg-title')) $('aimg-title').innerText = `🎨 Pregunta #${num} - ${a}`;
+  const fields = [
+    { key: 'texto_pregunta', label: 'Texto/Imagen Pregunta' },
+    { key: 'opcion_a', label: 'Opción A' },
+    { key: 'opcion_b', label: 'Opción B' },
+    { key: 'opcion_c', label: 'Opción C' },
+    { key: 'opcion_d', label: 'Opción D' }
+  ];
+  let html = '';
+  fields.forEach(f => {
+    const val = data[f.key] || "";
+    html += `<div style="margin-bottom:15px; padding:10px; border:1px solid #e2e8f0; border-radius:8px; background:#f8fafc;">
+      <label style="display:block; font-weight:800; font-size:0.75rem; color:#64748b; margin-bottom:5px; text-transform:uppercase;">${f.label}</label>
+      <div style="font-size:0.9rem; margin-bottom:8px;">${val || '<span style="color:#cbd5e1;">Sin contenido</span>'}</div>
+      <div style="display:flex; gap:8px;">
+        <button onclick="subirImagenMapeo('${f.key}')" style="flex:1; background:#4f46e5; color:white; border:none; padding:6px; border-radius:6px; font-size:0.75rem; cursor:pointer;">📤 Subir Imagen</button>
+        <button onclick="guardarUrlExterna('${f.key}')" style="flex:1; background:#10b981; color:white; border:none; padding:6px; border-radius:6px; font-size:0.75rem; cursor:pointer;">🔗 URL Externa</button>
+        <button onclick="removerImagenMapeo('${f.key}')" style="background:#ef4444; color:white; border:none; padding:6px; border-radius:6px; font-size:0.75rem; cursor:pointer;">🗑️ Borrar</button>
+      </div>
+    </div>`;
+  });
+  $('aimg-fields').innerHTML = html;
+  $('aimg-status').innerText = "";
+}
 
 window.switchMainTab = switchMainTab;
 window.login = login;
 window.logout = logout;
 window.cargarAsignaturas = cargarAsignaturas;
 window.onAsigChange = onAsigChange;
-window.toggleInformesDropdown = toggleInformesDropdown;
-window.selectInforme = selectInforme;
-window.previsualizarDatos = previsualizarDatos;
-window.finalizarSubida = finalizarSubida;
-window.subirImagenMapeo = subirImagenMapeo;
-window.removerImagenMapeo = removerImagenMapeo;
-window.guardarUrlExterna = guardarUrlExterna;
+window.toggleInformesDropdown = () => { const d = $('informes-dropdown'); d.style.display = d.style.display === 'block' ? 'none' : 'block'; };
 window.verDetallePreguntaAdmin = verDetallePreguntaAdmin;
 window.cargarAsignaturasAdminImg = cargarAsignaturasAdminImg;
 window.cargarPreguntasAdminImg = cargarPreguntasAdminImg;
-window.crearUsuario = crearUsuario;
-window.importarUsuariosCSV = importarUsuariosCSV;
 window.cargarGradosReporte = cargarGradosReporte;
 window.cargarEstudiantesReporte = cargarEstudiantesReporte;
 window.generarReporteIndividual = generarReporteIndividual;
+window.resetearBaseDeDatos = resetearBaseDeDatos;
+window.corregirNombresBaseDeDatos = corregirNombresBaseDeDatos;
+window.toggleAdmin = toggleAdmin;
+window.generarInformeGrupal = generarInformeGrupal;
+window.imprimirInformeGrupal = imprimirInformeGrupal;
+window.cargarEstadisticas = cargarEstadisticas;
+window.actualizarGraficoAsignaturas = actualizarGraficoAsignaturas;
+window.actualizarGraficoComparativoGrupos = actualizarGraficoComparativoGrupos;
+window.intentarLoginEstudiante = intentarLoginEstudiante;
+window.imprimirTodoElGrado = imprimirTodoElGrado;
+window.imprimirTodaLaSede = imprimirTodaLaSede;
+window.setPeriodo = (p) => setPeriodo(p);
+
+async function setPeriodo(p) {
+  currentPeriodo = p;
+  document.querySelectorAll('.period-tab').forEach((t, i) => t.classList.toggle('active', (i + 1) === p));
+  await init();
+  if ($('individual-container').style.display === 'block') {
+    if ($('rep-estudiante').value) generarReporteIndividual();
+    else cargarGradosReporte();
+  } else if ($('estadisticas-container').style.display === 'block') {
+    cargarEstadisticas();
+  }
+}
+
+async function init() {
+  await cargarGrados();
+}
 
 checkSession();
