@@ -807,11 +807,7 @@ async function mostrarAnalisis() {
     };
 
     $('pregunta-display-num').innerText = `Pregunta #${n} - ${a}`;
-    renderMedia(mapping.texto_pregunta, 'pregunta-text', a, n, "", g);
-    renderMedia(mapping.opcion_a, 'opt-a-text', a, n, "a", g);
-    renderMedia(mapping.opcion_b, 'opt-b-text', a, n, "b", g);
-    renderMedia(mapping.opcion_c, 'opt-c-text', a, n, "c", g);
-    renderMedia(mapping.opcion_d, 'opt-d-text', a, n, "d", g);
+    renderMedia('pregunta-texto', 'pregunta-media', mapping.texto_pregunta, g, a, n, "");
 
     const labels = ["opcion_a", "opcion_b", "opcion_c", "opcion_d"];
     const opts = ["A", "B", "C", "D"];
@@ -885,13 +881,12 @@ function renderMedia(textId, mediaId, content, grado, asig, num, opcion = "") {
     const contentPart = part.trim();
     if (isEven) {
       if (contentPart) {
-        const firstLine = contentPart.split(/\n/)[0].trim();
-        const isInstruccion = INSTRUCCION_PREFIXES.some(rx => rx.test(contentPart));
+        const isInstruccion = INSTRUCCION_PREFIXES.some(rx => rx.test(contentPart)) || (opcion === "");
         const formattedContent = contentPart.replace(/\n/g, '<br>');
         if (isInstruccion) {
-          const c = INSTRUCCION_COLORS[instruccionColorIdx % INSTRUCCION_COLORS.length];
-          instruccionColorIdx++;
-          combinedHtml += `<div style="margin-bottom:10px; padding:10px 14px; background:${c.bg}; border-left:4px solid ${c.border}; border-radius:8px; color:${c.text}; font-weight:600; font-size:0.95em;">${formattedContent}</div>`;
+          const c = INSTRUCCION_COLORS[opcion === "" ? 0 : (instruccionColorIdx % INSTRUCCION_COLORS.length)];
+          if (opcion !== "") instruccionColorIdx++;
+          combinedHtml += `<div style="margin-bottom:10px; padding:10px 14px; background:${c.bg}; border-left:4px solid ${c.border}; border-radius:8px; color:${c.text}; font-weight:600; font-size:1.1em;">${formattedContent}</div>`;
         } else {
           combinedHtml += `<div style="margin-bottom:10px;">${formattedContent}</div>`;
         }
