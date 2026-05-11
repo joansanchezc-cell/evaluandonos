@@ -2406,7 +2406,7 @@
       </div>
       <p class="footer-copy"
         style="margin: 0; color: #64748b; font-weight: 800; font-size: 0.9rem; letter-spacing: 0.5px;">© 2026 AndréSán
-        - Evaluándonos System <span style="color:#4f46e5; margin-left:10px;">[ v86 ACTIVADA ]</span></p>
+        - Evaluándonos System <span style="color:#4f46e5; margin-left:10px;">[ v88 ACTIVADA ]</span></p>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -2415,6 +2415,7 @@
     <script src="https://cdn.jsdelivr.net/npm/papaparse@5.3.2/papaparse.min.js"></script>
     <script>
       // --- CONFIGURACIÓN Y ESTADO GLOBAL ---
+      const CURRENT_APP_VERSION = 'v88';
       const SB_URL = "https://txnecdeccianklqqyrav.supabase.co";
       const SB_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InR4bmVjZGVjY2lhbmtscXF5cmF2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY0MDQzMDIsImV4cCI6MjA5MTk4MDMwMn0.e2ybyt2Y8yHsZwRC-MZqi_qK525-CWpk-huQcQy-icM";
 
@@ -2599,7 +2600,6 @@
         const isBio = normTarget.includes("biologia") || normTarget.includes("naturales") || (normTarget.includes("ciencia") && !normTarget.includes("social")) || normTarget.includes("bio");
         const isPhys = normTarget.includes("fisica") || normTarget.includes("fis");
         const isChem = normTarget.includes("quimica") || normTarget.includes("qui");
-        const mySede = window.userSede || 'Central';
 
         return allowedAsigs.some(perm => {
           const p = normalizeText(perm);
@@ -2609,15 +2609,13 @@
           const hasPhys = p.includes("fisica") || p.includes("fis");
           const hasChem = p.includes("quimica") || p.includes("qui");
 
-          // Regla 3: Secundaria en Sede Central (Vinculación de Naturales)
-          if (mySede.includes('Central')) {
-            if (gBase >= 6 && gBase <= 9) {
-              // En 6-9: Biología y Física están vinculadas
-              if ((isBio || isPhys) && (hasBio || hasPhys)) return true;
-            } else if (gBase >= 10) {
-              // En 10-11: Biología, Física y Química están vinculadas
-              if ((isBio || isPhys || isChem) && (hasBio || hasPhys || hasChem)) return true;
-            }
+          // Regla de Vinculación de Naturales (Generalizada para todas las sedes)
+          if (gBase >= 6 && gBase <= 9) {
+            // En 6-9: Biología y Física están vinculadas
+            if ((isBio || isPhys) && (hasBio || hasPhys)) return true;
+          } else if (gBase >= 10) {
+            // En 10-11: Biología, Física y Química están vinculadas
+            if ((isBio || isPhys || isChem) && (hasBio || hasPhys || hasChem)) return true;
           }
 
           // Primaria (1-5): Se agrupan bajo términos de Naturales/Biología
@@ -3134,7 +3132,7 @@
             if (!supabaseClient) throw new Error("Servicio de datos no disponible. Recarga la página.");
           }
 
-          const { data: perfil, error: perError } = await supabaseClient.from('perfiles').select('rol, nombre, grado_asignado').eq('email', user.email).maybeSingle();
+          const { data: perfil, error: perError } = await supabaseClient.from('perfiles').select('rol, nombre, grado_asignado, sede').eq('email', user.email).maybeSingle();
           if (perError) console.error("Error al obtener perfil:", perError);
           
           const userName = perfil?.nombre || user.user_metadata?.full_name || user.email.split('@')[0];
