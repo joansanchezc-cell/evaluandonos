@@ -2820,30 +2820,12 @@
       function extraerGrupo(zipId) {
         if (!zipId) return "";
         let s = zipId.toString().trim();
-        
-        // Prioridad: Formato con guion (ej: 1101-1065826808)
         if (s.includes("-")) return s.split("-")[0];
-        
-        // Si es corto, probablemente sea solo el grupo
+        if (s.length === 5) return s.substring(0, 3);
+        if (s.length === 6) return s.substring(0, 4);
         if (s.length <= 4) return s;
-        
-        // Si es muy largo (ej: 1065826808), y no tiene guion, 
-        // no podemos determinar el grupo confiablemente solo con el ID.
-        if (s.length > 6) return ""; 
-
-        let prefix = s.slice(0, -2);
-        if ((prefix.startsWith("10") || prefix.startsWith("11")) && prefix.length === 3) {
-          prefix = prefix.substring(0, 2) + "0" + prefix.substring(2);
-        }
-
-        const gradoBase = extraerGradoBase(prefix);
-        const ultimo = prefix.slice(-1);
-        const mapaSedes = { "4": "PJ", "5": "YA", "6": "SE", "7": "PU" };
-        if (mapaSedes[ultimo]) return gradoBase + mapaSedes[ultimo];
-
-        return prefix;
+        return "";
       }
-
       function extraerGradoBase(grupo) {
         if (!grupo) return 0;
         const s = grupo.toString().trim();
