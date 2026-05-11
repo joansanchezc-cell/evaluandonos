@@ -6710,39 +6710,6 @@
         });
       }
     </script>
-
-    <script>
-      // LIMPIEZA PROFUNDA DE CACHÉ SI CAMBIA VERSIÓN
-      const CURRENT_APP_VERSION = 'v66';
-            window.addEventListener('load', () => {
-              if ('serviceWorker' in navigator) {
-                navigator.serviceWorker.register('sw.js')
-                  .then(reg => {
-                    reg.onupdatefound = () => {
-                      const installingWorker = reg.installing;
-                      installingWorker.onstatechange = () => {
-                        if (installingWorker.state === 'installed' && navigator.serviceWorker.controller) {
-                          window.location.reload();
-                        }
-                      };
-                    };
-                  });
-              }
-            });
-
-            if (localStorage.getItem('app_version') !== CURRENT_APP_VERSION) {
-              if ('serviceWorker' in navigator) {
-                navigator.serviceWorker.getRegistrations().then(registrations => {
-                  for (let registration of registrations) registration.unregister();
-                });
-              }
-              caches.keys().then(names => {
-                for (let name of names) caches.delete(name);
-              });
-              localStorage.setItem('app_version', CURRENT_APP_VERSION);
-              console.log('Limpieza profunda realizada. Recargando...');
-              setTimeout(() => window.location.reload(true), 1000);
-            }
             window.addEventListener('DOMContentLoaded', () => {
               if (typeof checkSession === 'function') {
                 checkSession().then(() => {
