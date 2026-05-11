@@ -91,6 +91,7 @@
   <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
   <script>
+    const CURRENT_APP_VERSION = "1.0.0";
     window.MathJax = {
       tex: {
         inlineMath: [['$', '$'], ['\\(', '\\)']],
@@ -518,11 +519,20 @@
     }
 
     .option.correct {
-      border-color: var(--success);
+      border-color: #22c55e;
       background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
-      color: white;
+      color: white !important;
       font-weight: 600;
       box-shadow: 0 10px 25px -5px rgba(34, 197, 94, 0.4);
+      transform: scale(1.02);
+    }
+
+    .option.incorrect {
+      border-color: #ef4444;
+      background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+      color: white !important;
+      font-weight: 600;
+      box-shadow: 0 10px 25px -5px rgba(239, 68, 68, 0.4);
       transform: scale(1.02);
     }
 
@@ -651,7 +661,46 @@
       background-size: 80% auto;
       opacity: 0.12;
       pointer-events: none;
-      z-index: 0;
+    }
+
+    /* Colores Forzados para Navegación */
+    .tab-btn-analisis {
+      background: #4f46e5 !important;
+      color: white !important;
+    }
+
+    .tab-btn-estadisticas {
+      background: #10b981 !important;
+      color: white !important;
+    }
+
+    .tab-btn-informes {
+      background: #8b5cf6 !important;
+      color: white !important;
+    }
+
+    .tab-btn-analisis:hover {
+      background: #4338ca !important;
+    }
+
+    .tab-btn-estadisticas:hover {
+      background: #059669 !important;
+    }
+
+    .tab-btn-informes:hover {
+      background: #7c3aed !important;
+    }
+
+    .option.correct {
+      background: #22c55e !important;
+      color: white !important;
+      border-color: #16a34a !important;
+    }
+
+    .option.incorrect {
+      background: #ef4444 !important;
+      color: white !important;
+      border-color: #dc2626 !important;
     }
 
     @keyframes gradientMove {
@@ -1576,6 +1625,122 @@
         padding: 10px !important;
       }
     }
+
+    /* Navegación Móvil - OCULTA EN WEB/DESKTOP */
+    .mobile-nav {
+      display: none !important;
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(20px);
+      padding: 10px 15px;
+      justify-content: space-around;
+      border-top: 1px solid #e2e8f0;
+      z-index: 1000;
+      box-shadow: 0 -4px 15px rgba(0, 0, 0, 0.05);
+    }
+
+    @media (max-width: 768px) {
+      .mobile-nav {
+        display: flex !important;
+      }
+
+      .container {
+        padding: 15px;
+        margin-bottom: 80px;
+      }
+
+      .controls {
+        grid-template-columns: 1fr !important;
+      }
+    }
+
+    /* Forzar filtros en una sola línea en Desktop */
+    @media (min-width: 769px) {
+      .controls {
+        display: flex !important;
+        flex-direction: row !important;
+        gap: 15px !important;
+        align-items: flex-end !important;
+      }
+
+      .control-group {
+        flex: 1;
+      }
+    }
+
+    /* Estilos para Análisis por Estudiante (Detalle) */
+    #est-det-main-card .option.correct {
+      background: #f0fdf4 !important;
+      border: 3px solid #22c55e !important;
+      color: #166534 !important;
+      box-shadow: none !important;
+      transform: none !important;
+    }
+
+    #est-det-main-card .option.incorrect {
+      background: #fef2f2 !important;
+      border: 3px solid #ef4444 !important;
+      color: #991b1b !important;
+      box-shadow: none !important;
+      transform: none !important;
+    }
+
+    #est-det-main-card .option.correct .option-letter {
+      background: #22c55e !important;
+      color: white !important;
+    }
+
+    #est-det-main-card .option.incorrect .option-letter {
+      background: #ef4444 !important;
+      color: white !important;
+    }
+
+    /* Estilos Dropdown */
+    .dropdown {
+      position: relative;
+      display: inline-block;
+    }
+
+    .dropdown-content {
+      display: none;
+      position: absolute;
+      background-color: white;
+      min-width: 200px;
+      box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.1);
+      z-index: 1001;
+      border-radius: 12px;
+      padding: 8px;
+      margin-top: 5px;
+      border: 1px solid #e2e8f0;
+    }
+
+    .dropdown-item {
+      padding: 10px 15px;
+      cursor: pointer;
+      border-radius: 8px;
+      font-weight: 600;
+      color: var(--text);
+      transition: 0.2s;
+    }
+
+    .dropdown-item:hover {
+      background: #f1f5f9;
+      color: var(--primary);
+    }
+
+    .dropdown.show .dropdown-content {
+      display: block;
+    }
+
+    /* Botones de Tab Activos (Azules) */
+    .tab-btn.active {
+      background: var(--primary) !important;
+      color: white !important;
+      box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
+    }
   </style>
 </head>
 
@@ -1620,541 +1785,606 @@
     </div>
   </div>
 
-  <header>
-    <div class="header-banner"
-      style="display: flex; align-items: center; background: white; border-bottom: 2px solid #f1f5f9;">
-      <div style="display: flex; align-items: center; justify-content: center; width: 100%;">
-        <img src="https://txnecdeccianklqqyrav.supabase.co/storage/v1/object/public/assets/evaluandonos.png"
-          alt="Logo Evaluándonos" style="height: 180px !important; width: auto !important;" class="header-logo-img">
-      </div>
+  <header style="background: white; border-bottom: 2px solid #f1f5f9;">
+    <!-- Fila 1: Logo Banner Ocupando todo el ancho -->
+    <div
+      style="width: 100%; padding: 10px 0; border-bottom: 1px solid #f1f5f9; display: flex; justify-content: center; background: white;">
+      <img src="https://txnecdeccianklqqyrav.supabase.co/storage/v1/object/public/assets/evaluandonos.png"
+        alt="Evaluándonos Banner" style="width: 100%; max-width: 1100px; height: auto; display: block;"
+        class="header-logo-img">
+    </div>
 
-      <!-- Badge de usuario integrado y fijo -->
-      <div id="user-badge"
-        style="display:none; align-items:center; gap:10px; background: #f8fafc; padding: 4px 10px; border-radius: 12px; border: 1px solid #e2e8f0;">
-        <div id="user-avatar"
-          style="width:34px; height:34px; background: linear-gradient(135deg, #4f46e5 0%, #7e22ce 100%); color:white; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:800; font-size:0.85rem; border: 2px solid white; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
-          ST</div>
-        <div style="display:flex; flex-direction:column; max-width: 120px;" class="hide-mobile">
-          <span id="user-nombre"
-            style="font-size:0.7rem; font-weight:800; color:#1e293b; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">Usuario</span>
-          <span id="user-role-label"
-            style="font-size:0.55rem; color:#64748b; font-weight:600; margin-top:-2px;">Cargando...</span>
+    <!-- Fila 2: Información de Usuario y Rol -->
+    <div style="background: #f8fafc; padding: 10px 20px; border-bottom: 1px solid #f1f5f9; margin-top: 20px;">
+      <div class="container"
+        style="display: flex; justify-content: flex-end; align-items: center; gap: 15px; margin:0; max-width:100%;">
+        <div id="user-badge" style="display: flex; align-items: center; gap: 8px;">
+          <div id="user-avatar"
+            style="width:30px; height:30px; background:#4f46e5; color:white; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:800; font-size:0.8rem;">
+            U</div>
+          <div style="text-align: right;">
+            <div id="user-nombre" style="font-size: 0.8rem; font-weight: 800; color: #1e293b;">Cargando...</div>
+            <div id="user-role-label"
+              style="font-size: 0.65rem; font-weight: 700; color: #6366f1; text-transform: uppercase;">Rol</div>
+          </div>
+          <button onclick="logout()"
+            style="background:#fee2e2; border:none; color:#ef4444; cursor:pointer; padding:5px; border-radius:5px; display:flex; align-items:center;">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="3">
+              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+              <polyline points="16 17 21 12 16 7" />
+              <line x1="21" y1="12" x2="9" y2="12" />
+            </svg>
+          </button>
         </div>
-        <button onclick="logout()"
-          style="background:#fee2e2; border:none; color:#ef4444; cursor:pointer; padding:6px; border-radius:10px; display:flex; align-items:center; justify-content:center; transition:0.3s;"
-          title="Salir">
-          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5">
-            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
-            <polyline points="16 17 21 12 16 7" />
-            <line x1="21" y1="12" x2="9" y2="12" />
-          </svg>
+      </div>
+    </div>
+
+    <div style="background: white; padding: 12px 0;">
+      <div class="container"
+        style="display: flex; justify-content: center; gap: 15px; flex-wrap: wrap; align-items: center; margin:0; max-width:100%;">
+
+        <!-- Dropdown ANÁLISIS -->
+        <div class="dropdown" id="drop-analisis">
+          <button onclick="toggleDropdown('drop-analisis')" class="tab-btn tab-btn-analisis"
+            style="padding: 10px 20px; border: none; border-radius: 10px; cursor: pointer; font-weight: 800; font-size: 0.85rem; display: flex; align-items: center; gap: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+            📊 ANÁLISIS <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+              stroke-width="4">
+              <path d="M6 9l6 6 6-6" />
+            </svg>
+          </button>
+          <div class="dropdown-content">
+            <div class="dropdown-item" onclick="selectAnalisis('general')">📊 Análisis General</div>
+            <div class="dropdown-item admin-only" onclick="selectAnalisis('estudiante')">👤 Por Estudiante</div>
+          </div>
+        </div>
+
+        <!-- Botón ESTADÍSTICAS -->
+        <button onclick="switchMainTab('estadisticas')" id="tab-estadisticas" class="tab-btn tab-btn-estadisticas"
+          style="padding: 10px 20px; border: none; border-radius: 10px; cursor: pointer; font-weight: 800; font-size: 0.85rem; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+          📈 ESTADÍSTICAS
+        </button>
+
+        <!-- Dropdown INFORMES -->
+        <div class="dropdown" id="drop-informes">
+          <button onclick="toggleDropdown('drop-informes')" class="tab-btn tab-btn-informes"
+            style="padding: 10px 20px; border: none; border-radius: 10px; cursor: pointer; font-weight: 800; font-size: 0.85rem; display: flex; align-items: center; gap: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+            📄 INFORMES <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+              stroke-width="4">
+              <path d="M6 9l6 6 6-6" />
+            </svg>
+          </button>
+          <div class="dropdown-content">
+            <div class="dropdown-item" onclick="switchMainTab('individual')">📄 Individual</div>
+            <div class="dropdown-item" onclick="switchMainTab('grupal')">👥 Grupal</div>
+            <div class="dropdown-item" onclick="switchMainTab('asignatura')">📚 Por Asignatura</div>
+          </div>
+        </div>
+
+        <!-- Period Tabs Integradas -->
+        <div class="period-tabs"
+          style="margin: 0; background: #f1f5f9; padding: 4px; border-radius: 10px; border: 1px solid #e2e8f0;">
+          <div id="tab-1" class="period-tab active" onclick="setPeriodo(1)"
+            style="font-size: 0.75rem; padding: 6px 15px;">P1</div>
+          <div id="tab-2" class="period-tab" onclick="setPeriodo(2)" style="font-size: 0.75rem; padding: 6px 15px;">P2
+          </div>
+          <div id="tab-3" class="period-tab" onclick="setPeriodo(3)" style="font-size: 0.75rem; padding: 6px 15px;">
+            Final</div>
+        </div>
+
+        <button onclick="toggleAdmin()" class="admin-trigger"
+          style="display:none; background:#1e293b; color:white; border:none; padding:8px 15px; border-radius:10px; font-weight:800; cursor:pointer; font-size:0.75rem;">
+          ⚙️ ADMIN
         </button>
       </div>
     </div>
   </header>
 
-  <!-- Navegación Móvil (Movida al inicio para prioridad de carga) -->
-  <nav class="mobile-nav">
-    <a href="javascript:void(0)" class="mobile-nav-item active" id="m-nav-analisis" onclick="switchMainTab('analisis')">
-      <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2">
-        <path d="M3 3v18h18M7 16l3-4 4 2 4-6" />
-      </svg>
-      <span>Análisis</span>
-    </a>
-    <a href="javascript:void(0)" class="mobile-nav-item" id="m-nav-individual" onclick="switchMainTab('individual')">
-      <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2">
-        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
-        <circle cx="12" cy="7" r="4" />
-      </svg>
-      <span>Reporte</span>
-    </a>
-    <a href="javascript:void(0)" class="mobile-nav-item" id="m-nav-estadisticas"
-      onclick="switchMainTab('estadisticas')">
-      <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2">
-        <rect x="3" y="11" width="4" height="10" />
-        <rect x="10" y="3" width="4" height="18" />
-        <rect x="17" y="7" width="4" height="14" />
-      </svg>
-      <span>Dashboard</span>
-    </a>
-    <a href="javascript:void(0)" class="mobile-nav-item" id="m-nav-grupal" onclick="switchMainTab('grupal')">
-      <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2">
-        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
-        <circle cx="9" cy="7" r="4" />
-        <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
-        <path d="M16 3.13a4 4 0 0 1 0 7.75" />
-      </svg>
-      <span>Grupal</span>
-    </a>
-    <a href="javascript:void(0)" class="mobile-nav-item" id="m-nav-asignatura" onclick="switchMainTab('asignatura')">
-      <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2">
-        <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
-        <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
-      </svg>
-      <span>Materia</span>
-    </a>
-    <a href="javascript:void(0)" class="mobile-nav-item" style="color:#ef4444;" onclick="logout()">
-      <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2">
-        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
-        <polyline points="16 17 21 12 16 7" />
-        <line x1="21" y1="12" x2="9" y2="12" />
-      </svg>
-      <span>Salir</span>
-    </a>
-  </nav>
+  <main class="container" style="padding-top: 10px;">
+    <div id="resultado-container" style="display: none;">
+      <!-- Espacio superior para separación -->
+      <div style="margin-top: 1rem;"></div>
 
-  <div class="top-nav-container"
-    style="background: white; border-bottom: 2px solid #f1f5f9; padding: 1rem 0; margin-bottom: 1rem;">
-    <div class="container" style="display: flex; flex-direction: column; gap: 0.5rem;">
-      <!-- Navegación Superior y Logo -->
-      <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
-        <div style="display: flex; align-items: center; gap: 1.5rem;">
-          <img src="https://txnecdeccianklqqyrav.supabase.co/storage/v1/object/public/assets/logo%20solo%20copia.png"
-            style="height: 75px; width: auto; filter: drop-shadow(0 5px 15px rgba(0,0,0,0.1));" alt="Logo Mini">
-          <div class="tabs" style="display: flex; background: #f1f5f9; padding: 4px; border-radius: 12px;">
-            <button onclick="switchMainTab('analisis')" id="tab-analisis" class="tab-btn active"
-              style="padding: 10px 25px; border: none; border-radius: 10px; cursor: pointer; font-weight: 700; font-size: 0.9rem; transition: 0.3s; display: flex; align-items: center; gap: 8px;">📈
-              Análisis</button>
-            <button onclick="switchMainTab('estadisticas')" id="tab-estadisticas" class="tab-btn"
-              style="padding: 8px 20px; border: none; border-radius: 10px; background: transparent; cursor: pointer; font-weight: 700; font-size: 0.85rem; transition: 0.3s;">Estadísticas</button>
-            <div class="dropdown" id="tab-informes-parent">
-              <button class="tab-btn" id="tab-informes-btn" onclick="toggleInformesDropdown(event)"
-                style="padding: 8px 20px; border: none; border-radius: 10px; background: transparent; cursor: pointer; font-weight: 700; font-size: 0.85rem; transition: 0.3s;">
-                📁 Informes ▾
-              </button>
-              <div class="dropdown-content">
-                <div class="dropdown-item" id="tab-individual-item" onclick="selectInforme('individual')">👤 Reporte
-                  Individual</div>
-                <div class="dropdown-item" id="tab-grupal-item" onclick="selectInforme('grupal')">👥 Reporte Grupal
-                </div>
-                <div class="dropdown-item" id="tab-asignatura-item" onclick="selectInforme('asignatura')">📚 Reporte
-                  Asignatura</div>
+      <!-- VISTA 1: ANÁLISIS GENERAL -->
+      <div id="analisis-general-view">
+        <div id="filtros-container" class="controls"
+          style="display: grid; grid-template-columns: 1fr 1.5fr 0.8fr; gap: 1.5rem; align-items: end; background: rgba(255, 255, 255, 0.6); backdrop-filter: blur(20px); padding: 1.5rem; border-radius: 20px; border: 1px solid rgba(255, 255, 255, 0.5); width: 100%; box-sizing: border-box; margin-bottom: 2rem;">
+          <div class="control-group">
+            <label
+              style="display: block; font-size: 0.75rem; font-weight: 800; color: #64748b; margin-bottom: 8px; text-transform: uppercase;">Grado</label>
+            <select id="sel-grado" onchange="cargarAsignaturas()"
+              style="width: 100%; padding: 12px; border-radius: 12px; border: 1px solid #cbd5e1; background: white;">
+              <option value="">Grado...</option>
+            </select>
+          </div>
+          <div class="control-group" id="card-asig"
+            style="border-left: 4px solid #e2e8f0; padding-left: 15px; transition: all 0.3s ease;">
+            <label id="label-asig"
+              style="display: flex; align-items: center; gap: 6px; font-size: 0.75rem; font-weight: 800; color: #64748b; margin-bottom: 8px; text-transform: uppercase;">Asignatura</label>
+            <select id="sel-asig" onchange="onAsigChange(this)"
+              style="width: 100%; padding: 12px; border-radius: 12px; border: 2px solid #cbd5e1; background: white; font-weight: 700;">
+              <option value="">Seleccione asignatura...</option>
+            </select>
+          </div>
+          <div class="control-group">
+            <label
+              style="display: block; font-size: 0.75rem; font-weight: 800; color: #64748b; margin-bottom: 8px; text-transform: uppercase;">Pregunta</label>
+            <select id="sel-pregunta" onchange="mostrarAnalisis()"
+              style="width: 100%; padding: 12px; border-radius: 12px; border: 1px solid #cbd5e1; background: white;">
+              <option value=""># Pregunta</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="dashboard-grid">
+          <div class="card">
+            <h2 class="question-title" id="pregunta-display-num">Pregunta #</h2>
+            <div
+              style="background: rgba(255, 255, 255, 0.3); border: 2px solid rgba(255, 255, 255, 0.2); border-radius: 16px; padding: 1.5rem; margin-bottom: 2rem; backdrop-filter: blur(5px);">
+              <div id="pregunta-media" class="media-container"></div>
+              <div id="pregunta-media-auto" class="media-container" style="display:none;"></div>
+              <p id="pregunta-texto"
+                style="font-size: 1.1rem; color: var(--text); font-weight: 500; margin: 0; line-height: 1.6;"></p>
+            </div>
+            <div id="options-list" class="options-list">
+              <div id="opt-a" class="option"><span class="option-letter">A</span>
+                <div id="txt-a" class="option-content"></div>
+              </div>
+              <div id="opt-b" class="option"><span class="option-letter">B</span>
+                <div id="txt-b" class="option-content"></div>
+              </div>
+              <div id="opt-c" class="option"><span class="option-letter">C</span>
+                <div id="txt-c" class="option-content"></div>
+              </div>
+              <div id="opt-d" class="option"><span class="option-letter">D</span>
+                <div id="txt-d" class="option-content"></div>
               </div>
             </div>
           </div>
-          <button id="btn-install-top" onclick="instalarPWA()"
-            style="display:none; background:#ecfdf5; border:none; color:#059669; cursor:pointer; padding:10px 20px; border-radius:12px; font-weight:800; font-size:0.85rem; align-items:center; gap:8px; transition:0.3s; margin-left:10px;">
-            📥 INSTALAR APP
-          </button>
+          <div class="card">
+            <h2 class="question-title">Distribución de Respuestas</h2>
+            <div class="chart-container"><canvas id="barChart"></canvas></div>
+            <div class="stats-summary">
+              <div class="stat-box"
+                style="background: rgba(99, 102, 241, 0.1); color: var(--primary); border: 2px solid rgba(99, 102, 241, 0.2);">
+                <span id="stat-total" class="stat-val" style="color: var(--primary);">0</span>
+                <span class="stat-label">Personas Evaluadas</span>
+              </div>
+              <div class="stat-box"><span id="stat-correctas" class="stat-val">0</span><span
+                  class="stat-label">Aciertos</span></div>
+              <div id="stat-p-box" class="stat-box"><span id="stat-porcentaje" class="stat-val">0%</span><span
+                  class="stat-label">% Éxito</span></div>
+            </div>
+          </div>
         </div>
+      </div>
 
-        <div class="period-tabs" style="margin: 0;">
-          <div id="tab-1" class="period-tab active" onclick="setPeriodo(1)">Evaluándonos 1</div>
-          <div id="tab-2" class="period-tab" onclick="setPeriodo(2)">Evaluándonos 2</div>
-          <div id="tab-3" class="period-tab" onclick="setPeriodo(3)">Evaluándonos Final</div>
+    </div> <!-- Cierra analisis-estudiante-view -->
+    </div> <!-- Cierra resultado-container -->
+  </main>
+
+  <!-- Reporte Individual (Contenedor) -->
+  <div id="individual-container" style="display:none; margin-top:2rem;">
+    <div class="card">
+      <h2 style="margin-bottom:1.5rem; color:var(--primary);">Reporte de Resultados por Estudiante</h2>
+
+      <!-- Vista Simplificada para Estudiantes -->
+      <div id="student-portal-info"
+        style="display:none; background:#f0f9ff; border:1px solid #bae6fd; padding:1.5rem; border-radius:16px; text-align:center; margin-bottom:1.5rem;">
+        <h3 style="color:#0369a1; margin-bottom:0.5rem;">¡Hola, <span id="st-display-name">Estudiante</span>!</h3>
+        <p style="color:#0c4a6e; font-size:0.9rem; margin-bottom:1rem;">Tu informe individual se ha generado
+          automáticamente. Puedes consultarlo e imprimirlo abajo.</p>
+        <div style="display:flex; gap:10px; justify-content:center;">
+          <button onclick="logout()"
+            style="background:#fee2e2; color:#ef4444; border:none; padding:10px 24px; border-radius:12px; font-weight:800; cursor:pointer; font-size:0.9rem;">CERRAR
+            SESIÓN</button>
         </div>
+      </div>
 
-        <button onclick="toggleAdmin()" class="admin-trigger"
-          style="display:none; background:#1e293b; color:white; border:none; padding:8px 16px; border-radius:12px; font-weight:700; cursor:pointer; font-size:0.85rem; align-items:center; gap:8px;">
-          ⚙️ Panel Admin
-        </button>
+      <div id="rep-filters"
+        style="display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:1rem; margin-bottom:2rem;">
+        <div>
+          <label style="display:block; font-size:0.8rem; font-weight:700; margin-bottom:0.5rem;">Sede</label>
+          <select id="rep-sede" onchange="cargarGradosReporte()"
+            style="width:100%; padding:10px; border-radius:10px; border:1px solid #e2e8f0;">
+            <option value="Central">Central</option>
+            <option value="Yanaconas">Yanaconas</option>
+            <option value="Pisoje Bajo">Pisoje Bajo</option>
+            <option value="Pueblillo">Pueblillo</option>
+            <option value="Sendero">Sendero</option>
+            <option value="primaria">primaria</option>
+          </select>
+        </div>
+        <div>
+          <label style="display:block; font-size:0.8rem; font-weight:700; margin-bottom:0.5rem;">Grado</label>
+          <select id="rep-grado" onchange="cargarEstudiantesReporte()"
+            style="width:100%; padding:10px; border-radius:10px; border:1px solid #e2e8f0;"></select>
+        </div>
+        <div>
+          <label style="display:block; font-size:0.8rem; font-weight:700; margin-bottom:0.5rem;">Estudiante</label>
+          <select id="rep-estudiante" onchange="generarReporteIndividual()"
+            style="width:100%; padding:10px; border-radius:10px; border:1px solid #e2e8f0;">
+            <option value="">Seleccione estudiante...</option>
+          </select>
+        </div>
+        <div style="display:flex; gap:10px; flex-wrap:wrap;">
+          <button id="btn-print-basica" onclick="imprimirTodaLaSede('basica')" class="print-btn admin-only"
+            style="background:#4f46e5; color:white; border:none; padding:8px 15px; border-radius:10px; font-weight:700; cursor:pointer; font-size:0.75rem;">
+            IMPRIMIR (3°-9°)</button>
+          <button id="btn-print-superior" onclick="imprimirTodaLaSede('superior')" class="print-btn admin-only"
+            style="background:#10b981; color:white; border:none; padding:8px 15px; border-radius:10px; font-weight:700; cursor:pointer; font-size:0.75rem;">
+            IMPRIMIR (10°-11°)</button>
+        </div>
+      </div>
+      <div id="reporte-content">
+        <p style="text-align:center; color:#64748b; padding:3rem;">Seleccione un estudiante para ver su reporte
+          detallado.</p>
       </div>
     </div>
   </div>
 
-  <main class="container">
-    <!-- Resultados -->
-    <div id="resultado-container" style="display: none;">
+  <!-- Estadísticas (Contenedor) -->
+  <div id="estadisticas-container" style="display:none; margin-top:2rem;">
+    <div style="display: grid; grid-template-columns: 1fr; gap: 2rem; margin-bottom: 2rem;">
+      <div class="card">
+        <h2 class="question-title">Promedio Detallado por Grupo</h2>
+        <div class="chart-container" style="height: 400px;">
+          <canvas id="chart-grados"></canvas>
+        </div>
+      </div>
+    </div>
 
-      <div id="filtros-container" class="controls"
-        style="display: grid; grid-template-columns: 1fr 1.5fr 0.8fr; gap: 1.5rem; align-items: end; background: rgba(255, 255, 255, 0.6); backdrop-filter: blur(20px); padding: 1.5rem; border-radius: 20px; border: 1px solid rgba(255, 255, 255, 0.5); width: 100%; box-sizing: border-box; margin-bottom: 2rem;">
-        <div class="control-group">
-          <label
-            style="display: block; font-size: 0.75rem; font-weight: 800; color: #64748b; margin-bottom: 8px; text-transform: uppercase;">Grado</label>
-          <select id="sel-grado" onchange="cargarAsignaturas()"
-            style="width: 100%; padding: 12px; border-radius: 12px; border: 1px solid #cbd5e1; background: white;">
-            <option value="">Grado...</option>
-          </select>
-        </div>
-        <div class="control-group" id="card-asig"
-          style="border-left: 4px solid #e2e8f0; padding-left: 15px; transition: all 0.3s ease;">
-          <label id="label-asig"
-            style="display: flex; align-items: center; gap: 6px; font-size: 0.75rem; font-weight: 800; color: #64748b; margin-bottom: 8px; text-transform: uppercase;">
-            Asignatura
-          </label>
-          <select id="sel-asig" onchange="onAsigChange(this)"
-            style="width: 100%; padding: 12px; border-radius: 12px; border: 2px solid #cbd5e1; background: white; font-weight: 700; transition: all 0.3s ease;">
-            <option value="">Seleccione asignatura...</option>
-          </select>
-        </div>
-        <div class="control-group">
-          <label
-            style="display: block; font-size: 0.75rem; font-weight: 800; color: #64748b; margin-bottom: 8px; text-transform: uppercase;">Pregunta</label>
-          <select id="sel-pregunta" onchange="mostrarAnalisis()"
-            style="width: 100%; padding: 12px; border-radius: 12px; border: 1px solid #cbd5e1; background: white;">
-            <option value=""># Pregunta</option>
+    <div class="card" style="margin-bottom: 2rem;">
+      <div
+        style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; border-bottom: 2px solid var(--bg); padding-bottom: 0.5rem;">
+        <h2 class="question-title" style="margin: 0; border: none;">Rendimiento por Asignaturas</h2>
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <label style="font-weight: 700; font-size: 0.85rem; color: var(--primary);">DETALLE GRADO:</label>
+          <select id="est-sel-grado" onchange="actualizarGraficoAsignaturas()" style="width: auto; padding: 5px 15px;">
+            <option value="">Cargando...</option>
           </select>
         </div>
       </div>
+      <div class="chart-container" style="height: 400px;">
+        <canvas id="chart-materias"></canvas>
+      </div>
+    </div>
 
+    <div class="card" style="margin-bottom: 2rem;">
+      <div
+        style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; border-bottom: 2px solid var(--bg); padding-bottom: 0.5rem;">
+        <h2 class="question-title" style="margin: 0; border: none;">Comparativo de Grupos por Asignatura</h2>
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <label style="font-weight: 700; font-size: 0.85rem; color: var(--primary);">VER NIVEL:</label>
+          <select id="comp-sel-grado" onchange="actualizarGraficoNivelAsignaturas()"
+            style="width: auto; padding: 5px 15px;">
+            <option value="">Cargando...</option>
+          </select>
+        </div>
+      </div>
+      <div class="chart-container" style="height: 450px;">
+        <canvas id="chart-comparativo-grupos"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <!-- Informe Grupal (Contenedor) -->
+  <div id="grupal-container" style="display:none; margin-top:2rem;">
+    <div class="card">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+        <h2 style="color:var(--primary); margin:0;">Informe General por Grupo</h2>
+        <div style="display: flex; gap: 10px; align-items: center;">
+          <label style="font-weight: 700; font-size: 0.85rem;">GRUPO:</label>
+          <select id="gru-sel-grado" onchange="generarInformeGrupal()"
+            style="width: auto; padding: 8px 20px; border-radius: 10px; border: 1px solid #e2e8f0;">
+            <option value="">Seleccione grupo...</option>
+          </select>
+          <button id="btn-print-grupal" onclick="imprimirInformeGrupal()"
+            style="display:none; background:#4036e5; color:white; border:none; padding:8px 16px; border-radius:10px; font-weight:700; cursor:pointer; align-items:center; gap:8px; font-size:0.75rem;">
+            🖨️ Imprimir
+          </button>
+        </div>
+      </div>
+
+      <div id="grupal-content"
+        style="overflow: auto; max-height: 75vh; background: white; border-radius: 12px; border: 1px solid #e2e8f0; -webkit-overflow-scrolling: touch; position: relative;">
+        <p style="text-align:center; color:#64748b; padding:3rem;">Seleccione un grupo para generar el informe
+          detallado.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Informe por Asignatura (Contenedor) -->
+  <div id="asignatura-container" style="display:none; margin-top:2rem;">
+    <div class="card">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+        <h2 style="color:var(--primary); margin:0;">Análisis por Asignatura</h2>
+        <div style="display: flex; gap: 10px; align-items: center;">
+          <label style="font-weight: 700; font-size: 0.85rem;">GRUPO:</label>
+          <select id="asig-sel-grado" onchange="cargarMateriasInformeAsignatura()"
+            style="width: auto; padding: 8px 15px; border-radius: 10px; border: 1px solid #e2e8f0;">
+            <option value="">Seleccione grupo...</option>
+          </select>
+          <label style="font-weight: 700; font-size: 0.85rem; margin-left:10px;">ASIGNATURA:</label>
+          <select id="asig-sel-materia" onchange="generarInformeAsignatura()"
+            style="width: auto; padding: 8px 15px; border-radius: 10px; border: 1px solid #e2e8f0; font-weight:700;">
+            <option value="">Seleccione grupo primero...</option>
+          </select>
+          <button onclick="imprimirInformeAsignatura()" class="print-btn admin-only"
+            style="display:none; background:#4036e5; color:white; border:none; padding:8px 16px; border-radius:10px; font-weight:700; cursor:pointer; font-size:0.75rem;">
+            🖨️ Imprimir
+          </button>
+        </div>
+      </div>
+
+      <div id="asignatura-content"
+        style="overflow: auto; max-height: 75vh; background: white; border-radius: 12px; border: 1px solid #e2e8f0; -webkit-overflow-scrolling: touch; position: relative;">
+        <p style="text-align:center; color:#64748b; padding:3rem;">Seleccione un grupo y una asignatura para ver
+          el detalle.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Análisis Detallado por Estudiante (NUEVO) -->
+  <div id="estudiante-detalle-container" style="display:none; margin-top:2rem;">
+    <div id="filtros-est-detalle" class="controls"
+      style="display: grid; grid-template-columns: 1fr 1.5fr 1fr 0.8fr; gap: 1.5rem; align-items: end; background: rgba(255, 255, 255, 0.6); backdrop-filter: blur(20px); padding: 1.5rem; border-radius: 20px; border: 1px solid rgba(255, 255, 255, 0.5); width: 100%; box-sizing: border-box; margin-bottom: 2rem;">
+      <div class="control-group">
+        <label
+          style="display: block; font-size: 0.75rem; font-weight: 800; color: #64748b; margin-bottom: 8px; text-transform: uppercase;">Grado</label>
+        <select id="sel-est-det-grado" onchange="cargarEstudiantesDetalle()"
+          style="width: 100%; padding: 12px; border-radius: 12px; border: 1px solid #cbd5e1; background: white;">
+          <option value="">Grado...</option>
+        </select>
+      </div>
+      <div class="control-group">
+        <label
+          style="display: block; font-size: 0.75rem; font-weight: 800; color: #64748b; margin-bottom: 8px; text-transform: uppercase;">Estudiante</label>
+        <select id="sel-est-det-nombre" onchange="cargarAsignaturasEstudiante()"
+          style="width: 100%; padding: 12px; border-radius: 12px; border: 1px solid #cbd5e1; background: white;">
+          <option value="">Seleccione estudiante...</option>
+        </select>
+      </div>
+      <div class="control-group">
+        <label
+          style="display: block; font-size: 0.75rem; font-weight: 800; color: #64748b; margin-bottom: 8px; text-transform: uppercase;">Asignatura</label>
+        <select id="sel-est-det-asig" onchange="cargarPreguntasEstudiante()"
+          style="width: 100%; padding: 12px; border-radius: 12px; border: 1px solid #cbd5e1; background: white;">
+          <option value="">Asignatura...</option>
+        </select>
+      </div>
+      <div class="control-group">
+        <label
+          style="display: block; font-size: 0.75rem; font-weight: 800; color: #64748b; margin-bottom: 8px; text-transform: uppercase;">Pregunta</label>
+        <select id="sel-est-det-preg" onchange="mostrarAnalisisEstudiante()"
+          style="width: 100%; padding: 12px; border-radius: 12px; border: 1px solid #cbd5e1; background: white;">
+          <option value="">#</option>
+        </select>
+      </div>
+    </div>
+
+    <div id="est-det-main-card" class="card" style="display:none;">
       <div class="dashboard-grid">
-        <!-- Pregunta y Opciones -->
-        <div class="card">
-          <h2 class="question-title" id="pregunta-display-num">Pregunta #</h2>
+        <!-- Pregunta y Opciones (Copiado de Análisis General) -->
+        <div class="card" style="box-shadow:none; border:none; padding:0;">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem;">
+            <h2 class="question-title" id="est-det-pregunta-num" style="margin:0;">Pregunta #</h2>
+            <div id="est-det-status-badge"></div>
+          </div>
           <div
             style="background: rgba(255, 255, 255, 0.3); border: 2px solid rgba(255, 255, 255, 0.2); border-radius: 16px; padding: 1.5rem; margin-bottom: 2rem; backdrop-filter: blur(5px);">
-            <div id="pregunta-media" class="media-container"></div>
-            <!-- Contenedor para imagen automática si existe -->
-            <div id="pregunta-media-auto" class="media-container" style="display:none;"></div>
-            <p id="pregunta-texto"
+            <div id="est-det-media" class="media-container"></div>
+            <div id="est-det-media-auto" class="media-container" style="display:none;"></div>
+            <p id="est-det-texto"
               style="font-size: 1.1rem; color: var(--text); font-weight: 500; margin: 0; line-height: 1.6;"></p>
           </div>
 
-          <div id="options-list" class="options-list">
-            <div id="opt-a" class="option">
-              <span class="option-letter">A</span>
-              <div id="txt-a" class="option-content"></div>
+          <div id="est-det-options" class="options-list">
+            <div id="est-opt-a" class="option"><span class="option-letter">A</span>
+              <div class="option-content">
+                <div id="est-txt-a"></div>
+                <div id="est-media-opt-a"></div>
+              </div>
             </div>
-            <div id="opt-b" class="option">
-              <span class="option-letter">B</span>
-              <div id="txt-b" class="option-content"></div>
+            <div id="est-opt-b" class="option"><span class="option-letter">B</span>
+              <div class="option-content">
+                <div id="est-txt-b"></div>
+                <div id="est-media-opt-b"></div>
+              </div>
             </div>
-            <div id="opt-c" class="option">
-              <span class="option-letter">C</span>
-              <div id="txt-c" class="option-content"></div>
+            <div id="est-opt-c" class="option"><span class="option-letter">C</span>
+              <div class="option-content">
+                <div id="est-txt-c"></div>
+                <div id="est-media-opt-c"></div>
+              </div>
             </div>
-            <div id="opt-d" class="option">
-              <span class="option-letter">D</span>
-              <div id="txt-d" class="option-content"></div>
+            <div id="est-opt-d" class="option"><span class="option-letter">D</span>
+              <div class="option-content">
+                <div id="est-txt-d"></div>
+                <div id="est-media-opt-d"></div>
+              </div>
             </div>
           </div>
         </div>
 
-        <!-- Gráfica -->
-        <div class="card">
-          <h2 class="question-title">Distribución de Respuestas</h2>
-          <div class="chart-container">
-            <canvas id="barChart"></canvas>
-          </div>
-          <div class="stats-summary">
-            <div class="stat-box"
-              style="background: rgba(99, 102, 241, 0.1); color: var(--primary); border: 2px solid rgba(99, 102, 241, 0.2);">
-              <span id="stat-total" class="stat-val" style="color: var(--primary);">0</span>
-              <span class="stat-label" style="color: var(--primary);">Personas Evaluadas</span>
+        <!-- Resumen del Estudiante -->
+        <div class="card" style="box-shadow:none; border:none; padding:0;">
+          <h2 class="question-title">Resumen del Estudiante</h2>
+          <div class="stats-summary" style="grid-template-columns: 1fr; gap: 10px;">
+            <div class="stat-box" style="background: white; border: 1px solid #e2e8f0;">
+              <span id="est-det-resp-est" class="stat-val" style="font-size: 2rem;">-</span>
+              <span class="stat-label">Su Respuesta</span>
             </div>
-            <div class="stat-box">
-              <span id="stat-correctas" class="stat-val">0</span>
-              <span class="stat-label">Aciertos</span>
+            <div class="stat-box" style="background: #f0fdf4; border: 1px solid #bbf7d0;">
+              <span id="est-det-resp-key" class="stat-val" style="color: #16a34a; font-size: 2rem;">-</span>
+              <span class="stat-label">Respuesta Correcta</span>
             </div>
-            <div id="stat-p-box" class="stat-box">
-              <span id="stat-porcentaje" class="stat-val">0%</span>
-              <span class="stat-label">% Éxito</span>
+            <div id="est-det-box-pts" class="stat-box">
+              <span id="est-det-pts" class="stat-val">0</span>
+              <span class="stat-label">Puntos Ganados</span>
             </div>
           </div>
-        </div>
-      </div> <!-- Cierra dashboard-grid -->
-    </div> <!-- Cierra resultado-container -->
-
-    <!-- Reporte Individual (Contenedor) -->
-    <div id="individual-container" style="display:none; margin-top:2rem;">
-      <div class="card">
-        <h2 style="margin-bottom:1.5rem; color:var(--primary);">Reporte de Resultados por Estudiante</h2>
-
-        <!-- Vista Simplificada para Estudiantes -->
-        <div id="student-portal-info"
-          style="display:none; background:#f0f9ff; border:1px solid #bae6fd; padding:1.5rem; border-radius:16px; text-align:center; margin-bottom:1.5rem;">
-          <h3 style="color:#0369a1; margin-bottom:0.5rem;">¡Hola, <span id="st-display-name">Estudiante</span>!</h3>
-          <p style="color:#0c4a6e; font-size:0.9rem; margin-bottom:1rem;">Tu informe individual se ha generado
-            automáticamente. Puedes consultarlo e imprimirlo abajo.</p>
-          <div style="display:flex; gap:10px; justify-content:center;">
-            <button onclick="logout()"
-              style="background:#fee2e2; color:#ef4444; border:none; padding:10px 24px; border-radius:12px; font-weight:800; cursor:pointer; font-size:0.9rem;">CERRAR
-              SESIÓN</button>
+          <div
+            style="margin-top:20px; padding:15px; background:#f8fafc; border-radius:12px; font-size:0.85rem; color:#64748b;">
+            <p><b>Prueba:</b> <span id="est-det-quiz-name"></span></p>
+            <p><b>Puntaje Total:</b> <span id="est-det-score"></span>%</p>
           </div>
-        </div>
-
-        <div id="rep-filters"
-          style="display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:1rem; margin-bottom:2rem;">
-          <div>
-            <label style="display:block; font-size:0.8rem; font-weight:700; margin-bottom:0.5rem;">Sede</label>
-            <select id="rep-sede" onchange="cargarGradosReporte()"
-              style="width:100%; padding:10px; border-radius:10px; border:1px solid #e2e8f0;">
-              <option value="Central">Central</option>
-              <option value="Yanaconas">Yanaconas</option>
-              <option value="Pisoje Bajo">Pisoje Bajo</option>
-              <option value="Pueblillo">Pueblillo</option>
-              <option value="Sendero">Sendero</option>
-            </select>
-          </div>
-          <div>
-            <label style="display:block; font-size:0.8rem; font-weight:700; margin-bottom:0.5rem;">Grado</label>
-            <select id="rep-grado" onchange="cargarEstudiantesReporte()"
-              style="width:100%; padding:10px; border-radius:10px; border:1px solid #e2e8f0;"></select>
-          </div>
-          <div>
-            <label style="display:block; font-size:0.8rem; font-weight:700; margin-bottom:0.5rem;">Estudiante</label>
-            <select id="rep-estudiante" onchange="generarReporteIndividual()"
-              style="width:100%; padding:10px; border-radius:10px; border:1px solid #e2e8f0;">
-              <option value="">Seleccione estudiante...</option>
-            </select>
-          </div>
-          <div style="display:flex; gap:10px; flex-wrap:wrap;">
-            <button id="btn-print-basica" onclick="imprimirTodaLaSede('basica')" class="print-btn admin-only"
-              style="background:#4f46e5; color:white; border:none; padding:10px 20px; border-radius:12px; font-weight:700; cursor:pointer;">
-              IMPRIMIR SEDE (3° a 9°)</button>
-            <button id="btn-print-superior" onclick="imprimirTodaLaSede('superior')" class="print-btn admin-only"
-              style="background:#10b981; color:white; border:none; padding:10px 20px; border-radius:12px; font-weight:700; cursor:pointer;">
-              IMPRIMIR SEDE (10° y 11°)</button>
-          </div>
-        </div>
-        <div id="reporte-content">
-          <p style="text-align:center; color:#64748b; padding:3rem;">Seleccione un estudiante para ver su reporte
-            detallado.</p>
         </div>
       </div>
     </div>
+  </div>
+  </div>
+  </div>
 
-    <!-- Estadísticas (Contenedor) -->
-    <div id="estadisticas-container" style="display:none; margin-top:2rem;">
-      <div style="display: grid; grid-template-columns: 1fr; gap: 2rem; margin-bottom: 2rem;">
-        <div class="card">
-          <h2 class="question-title">Promedio Detallado por Grupo</h2>
-          <div class="chart-container" style="height: 400px;">
-            <canvas id="chart-grados"></canvas>
-          </div>
-        </div>
+  <!-- Panel de Administración (Modal con Cards) -->
+  <div class="admin-trigger" onclick="toggleAdmin()"
+    style="display:none; position:fixed; bottom:20px; right:20px; padding:12px 24px; background:var(--text); color:white; border-radius:50px; cursor:pointer; font-weight:700; box-shadow:0 10px 20px rgba(0,0,0,0.2); z-index:4000;">
+    ⚙️ Administrador de Datos</div>
+
+  <div class="admin-modal" id="admin-modal">
+    <div class="admin-container">
+      <div class="admin-header">
+        <h2 style="color:var(--text); font-weight:800;">🛠️ Panel Administrativo</h2>
+        <button onclick="toggleAdmin()"
+          style="background:#f1f5f9; border:none; padding:8px 15px; border-radius:12px; cursor:pointer; font-weight:800; color:#ef4444;">CERRAR</button>
       </div>
 
-      <div class="card" style="margin-bottom: 2rem;">
-        <div
-          style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; border-bottom: 2px solid var(--bg); padding-bottom: 0.5rem;">
-          <h2 class="question-title" style="margin: 0; border: none;">Rendimiento por Asignaturas</h2>
-          <div style="display: flex; align-items: center; gap: 10px;">
-            <label style="font-weight: 700; font-size: 0.85rem; color: var(--primary);">DETALLE GRADO:</label>
-            <select id="est-sel-grado" onchange="actualizarGraficoAsignaturas()"
-              style="width: auto; padding: 5px 15px;">
-              <option value="">Cargando...</option>
-            </select>
+      <div class="admin-grid">
+        <!-- CARD 1: ZIPGRADE -->
+        <div class="admin-card">
+          <h5>📊 Carga de Datos ZipGrade (TSV/CSV)</h5>
+          <div style="background:#f1f5f9; padding:10px; border-radius:8px; margin-bottom:10px; font-size:0.75rem;">
+            <p style="margin-bottom:5px; font-weight:600;">Selecciona el tipo de archivo:</p>
+            <label style="display:flex; align-items:center; gap:5px; cursor:pointer; margin-bottom:3px;">
+              <input type="radio" name="upload-type" value="auto" checked> 🤖 Detección Automática
+            </label>
+            <label style="display:flex; align-items:center; gap:5px; cursor:pointer; margin-bottom:3px;">
+              <input type="radio" name="upload-type" value="consolidado"> 📋 Análisis Consolidado (TSV)
+            </label>
+            <label style="display:flex; align-items:center; gap:5px; cursor:pointer; margin-bottom:3px;">
+              <input type="radio" name="upload-type" value="estudiantes"> 👥 Reporte Estudiantes (ZipGrade)
+            </label>
+            <label style="display:flex; align-items:center; gap:5px; cursor:pointer;">
+              <input type="radio" name="upload-type" value="completos"> 📝 Reportes FULL (Quizizz)
+            </label>
+            <hr style="border:0; border-top:1px solid #e2e8f0; margin:10px 0;">
+            <label style="display:flex; align-items:center; gap:5px; cursor:pointer; color:#ef4444; font-weight:700;">
+              <input type="checkbox" id="auto-reset-all"> 🔥 Limpiar TODO antes de cargar
+            </label>
           </div>
-        </div>
-        <div class="chart-container" style="height: 400px;">
-          <canvas id="chart-materias"></canvas>
-        </div>
-      </div>
-
-      <div class="card" style="margin-bottom: 2rem;">
-        <div
-          style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; border-bottom: 2px solid var(--bg); padding-bottom: 0.5rem;">
-          <h2 class="question-title" style="margin: 0; border: none;">Comparativo de Grupos por Asignatura</h2>
-          <div style="display: flex; align-items: center; gap: 10px;">
-            <label style="font-weight: 700; font-size: 0.85rem; color: var(--primary);">VER NIVEL:</label>
-            <select id="comp-sel-grado" onchange="actualizarGraficoNivelAsignaturas()"
-              style="width: auto; padding: 5px 15px;">
-              <option value="">Cargando...</option>
-            </select>
+          <input type="file" id="csv-file" accept=".csv,.tsv" multiple
+            style="margin-bottom:10px; font-size:0.8rem; width:100%;">
+          <div id="admin-debug"
+            style="display:none; background:#f8fafc; padding:10px; border-radius:8px; font-size:0.7rem;">
+            <table id="debug-table" style="width:100%; border-collapse:collapse;"></table>
+            <button id="btn-confirm-upload" onclick="finalizarSubida()"
+              style="width:100%; margin-top:10px; background:var(--success); color:white; border:none; padding:10px; border-radius:8px; font-weight:700; cursor:pointer;">¡SUBIR
+              DATOS!</button>
           </div>
-        </div>
-        <div class="chart-container" style="height: 450px;">
-          <canvas id="chart-comparativo-grupos"></canvas>
-        </div>
-      </div>
-    </div>
-
-    <!-- Informe Grupal (Contenedor) -->
-    <div id="grupal-container" style="display:none; margin-top:2rem;">
-      <div class="card">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
-          <h2 style="color:var(--primary); margin:0;">Informe General por Grupo</h2>
-          <div style="display: flex; gap: 10px; align-items: center;">
-            <label style="font-weight: 700; font-size: 0.85rem;">GRUPO:</label>
-            <select id="gru-sel-grado" onchange="generarInformeGrupal()"
-              style="width: auto; padding: 8px 20px; border-radius: 10px; border: 1px solid #e2e8f0;">
-              <option value="">Seleccione grupo...</option>
-            </select>
-            <button id="btn-print-grupal" onclick="imprimirInformeGrupal()"
-              style="display:none; background:#4036e5; color:white; border:none; padding:10px 20px; border-radius:12px; font-weight:700; cursor:pointer; align-items:center; gap:8px;">
-              🖨️ Imprimir
-            </button>
+          <button onclick="previsualizarDatos()"
+            style="background:var(--primary); color:white; border:none; padding:12px; border-radius:12px; font-weight:700; cursor:pointer;">1.
+            ANALIZAR ARCHIVO</button>
+          <div id="admin-status" style="margin-top:10px; font-size:0.75rem; color:#64748b; font-weight:bold;">
           </div>
         </div>
 
-        <div id="grupal-content"
-          style="overflow: auto; max-height: 75vh; background: white; border-radius: 12px; border: 1px solid #e2e8f0; -webkit-overflow-scrolling: touch; position: relative;">
-          <p style="text-align:center; color:#64748b; padding:3rem;">Seleccione un grupo para generar el informe
-            detallado.</p>
-        </div>
-      </div>
-    </div>
-
-    <!-- Informe por Asignatura (Contenedor) -->
-    <div id="asignatura-container" style="display:none; margin-top:2rem;">
-      <div class="card">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
-          <h2 style="color:var(--primary); margin:0;">Análisis por Asignatura</h2>
-          <div style="display: flex; gap: 10px; align-items: center;">
-            <label style="font-weight: 700; font-size: 0.85rem;">GRUPO:</label>
-            <select id="asig-sel-grado" onchange="cargarMateriasInformeAsignatura()"
-              style="width: auto; padding: 8px 15px; border-radius: 10px; border: 1px solid #e2e8f0;">
-              <option value="">Seleccione grupo...</option>
+        <!-- CARD 2: MAPEO -->
+        <div class="admin-card">
+          <h5>🖼️ Gestión de Imágenes</h5>
+          <div
+            style="background:#f1f5f9; padding:10px; border-radius:8px; margin-bottom:10px; font-size:0.7rem; color:#475569;">
+            <p style="margin:0 0 5px 0; font-weight:bold;">Nomenclatura Específica:</p>
+            <ul style="margin:0; padding-left:15px;">
+              <li>Preguntas: <code>[Num][CodMat][Grado].png</code> (Ej: 15M9.png)</li>
+              <li>Opciones: <code>[Num][CodMat][Grado][Letra].png</code> (Ej: 15M9A.png)</li>
+            </ul>
+            <p style="margin:5px 0 0 0;"><b>Códigos Materia:</b> M(Mat), S(Soc), L(Len), N(Nat), I(Ing), C(Ciu),
+              B(Bio), F(Fis), Q(Qui), E(Eti), P(Fil).</p>
+          </div>
+          <p style="font-size:0.8rem; color:#64748b;">Asocia imágenes a las preguntas y configura las asignaturas
+            por número.</p>
+          <div style="display:flex; gap:5px;">
+            <select id="aimg-grado" onchange="cargarAsignaturasAdminImg()"
+              style="flex:1; padding:8px; border-radius:8px; border:1px solid #e2e8f0; font-size:0.8rem;">
+              <option value="">Grado...</option>
             </select>
-            <label style="font-weight: 700; font-size: 0.85rem; margin-left:10px;">ASIGNATURA:</label>
-            <select id="asig-sel-materia" onchange="generarInformeAsignatura()"
-              style="width: auto; padding: 8px 15px; border-radius: 10px; border: 1px solid #e2e8f0; font-weight:700;">
-              <option value="">Seleccione grupo primero...</option>
+            <select id="aimg-periodo" onchange="cargarAsignaturasAdminImg()"
+              style="flex:1; padding:8px; border-radius:8px; border:1px solid #e2e8f0; font-size:0.8rem;">
+              <option value="1">P1</option>
+              <option value="2">P2</option>
+              <option value="3">Final</option>
             </select>
-            <button onclick="imprimirInformeAsignatura()" class="print-btn admin-only"
-              style="display:none; background:#4036e5; color:white; border:none; padding:10px 20px; border-radius:12px; font-weight:700; cursor:pointer;">
-              🖨️ Imprimir
-            </button>
+          </div>
+          <select id="aimg-asig" onchange="cargarPreguntasAdminImg()"
+            style="padding:8px; border-radius:8px; border:1px solid #e2e8f0; font-size:0.8rem;">
+            <option value="">Asignatura...</option>
+          </select>
+          <select id="aimg-preg" onchange="verDetallePreguntaAdmin()"
+            style="padding:8px; border-radius:8px; border:1px solid #e2e8f0; font-size:0.8rem;">
+            <option value="">Pregunta...</option>
+          </select>
+          <div id="aimg-detalle"
+            style="display:none; background:#f8fafc; padding:10px; border-radius:12px; border:1px solid #e2e8f0;">
+            <div id="aimg-fields" style="display:flex; flex-direction:column; gap:8px;"></div>
           </div>
         </div>
 
-        <div id="asignatura-content"
-          style="overflow: auto; max-height: 75vh; background: white; border-radius: 12px; border: 1px solid #e2e8f0; -webkit-overflow-scrolling: touch; position: relative;">
-          <p style="text-align:center; color:#64748b; padding:3rem;">Seleccione un grupo y una asignatura para ver
-            el detalle.</p>
-        </div>
-      </div>
-    </div>
-
-    <!-- Panel de Administración (Modal con Cards) -->
-    <div class="admin-trigger" onclick="toggleAdmin()"
-      style="display:none; position:fixed; bottom:20px; right:20px; padding:12px 24px; background:var(--text); color:white; border-radius:50px; cursor:pointer; font-weight:700; box-shadow:0 10px 20px rgba(0,0,0,0.2); z-index:4000;">
-      ⚙️ Administrador de Datos</div>
-
-    <div class="admin-modal" id="admin-modal">
-      <div class="admin-container">
-        <div class="admin-header">
-          <h2 style="color:var(--text); font-weight:800;">🛠️ Panel Administrativo</h2>
-          <button onclick="toggleAdmin()"
-            style="background:#f1f5f9; border:none; padding:8px 15px; border-radius:12px; cursor:pointer; font-weight:800; color:#ef4444;">CERRAR</button>
-        </div>
-
-        <div class="admin-grid">
-          <!-- CARD 1: ZIPGRADE -->
-          <div class="admin-card">
-            <h5>📊 Carga de Datos ZipGrade (TSV/CSV)</h5>
-            <div style="background:#f1f5f9; padding:10px; border-radius:8px; margin-bottom:10px; font-size:0.75rem;">
-              <p style="margin-bottom:5px; font-weight:600;">Selecciona el tipo de archivo:</p>
-              <label style="display:flex; align-items:center; gap:5px; cursor:pointer; margin-bottom:3px;">
-                <input type="radio" name="upload-type" value="auto" checked> 🤖 Detección Automática
-              </label>
-              <label style="display:flex; align-items:center; gap:5px; cursor:pointer; margin-bottom:3px;">
-                <input type="radio" name="upload-type" value="consolidado"> 📋 Análisis Consolidado (TSV)
-              </label>
-              <label style="display:flex; align-items:center; gap:5px; cursor:pointer;">
-                <input type="radio" name="upload-type" value="estudiantes"> 👥 Reporte Estudiantes (CSV/TSV)
-              </label>
-              <hr style="border:0; border-top:1px solid #e2e8f0; margin:10px 0;">
-              <label style="display:flex; align-items:center; gap:5px; cursor:pointer; color:#ef4444; font-weight:700;">
-                <input type="checkbox" id="auto-reset-all"> 🔥 Limpiar TODO antes de cargar
-              </label>
-            </div>
-            <input type="file" id="csv-file" accept=".csv,.tsv" multiple
-              style="margin-bottom:10px; font-size:0.8rem; width:100%;">
-            <div id="admin-debug"
-              style="display:none; background:#f8fafc; padding:10px; border-radius:8px; font-size:0.7rem;">
-              <table id="debug-table" style="width:100%; border-collapse:collapse;"></table>
-              <button id="btn-confirm-upload" onclick="finalizarSubida()"
-                style="width:100%; margin-top:10px; background:var(--success); color:white; border:none; padding:10px; border-radius:8px; font-weight:700; cursor:pointer;">¡SUBIR
-                DATOS!</button>
-            </div>
-            <button onclick="previsualizarDatos()"
-              style="background:var(--primary); color:white; border:none; padding:12px; border-radius:12px; font-weight:700; cursor:pointer;">1.
-              ANALIZAR ARCHIVO</button>
-            <div id="admin-status" style="margin-top:10px; font-size:0.75rem; color:#64748b; font-weight:bold;">
-            </div>
-          </div>
-
-          <!-- CARD 2: MAPEO -->
-          <div class="admin-card">
-            <h5>🖼️ Gestión de Imágenes</h5>
-            <div
-              style="background:#f1f5f9; padding:10px; border-radius:8px; margin-bottom:10px; font-size:0.7rem; color:#475569;">
-              <p style="margin:0 0 5px 0; font-weight:bold;">Nomenclatura Específica:</p>
-              <ul style="margin:0; padding-left:15px;">
-                <li>Preguntas: <code>[Num][CodMat][Grado].png</code> (Ej: 15M9.png)</li>
-                <li>Opciones: <code>[Num][CodMat][Grado][Letra].png</code> (Ej: 15M9A.png)</li>
-              </ul>
-              <p style="margin:5px 0 0 0;"><b>Códigos Materia:</b> M(Mat), S(Soc), L(Len), N(Nat), I(Ing), C(Ciu),
-                B(Bio), F(Fis), Q(Qui), E(Eti), P(Fil).</p>
-            </div>
-            <p style="font-size:0.8rem; color:#64748b;">Asocia imágenes a las preguntas y configura las asignaturas
-              por número.</p>
-            <div style="display:flex; gap:5px;">
-              <select id="aimg-grado" onchange="cargarAsignaturasAdminImg()"
-                style="flex:1; padding:8px; border-radius:8px; border:1px solid #e2e8f0; font-size:0.8rem;">
-                <option value="">Grado...</option>
-              </select>
-              <select id="aimg-periodo" onchange="cargarAsignaturasAdminImg()"
-                style="flex:1; padding:8px; border-radius:8px; border:1px solid #e2e8f0; font-size:0.8rem;">
-                <option value="1">P1</option>
-                <option value="2">P2</option>
-                <option value="3">Final</option>
-              </select>
-            </div>
-            <select id="aimg-asig" onchange="cargarPreguntasAdminImg()"
+        <!-- CARD 3: USUARIOS -->
+        <div class="admin-card">
+          <h5>👥 Gestión de Usuarios</h5>
+          <div style="display:flex; flex-direction:column; gap:8px;">
+            <input type="email" id="nu-email" placeholder="Email"
               style="padding:8px; border-radius:8px; border:1px solid #e2e8f0; font-size:0.8rem;">
-              <option value="">Asignatura...</option>
-            </select>
-            <select id="aimg-preg" onchange="verDetallePreguntaAdmin()"
+            <input type="text" id="nu-nombre" placeholder="Nombre"
               style="padding:8px; border-radius:8px; border:1px solid #e2e8f0; font-size:0.8rem;">
-              <option value="">Pregunta...</option>
+            <input type="password" id="nu-pass" placeholder="Password"
+              style="padding:8px; border-radius:8px; border:1px solid #e2e8f0; font-size:0.8rem;">
+            <select id="nu-rol" style="padding:8px; border-radius:8px; border:1px solid #e2e8f0; font-size:0.8rem;">
+              <option value="lector">Lector</option>
+              <option value="admin">Admin</option>
+              <option value="superadmin">Superadmin</option>
             </select>
-            <div id="aimg-detalle"
-              style="display:none; background:#f8fafc; padding:10px; border-radius:12px; border:1px solid #e2e8f0;">
-              <div id="aimg-fields" style="display:flex; flex-direction:column; gap:8px;"></div>
-            </div>
+            <input type="text" id="nu-grado" placeholder="Grado/Grupo (Ej: 1101 o primaria)"
+              style="padding:8px; border-radius:8px; border:1px solid #e2e8f0; font-size:0.8rem;">
+            <button onclick="crearUsuario()"
+              style="background:var(--primary); color:white; border:none; padding:10px; border-radius:8px; font-weight:700; cursor:pointer;">CREAR
+              USUARIO</button>
           </div>
+        </div>
 
-          <!-- CARD 3: USUARIOS -->
-          <div class="admin-card">
-            <h5>👥 Gestión de Usuarios</h5>
-            <div style="display:flex; flex-direction:column; gap:8px;">
-              <input type="email" id="nu-email" placeholder="Email"
-                style="padding:8px; border-radius:8px; border:1px solid #e2e8f0; font-size:0.8rem;">
-              <input type="text" id="nu-nombre" placeholder="Nombre"
-                style="padding:8px; border-radius:8px; border:1px solid #e2e8f0; font-size:0.8rem;">
-              <input type="password" id="nu-pass" placeholder="Password"
-                style="padding:8px; border-radius:8px; border:1px solid #e2e8f0; font-size:0.8rem;">
-              <select id="nu-rol" style="padding:8px; border-radius:8px; border:1px solid #e2e8f0; font-size:0.8rem;">
-                <option value="lector">Lector</option>
-                <option value="admin">Admin</option>
-                <option value="superadmin">Superadmin</option>
-              </select>
-              <input type="text" id="nu-grado" placeholder="Grado/Grupo (Ej: 1101 o primaria)"
-                style="padding:8px; border-radius:8px; border:1px solid #e2e8f0; font-size:0.8rem;">
-              <button onclick="crearUsuario()"
-                style="background:var(--primary); color:white; border:none; padding:10px; border-radius:8px; font-weight:700; cursor:pointer;">CREAR
-                USUARIO</button>
-            </div>
-          </div>
+        <!-- CARD 4: BASE DE DATOS ESTUDIANTES -->
+        <div class="admin-card">
+          <h5>🎓 Base de Datos Estudiantes</h5>
+          <p style="font-size:0.75rem; color:#64748b; margin-bottom:10px;">Sincroniza la lista oficial desde el
+            archivo CSV (SEDE;Estudiante;Identificación).</p>
+          <input type="file" id="students-csv" accept=".csv" style="font-size:0.75rem; margin-bottom:10px; width:100%;">
+          <button onclick="importarBaseEstudiantes()" id="btn-sync-students"
+            style="background:#8b5cf6; color:white; border:none; padding:10px; border-radius:8px; font-weight:700; cursor:pointer; width:100%;">SINCRONIZAR
+            ESTUDIANTES</button>
+          <div id="students-sync-status" style="margin-top:8px; font-size:0.7rem; font-weight:700;"></div>
+        </div>
 
-          <!-- CARD 4: BASE DE DATOS ESTUDIANTES -->
-          <div class="admin-card">
-            <h5>🎓 Base de Datos Estudiantes</h5>
-            <p style="font-size:0.75rem; color:#64748b; margin-bottom:10px;">Sincroniza la lista oficial desde el
-              archivo CSV (SEDE;Estudiante;Identificación).</p>
-            <input type="file" id="students-csv" accept=".csv"
-              style="font-size:0.75rem; margin-bottom:10px; width:100%;">
-            <button onclick="importarBaseEstudiantes()" id="btn-sync-students"
-              style="background:#8b5cf6; color:white; border:none; padding:10px; border-radius:8px; font-weight:700; cursor:pointer; width:100%;">SINCRONIZAR
-              ESTUDIANTES</button>
-            <div id="students-sync-status" style="margin-top:8px; font-size:0.7rem; font-weight:700;"></div>
-          </div>
-
-          <!-- CARD 5: SISTEMA -->
-          <div class="admin-card">
-            <h5>⚠️ Gestión de Datos y Reset</h5>
-            <p style="font-size:0.8rem; color:#64748b;">Usa esta opción para LIMPIAR TODO (Resultados, Banco de
-              Preguntas y Notas) y empezar de cero.</p>
-            <button onclick="resetearBaseDeDatos()"
-              style="background:#ef4444; color:white; border:none; padding:12px; border-radius:12px; font-weight:700; cursor:pointer; width:100%; margin-bottom: 10px;">🔥
-              BORRADO TOTAL (RESET)</button>
-            <button onclick="corregirNombresBaseDeDatos()"
-              style="background:#f59e0b; color:white; border:none; padding:12px; border-radius:12px; font-weight:700; cursor:pointer; width:100%;">🔧
-              CORREGIR NOMBRES (FIRST -> LAST)</button>
-            <p style="font-size:0.65rem; color:#94a3b8; text-align:center; margin-top:10px;">Versión 2.5 - Soporte
-              TSV
-              Consolidado Activo</p>
-          </div>
+        <!-- CARD 5: SISTEMA -->
+        <div class="admin-card">
+          <h5>⚠️ Gestión de Datos y Reset</h5>
+          <p style="font-size:0.8rem; color:#64748b;">Usa esta opción para LIMPIAR TODO (Resultados, Banco de
+            Preguntas y Notas) y empezar de cero.</p>
+          <button onclick="resetearBaseDeDatos()"
+            style="background:#ef4444; color:white; border:none; padding:12px; border-radius:12px; font-weight:700; cursor:pointer; width:100%; margin-bottom: 10px;">🔥
+            BORRADO TOTAL (RESET)</button>
+          <button onclick="corregirNombresBaseDeDatos()"
+            style="background:#f59e0b; color:white; border:none; padding:12px; border-radius:12px; font-weight:700; cursor:pointer; width:100%;">🔧
+            CORREGIR NOMBRES (FIRST -> LAST)</button>
+          <p style="font-size:0.65rem; color:#94a3b8; text-align:center; margin-top:10px;">Versión 2.5 - Soporte
+            TSV
+            Consolidado Activo</p>
         </div>
       </div>
     </div>
+  </div>
 
   </main>
 
-  <footer>
+  <footer style="background: white; border-top: 2px solid #f1f5f9; padding: 4rem 0; margin-top: 8rem;">
     <div class="container" style="display: flex; flex-direction: column; align-items: center; gap: 1rem;">
       <div style="display: flex; align-items: center; gap: 20px; justify-content: center;">
         <img src="https://txnecdeccianklqqyrav.supabase.co/storage/v1/object/public/assets/andresanbordessinfondo.png"
@@ -2164,10 +2394,9 @@
           style="height: 42px; opacity: 1;">
       </div>
       <p class="footer-copy"
-        style="margin: 0; color: #64748b; font-weight: 700; font-size: 0.85rem; letter-spacing: 0.5px;">© 2026 AndréSán
-        - Evaluándonos System</p>
+        style="margin: 0; color: #64748b; font-weight: 800; font-size: 0.9rem; letter-spacing: 0.5px;">© 2026 AndréSán
+        - Evaluándonos System <span style="color:#4f46e5; margin-left:10px;">[ v64 ACTIVADA ]</span></p>
     </div>
-    </>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -2196,6 +2425,7 @@
       let totalGradoMap = {};
       let myChart = null;
       let chartGrados = null, chartMaterias = null, chartSedes = null, chartComparativo = null;
+      let currentDetalleData = [];
       let isStudentMode = false;
       let studentId = "";
 
@@ -2442,28 +2672,42 @@
         options.forEach(opt => opt.style.display = 'block');
       }
 
+      function selectAnalisis(type) {
+        if (type === 'general') {
+          switchMainTab('analisis');
+          switchSubAnalisis('general');
+        } else {
+          switchMainTab('estudiante_detalle');
+          switchSubAnalisis('estudiante');
+        }
+      }
+
       async function switchMainTab(tab) {
         showLoading(true);
+        currentView = tab;
         isEnPestañaGrupal = (tab === 'grupal');
 
         // Update Tab Visuals
-        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-        const informesParent = $('tab-informes-parent');
-        if (informesParent) informesParent.classList.remove('active');
+        document.querySelectorAll('.tab-btn').forEach(b => {
+          b.classList.remove('active');
+          b.style.background = 'transparent';
+          b.style.color = 'inherit';
+        });
 
-        if (['individual', 'grupal', 'asignatura'].includes(tab)) {
-          if (informesParent) informesParent.classList.add('active');
-        } else {
-          const activeBtn = $(`tab-${tab}`);
-          if (activeBtn) activeBtn.classList.add('active');
+        const activeBtn = $(`tab-${tab}`);
+        if (activeBtn) {
+          activeBtn.classList.add('active');
+          // El CSS de .tab-btn.active se encargará del fondo azul
         }
 
-        // Visibility Toggle
-        const containerIds = ['resultado-container', 'filtros-container', 'individual-container', 'estadisticas-container', 'grupal-container', 'asignatura-container'];
+        // Visibility Toggle (Limpiar todos los posibles contenedores)
+        const containerIds = ['resultado-container', 'individual-container', 'estadisticas-container', 'grupal-container', 'asignatura-container', 'estudiante-detalle-container'];
         containerIds.forEach(id => { if ($(id)) $(id).style.display = 'none'; });
 
+        // Mapeo de vistas (agregamos estudiante_detalle como parte de resultado-container o similar)
         const tabMap = {
-          'analisis': ['resultado-container', 'filtros-container'],
+          'analisis': ['resultado-container'],
+          'estudiante_detalle': ['resultado-container'],
           'individual': ['individual-container'],
           'estadisticas': ['estadisticas-container'],
           'grupal': ['grupal-container'],
@@ -2490,8 +2734,14 @@
             await cargarGruposInformeAsignatura();
             filtrarMateriasEstaticas();
           }
-          if (tab === 'analisis' && $('sel-grado').value && $('sel-pregunta').value) {
-            await mostrarAnalisis();
+          if (tab === 'analisis') {
+            // Por defecto abrir General si no hay nada seleccionado
+            if ($('analisis-general-view').style.display === 'none' && $('analisis-estudiante-view').style.display === 'none') {
+              switchSubAnalisis('general');
+            }
+            if ($('sel-grado').value && $('sel-pregunta').value) {
+              await mostrarAnalisis();
+            }
           }
         } catch (err) {
           console.error("Error switching tab:", err);
@@ -2503,6 +2753,58 @@
         if (mobTab) mobTab.classList.add('active');
 
         showLoading(false);
+      }
+
+      function toggleDropdown(id) {
+        const el = $(id);
+        const isOpen = el.classList.contains('open');
+        // Cierre forzado de todos los dropdowns
+        document.querySelectorAll('.dropdown').forEach(d => d.classList.remove('open'));
+        if (!isOpen) el.classList.add('open');
+      }
+
+      document.addEventListener('click', function (e) {
+        if (!e.target.closest('.dropdown')) {
+          document.querySelectorAll('.dropdown').forEach(d => d.classList.remove('open'));
+        }
+      });
+
+      function selectAnalisis(view) {
+        // Cerrar dropdowns inmediatamente
+        document.querySelectorAll('.dropdown').forEach(d => d.classList.remove('open'));
+        switchMainTab('analisis');
+        switchSubAnalisis(view);
+      }
+
+      function switchSubAnalisis(view) {
+        const isGen = view === 'general';
+        
+        // Bloqueo estricto por requerimiento: Solo Super Admin ve análisis por estudiante
+        if (!isGen && currentRole !== 'superadmin') {
+          alert("Acceso Restringido: Solo el Super Administrador puede ver el análisis detallado por estudiante.");
+          switchSubAnalisis('general');
+          return;
+        }
+
+        if ($('analisis-general-view')) $('analisis-general-view').style.display = isGen ? 'block' : 'none';
+        if ($('estudiante-detalle-container')) $('estudiante-detalle-container').style.display = isGen ? 'none' : 'block';
+
+        if (!isGen) {
+          cargarGradosDetalle();
+        }
+
+        // Estilos de botones
+        const btnGen = $('btn-sub-analisis-general');
+        const btnEst = $('btn-sub-analisis-estudiante');
+
+        if (isGen) {
+          btnGen.style.background = 'white'; btnGen.style.color = 'var(--primary)'; btnGen.style.boxShadow = '0 2px 8px rgba(0,0,0,0.1)';
+          btnEst.style.background = 'transparent'; btnEst.style.color = '#64748b'; btnEst.style.boxShadow = 'none';
+        } else {
+          btnEst.style.background = 'white'; btnEst.style.color = 'var(--primary)'; btnEst.style.boxShadow = '0 2px 8px rgba(0,0,0,0.1)';
+          btnGen.style.background = 'transparent'; btnGen.style.color = '#64748b'; btnGen.style.boxShadow = 'none';
+          cargarGradosDetalle(); // Cargar datos iniciales del detalle
+        }
       }
 
       function toggleAdmin() {
@@ -2857,13 +3159,16 @@
               userSede = assignedGrade ? detectarSede(assignedGrade) : null;
             }
 
-            // === ELEVACIÓN DE PERMISOS PARA SEDES RURALES ===
-            const sedesRurales = ['PUEBLILLO', 'SENDERO', 'YANACONAS', 'PISOJE BAJO'];
-            const userSedeClean = userSede ? userSede.trim().toUpperCase() : '';
-            const profileSede = assignedGrade ? detectarSede(assignedGrade).trim().toUpperCase() : '';
+            const profileSede = (perfil && perfil.sede) ? perfil.sede.toUpperCase() : '';
+            const userSedeClean = userSede ? userSede.toUpperCase() : '';
+            const assignedLower = assignedGrade ? assignedGrade.toString().toLowerCase() : '';
 
-            if (sedesRurales.includes(userSedeClean) || sedesRurales.includes(profileSede)) {
-              console.log(`🌟 Elevando permisos a ADMIN por pertenecer a sede rural: ${userSedeClean || profileSede}`);
+            // === ELEVACIÓN DE PERMISOS PARA SEDES RURALES ===
+            const sedesRurales = ['PUEBLILLO', 'SENDERO', 'YANACONAS', 'PISOJE BAJO', 'PRIMARIA'];
+            const isPrimariaDocente = assignedLower === "primaria";
+
+            if (sedesRurales.includes(userSedeClean) || sedesRurales.includes(profileSede) || isPrimariaDocente) {
+              console.log(`🌟 Elevando permisos a ADMIN por pertenecer a sede rural o ser docente de Primaria: ${userSedeClean || profileSede || 'Primaria'}`);
               currentRole = 'admin';
               document.body.classList.add('is-admin');
 
@@ -2928,6 +3233,7 @@
           const individualTab = $('tab-individual-item');
           const grupalTab = $('tab-grupal-item');
           const asigTab = $('tab-asignatura-item');
+          const detalleTab = $('tab-estudiante-detalle-item');
 
           // Solo el botón de panel administrador para superadmin
           if (currentRole === 'superadmin') {
@@ -2964,13 +3270,24 @@
               if (grupalTab) grupalTab.style.display = 'block';
               if ($('m-nav-grupal')) $('m-nav-grupal').style.display = 'flex';
 
-              // Habilitar botn de impresin grupal para directores
               if ($('btn-print-grupal')) $('btn-print-grupal').style.display = 'flex';
             }
-
-            // 3. El Informe Asignatura y Análisis General quedan visibles pero filtrados por materia/grado
             if (asigTab) asigTab.style.display = 'block';
             if ($('m-nav-asignatura')) $('m-nav-asignatura').style.display = 'flex';
+          }
+
+          // --- RESTRICCIÓN DE ANÁLISIS POR ESTUDIANTE (BLOQUEO ESTRICTO) ---
+          // El usuario solicitó que SOLO el superadministrador pueda ver esta parte.
+          if (currentRole === 'superadmin') {
+            if (detalleTab) detalleTab.style.display = 'block';
+            if ($('m-nav-estudiante_detalle')) $('m-nav-estudiante_detalle').style.display = 'flex';
+            const ddItem = document.querySelector('.dropdown-item.admin-only');
+            if (ddItem && ddItem.innerText.includes('Estudiante')) ddItem.style.display = 'block';
+          } else {
+            if (detalleTab) detalleTab.style.display = 'none';
+            if ($('m-nav-estudiante_detalle')) $('m-nav-estudiante_detalle').style.display = 'none';
+            const ddItem = document.querySelector('.dropdown-item.admin-only');
+            if (ddItem && ddItem.innerText.includes('Estudiante')) ddItem.style.display = 'none';
           }
         } catch (e) {
           console.error("Error cargando perfil:", e);
@@ -3087,20 +3404,30 @@
             .filter(l => l > 0);
 
           // --- Filtro de Privacidad: Solo mostrar niveles permitidos ---
-          if (currentRole !== 'superadmin' && currentRole !== 'admin') {
+          if (currentRole !== 'superadmin') {
+            const assignedLower = (window.assignedGrade || "").toString().toLowerCase();
             const gBaseAssigned = extraerGradoBase(window.assignedGrade);
-            const esDePrimaria = window.assignedGrade === "Primaria" || (gBaseAssigned >= 1 && gBaseAssigned <= 5);
-            const levelsDictan = userPermissions.filter(p => p.tipo === 'ASIGNACION').map(p => extraerGradoBase(p.grado));
-            const levelDireccion = gBaseAssigned > 0 ? [gBaseAssigned] : [];
+            const esDePrimaria = assignedLower === "primaria" || (gBaseAssigned >= 1 && gBaseAssigned <= 5);
+            const mySede = window.userSede || 'Central';
 
-            let allowedLevels = [...new Set([...levelsDictan, ...levelDireccion])];
-
-            if (esDePrimaria) {
-              allowedLevels = [...new Set([...allowedLevels, 1, 2, 3, 4, 5])];
+            if (currentRole === 'admin') {
+              // Si es un docente de primaria elevado a admin
+              if (esDePrimaria) {
+                if (mySede === 'Central') {
+                  // Solo ven 3, 4 y 5
+                  uniqueLevels = uniqueLevels.filter(l => [3, 4, 5].includes(l));
+                } else {
+                  // Primaria de otras sedes ven 1 a 5
+                  uniqueLevels = uniqueLevels.filter(l => l >= 1 && l <= 5);
+                }
+              }
+            } else {
+              const dictan = userPermissions.filter(p => p.tipo === 'ASIGNACION').map(p => extraerGradoBase(p.grado));
+              const direccion = window.assignedGroups ? window.assignedGroups.map(g => extraerGradoBase(g)) : [];
+              let allowedLevels = [...new Set([...dictan, ...direccion])];
+              console.log("🎯 Niveles permitidos en Análisis:", allowedLevels);
+              uniqueLevels = uniqueLevels.filter(l => allowedLevels.includes(l));
             }
-
-            console.log("🎯 Niveles permitidos en Análisis:", allowedLevels);
-            uniqueLevels = uniqueLevels.filter(l => allowedLevels.includes(l));
           }
           // -----------------------------------------------------------------------
 
@@ -3151,11 +3478,15 @@
 
           // --- Filtro de Privacidad: Solo mostrar asignaturas que el docente DICTA en este nivel ---
           if (currentRole !== 'superadmin' && currentRole !== 'admin') {
+            const assignedLower = (window.assignedGrade || "").toString().toLowerCase();
             const gBaseAssigned = extraerGradoBase(window.assignedGrade);
-            const esDePrimaria = window.assignedGrade === "Primaria" || (gBaseAssigned >= 1 && gBaseAssigned <= 5);
+            const esDePrimaria = assignedLower === "primaria" || (gBaseAssigned >= 1 && gBaseAssigned <= 5);
             const esNivelPrimaria = parseInt(nivel) >= 1 && parseInt(nivel) <= 5;
 
-            if (!(esDePrimaria && esNivelPrimaria)) {
+            // Si el docente es director de ESTE nivel específico, tiene acceso total a las asignaturas
+            const isDirectorDeEsteNivel = window.assignedGroups && window.assignedGroups.some(g => extraerGradoBase(g).toString() === nivel.toString());
+
+            if (!(esDePrimaria && esNivelPrimaria) && !isDirectorDeEsteNivel) {
               const myPermissions = userPermissions
                 .filter(p => p.tipo === 'ASIGNACION' && extraerGradoBase(p.grado).toString() === nivel.toString())
                 .map(p => p.asignatura);
@@ -3163,7 +3494,7 @@
               console.log("🎯 Materias permitidas para el nivel:", nivel, myPermissions);
               unique = unique.filter(a => checkSubjectPermission(myPermissions, a, parseInt(nivel)));
             } else {
-              console.log("🌟 Docente de primaria en nivel primaria: Acceso total a asignaturas.");
+              console.log("🌟 Docente de primaria en nivel primaria o Director de Grupo: Acceso total a asignaturas.");
             }
           }
           // --------------------------------------------------------------------------------
@@ -3999,8 +4330,18 @@
               hStr.includes("pregunta_num") || hStr.includes("discriminant");
 
             if (!isBanco && !isEstudiantes && !isItemAnalysis) {
-              isItemAnalysis = true; // Fallback
+              // Si tiene "Earned Points" y "Stu1", es un reporte completo
+              if (hStr.includes("earned points") && hStr.includes("stu1")) {
+                manualType = 'completos';
+              } else {
+                isItemAnalysis = true; // Fallback
+              }
             }
+          }
+
+          if (manualType === 'completos') {
+            updateStatus(`📝 Procesando Reporte Completo en ${fileObj.name}...`);
+            await procesarCompletos(rows, header, true, fileObj.name);
           } else {
             if (manualType === 'banco') isBanco = true;
             if (manualType === 'item_analysis' || manualType === 'consolidado') isItemAnalysis = true;
@@ -4345,10 +4686,301 @@
         } catch (e) {
           console.error('🔴 ERROR FATAL en procesarEstudiantes:', e);
           const errorMsg = e.message || e.details || JSON.stringify(e);
-          // Siempre mostrar el error al usuario, sea modo silent o no
           alert(`❌ Error guardando notas:\n\n${errorMsg}\n\nRevisa la consola del navegador (F12 > Consola) para más detalles.`);
-          throw e; // Propagar para que finalizarSubida lo maneje
+          throw e;
         }
+      }
+
+      async function procesarCompletos(rows, header, silent = false, fileName = "") {
+        const quizIdx = getColIdx(header, ["QuizName", "Quiz Name", "Quiz_Name"]);
+        const fNameIdx = getColIdx(header, ["FirstName", "First Name", "First_Name"]);
+        const lNameIdx = getColIdx(header, ["LastName", "Last Name", "Last_Name"]);
+        const stdIdIdx = getColIdx(header, ["StudentID", "Student ID", "Student_ID"]);
+        const earnedIdx = getColIdx(header, ["Earned Points", "Earned_Points"]);
+        const possIdx = getColIdx(header, ["Possible Points", "Possible_Points"]);
+        const pctIdx = getColIdx(header, ["PercentCorrect", "Percent Correct"]);
+
+        const batchCompletos = [];
+        for (const row of rows) {
+          const quizName = (row[quizIdx] || "").trim();
+          if (!quizName) continue;
+
+          const name = ((row[lNameIdx] || "").trim() + " " + (row[fNameIdx] || "").trim()).trim();
+          const studentId = (row[stdIdIdx] || "").trim();
+
+          const grupo = extraerGrupo(studentId);
+          const sede = detectarSede(grupo);
+          const gradoNumBase = extraerGradoBase(grupo);
+          let gradoLimpio = grupo || gradoNumBase.toString();
+          if (!gradoLimpio) {
+            const matchG = quizName.match(/(\d+)/);
+            if (matchG) gradoLimpio = matchG[1];
+          }
+
+          let periodoDetectado = detectarPeriodo(quizName);
+          if (fileName && (periodoDetectado === currentPeriodo || periodoDetectado === 1)) {
+            const pFile = detectarPeriodo(fileName);
+            if (pFile !== currentPeriodo) periodoDetectado = pFile;
+          }
+
+          // Extraer respuestas dinámicamente
+          const respuestas = {};
+          // Buscamos Stu1, Stu2... en el header
+          header.forEach((h, i) => {
+            const match = h.toString().match(/^Stu(\d+)$/i);
+            if (match) {
+              const qNum = match[1];
+              const stuVal = (row[i] || "").toString().trim();
+              const keyVal = (row[i + 1] || "").toString().trim(); // PriKeyX es la siguiente col
+              const ptsVal = parseFloat(row[i + 2]) || 0;       // PointsX es +2
+              const markVal = (row[i + 3] || "").toString().trim(); // MarkX es +3
+
+              respuestas[qNum] = {
+                stu: stuVal,
+                key: keyVal,
+                pts: ptsVal,
+                mark: markVal
+              };
+            }
+          });
+
+          batchCompletos.push({
+            quiz_name: quizName,
+            grado: gradoLimpio,
+            periodo: periodoDetectado,
+            estudiante_nombre: name,
+            student_id: studentId,
+            earned_points: parseFloat(row[earnedIdx]) || 0,
+            possible_points: parseFloat(row[possIdx]) || 0,
+            percent_correct: parseFloat(row[pctIdx]) || 0,
+            respuestas: respuestas,
+            sede: sede
+          });
+        }
+
+        if (batchCompletos.length === 0) return;
+        updateStatus(`⏳ Guardando ${batchCompletos.length} reportes completos...`);
+
+        // Borrado quirúrgico
+        const uniqueCombs = [...new Set(batchCompletos.map(e => `${e.quiz_name}|${e.grado}|${e.periodo}`))];
+        for (const comb of uniqueCombs) {
+          const [q, g, p] = comb.split('|');
+          await supabaseClient.from('eval_estudiantes_completos').delete().eq('quiz_name', q).eq('grado', g).eq('periodo', p);
+        }
+
+        const BATCH = 100;
+        for (let b = 0; b < batchCompletos.length; b += BATCH) {
+          const lote = batchCompletos.slice(b, b + BATCH);
+          const { error } = await supabaseClient.from('eval_estudiantes_completos').insert(lote);
+          if (error) throw error;
+        }
+        updateStatus(`✅ ${batchCompletos.length} reportes completos guardados.`);
+      }
+
+      // --- FUNCIONES DE INTERFAZ PARA ANÁLISIS POR ESTUDIANTE ---
+      let cachedDetalleGrados = [];
+      let currentDetalleEstudiante = null;
+
+      async function cargarGradosDetalle() {
+        showLoading(true);
+        const { data, error } = await supabaseClient.from('eval_estudiantes_completos').select('grado').eq('periodo', currentPeriodo);
+        if (error) console.error(error);
+        const uniqueGrados = [...new Set((data || []).map(d => d.grado))].sort((a, b) => a.localeCompare(b, undefined, { numeric: true }));
+
+        const sel = $('sel-est-det-grado');
+        sel.innerHTML = '<option value="">Grado...</option>';
+        uniqueGrados.forEach(g => {
+          const opt = document.createElement('option');
+          opt.value = g;
+          opt.textContent = g;
+          sel.appendChild(opt);
+        });
+        showLoading(false);
+      }
+
+      async function cargarEstudiantesDetalle() {
+        const grado = $('sel-est-det-grado').value;
+        if (!grado) return;
+        showLoading(true);
+        const { data, error } = await supabaseClient.from('eval_estudiantes_completos')
+          .select('estudiante_nombre, student_id')
+          .eq('grado', grado)
+          .eq('periodo', currentPeriodo);
+
+        if (error) console.error(error);
+
+        // Unificar por nombre
+        const uniqueEst = [];
+        const seen = new Set();
+        (data || []).forEach(e => {
+          if (!seen.has(e.estudiante_nombre)) {
+            seen.add(e.estudiante_nombre);
+            uniqueEst.push(e);
+          }
+        });
+        uniqueEst.sort((a, b) => a.estudiante_nombre.localeCompare(b.estudiante_nombre));
+
+        const sel = $('sel-est-det-nombre');
+        sel.innerHTML = '<option value="">Seleccione estudiante...</option>';
+        uniqueEst.forEach(e => {
+          const opt = document.createElement('option');
+          opt.value = e.estudiante_nombre;
+          opt.textContent = e.estudiante_nombre;
+          sel.appendChild(opt);
+        });
+        showLoading(false);
+      }
+
+      async function cargarAsignaturasEstudiante() {
+        const nombre = $('sel-est-det-nombre').value;
+        const grado = $('sel-est-det-grado').value;
+        if (!nombre || !grado) return;
+
+        showLoading(true);
+        const { data, error } = await supabaseClient.from('eval_estudiantes_completos')
+          .select('*')
+          .eq('grado', grado)
+          .eq('periodo', currentPeriodo)
+          .eq('estudiante_nombre', nombre);
+
+        if (error) console.error(error);
+        currentDetalleData = data || [];
+
+        // En este sistema, un estudiante puede tener varios registros si hizo varias pruebas
+        // o uno solo si la prueba era general. 
+        // Vamos a extraer las asignaturas según los rangos de preguntas que tiene sus respuestas.
+        const sel = $('sel-est-det-asig');
+        sel.innerHTML = '<option value="">Asignatura...</option>';
+
+        const gBase = extraerGradoBase(grado);
+        const key = (gBase >= 10) ? '10-11' : (gBase >= 6) ? '6-9' : (gBase >= 5) ? '5' : '3-4';
+        const rangos = MATRIZ_RANGOS[key] || [];
+
+        rangos.forEach(r => {
+          const opt = document.createElement('option');
+          opt.value = `${r.start}-${r.end}`;
+          opt.textContent = r.label;
+          sel.appendChild(opt);
+        });
+        showLoading(false);
+      }
+
+      function cargarPreguntasEstudiante() {
+        const asigVal = $('sel-est-det-asig').value;
+        if (!asigVal) return;
+        const [start, end] = asigVal.split('-').map(Number);
+
+        const sel = $('sel-est-det-preg');
+        sel.innerHTML = '<option value="">#</option>';
+        for (let i = start; i <= end; i++) {
+          const opt = document.createElement('option');
+          opt.value = i;
+          opt.textContent = i;
+          sel.appendChild(opt);
+        }
+      }
+
+      async function mostrarAnalisisEstudiante() {
+        const qNum = $('sel-est-det-preg').value;
+        const asigLabel = $('sel-est-det-asig').options[$('sel-est-det-asig').selectedIndex].text;
+        const grado = $('sel-est-det-grado').value;
+        if (!qNum) return;
+
+        showLoading(true);
+        $('est-det-main-card').style.display = 'block';
+
+        // --- Mapeo de Asignatura (igual que en Análisis General) ---
+        let queryAsig = asigLabel;
+        const gBase = extraerGradoBase(grado);
+        if (gBase < 10 && normalizeText(asigLabel) === "biologia") {
+          queryAsig = "CIENCIAS NATURALES";
+        }
+
+        // 1. Obtener la pregunta del banco
+        const { data: pregDataArr } = await supabaseClient.from('eval_preguntas')
+          .select('*')
+          .eq('grado', gBase)
+          .eq('periodo', currentPeriodo)
+          .or(`asignatura.eq."${queryAsig}",asignatura.eq."${asigLabel}"`)
+          .eq('pregunta_num', qNum)
+          .limit(1);
+
+        const qData = (pregDataArr && pregDataArr.length > 0) ? pregDataArr[0] : null;
+
+        // 2. Obtener la respuesta del estudiante
+        // Buscamos en currentDetalleData el registro que contenga esta pregunta
+        let respEst = null;
+        let registroFinal = null;
+        for (const reg of currentDetalleData) {
+          if (reg.respuestas && reg.respuestas[qNum]) {
+            respEst = reg.respuestas[qNum];
+            registroFinal = reg;
+            break;
+          }
+        }
+
+        // Renderizar
+        $('est-det-pregunta-num').textContent = `Pregunta #${qNum} - ${asigLabel}`;
+        $('est-det-texto').innerHTML = qData ? qData.texto_pregunta : "Texto no disponible en el banco.";
+
+        // Media
+        const mediaCont = $('est-det-media');
+        const mediaAuto = $('est-det-media-auto');
+        mediaCont.innerHTML = ""; mediaAuto.innerHTML = ""; mediaAuto.style.display = 'none';
+
+        if (qData) {
+          renderMedia('est-det-texto', 'est-det-media', qData.texto_pregunta, gBase, asigLabel, qNum);
+        }
+
+        // Opciones
+        const opts = ['a', 'b', 'c', 'd'];
+        let respKey = (qData && qData.respuesta_correcta) ? qData.respuesta_correcta.toString().toUpperCase().trim() : (respEst ? respEst.key.toUpperCase().trim() : "-");
+
+        opts.forEach(o => {
+          const el = $(`est-opt-${o}`);
+          const txt = $(`est-txt-${o}`);
+          el.className = 'option';
+
+          // Asignar contenido de la opción (desde qData si existe)
+          if (qData) {
+            const content = qData[`opcion_${o}`];
+            renderMedia(`est-txt-${o}`, `est-media-opt-${o}`, content, grado, asigLabel, qNum, o);
+          } else {
+            txt.innerHTML = "";
+            $(`est-media-opt-${o}`).innerHTML = "";
+          }
+
+          // Lógica de marcado (Aplica incluso si no hay qData, para mostrar solo los colores)
+          const isCorrect = (o.toUpperCase() === respKey);
+          const isSelected = (respEst && o.toUpperCase() === respEst.stu.toUpperCase());
+
+          if (isCorrect) el.classList.add('correct');
+          if (isSelected && !isCorrect) el.classList.add('incorrect');
+          if (isSelected) el.style.borderWidth = "4px"; else el.style.borderWidth = "2px";
+        });
+
+        // Resumen
+        if (respEst) {
+          $('est-det-resp-est').textContent = respEst.stu || "?";
+          $('est-det-resp-key').textContent = respKey || "?";
+          $('est-det-pts').textContent = respEst.pts || 0;
+          $('est-det-box-pts').style.background = respEst.pts > 0 ? '#f0fdf4' : '#fef2f2';
+
+          const badge = $('est-det-status-badge');
+          if (badge) {
+            badge.innerHTML = respEst.pts > 0
+              ? '<span style="background:#10b981; color:white; padding:5px 15px; border-radius:20px; font-weight:800; font-size:0.8rem;">ACIERTO ✅</span>'
+              : '<span style="background:#ef4444; color:white; padding:5px 15px; border-radius:20px; font-weight:800; font-size:0.8rem;">INCORRECTO ❌</span>';
+          }
+        }
+
+        if (registroFinal) {
+          $('est-det-quiz-name').textContent = registroFinal.quiz_name;
+          $('est-det-score').textContent = registroFinal.percent_correct;
+        }
+
+        triggerMath();
+        showLoading(false);
       }
 
       async function resetearBaseDeDatos() {
@@ -4437,39 +5069,37 @@
 
           // --- Filtro de Privacidad: Solo mostrar grupos permitidos ---
           if (currentRole !== 'superadmin') {
+            const assignedLower = (window.assignedGrade || "").toString().toLowerCase();
+            const gBaseAssigned = extraerGradoBase(window.assignedGrade);
+            const esDePrimaria = assignedLower === "primaria" || (gBaseAssigned >= 1 && gBaseAssigned <= 5);
+            const mySede = window.userSede || 'Central';
+
             if (currentRole === 'admin') {
-              // Administradores de Sede: Solo ven grupos de su propia sede (Comparación Normalizada)
-              const mySede = window.userSede || 'Central';
+              // Administradores de Sede: Ven todo lo de su sede
               allGroups = allGroups.filter(g => detectarSede(g) === mySede);
+
+              // Si es un docente de primaria elevado a admin, filtrar solo grados 1-5
+              if (esDePrimaria) {
+                if (mySede === 'Central') {
+                  allGroups = allGroups.filter(g => ['301', '401', '501'].includes(g.toString()));
+                } else {
+                  allGroups = allGroups.filter(g => extraerGradoBase(g) >= 1 && extraerGradoBase(g) <= 5);
+                }
+              }
             } else {
               // Lectores (Docentes)
-              const gBaseAssigned = extraerGradoBase(window.assignedGrade);
-              const esDePrimaria = window.assignedGrade === "Primaria" || (gBaseAssigned >= 1 && gBaseAssigned <= 5);
+              const dictan = userPermissions
+                .filter(p => p.tipo === 'ASIGNACION')
+                .map(p => p.grado.toString());
+              const direccion = window.assignedGroups || [];
 
-              const mySede = window.userSede || 'Central';
-
-              if (isEnPestañaGrupal) {
-                if (esDePrimaria) {
-                  allGroups = allGroups.filter(g => extraerGradoBase(g) >= 1 && extraerGradoBase(g) <= 5 && detectarSede(g) === mySede);
-                } else {
-                  allGroups = window.assignedGrade ? [window.assignedGrade.toString()] : [];
-                }
-              } else {
-                const dictan = userPermissions
-                  .filter(p => p.tipo === 'ASIGNACION' && isSubjectEvaluated(p.asignatura, p.grado))
-                  .map(p => p.grado.toString());
-                const direccion = window.assignedGroups || [];
-                const allowedPool = [...new Set([...dictan, ...direccion])];
-
-                allGroups = allGroups.filter(g => {
-                  const gBase = extraerGradoBase(g);
-                  if (esDePrimaria && gBase >= 1 && gBase <= 5) {
-                    return detectarSede(g) === mySede;
-                  }
-                  const matchDireccionNivel = direccion.some(d => d === g.toString() || d === gBase.toString());
-                  return allowedPool.includes(g.toString()) || matchDireccionNivel;
-                });
-              }
+              allGroups = allGroups.filter(g => {
+                const gBase = extraerGradoBase(g);
+                const matchDictan = dictan.some(d => d === g.toString() || d === gBase.toString());
+                const matchDireccion = direccion.some(d => d === g.toString() || d === gBase.toString());
+                
+                return matchDictan || matchDireccion;
+              });
             }
 
             // --- FALLBACK PARA SEDES RURALES SIN ASIGNACIÓN EXPLÍCITA ---
@@ -4934,23 +5564,26 @@
 
           // --- Filtro de Privacidad Estricto 2026 ---
           if (rol !== 'superadmin') {
+            const assignedLower = (window.assignedGrade || "").toString().toLowerCase();
+            const gBaseAssigned = extraerGradoBase(window.assignedGrade);
+            const esDePrimaria = assignedLower === "primaria" || (gBaseAssigned >= 1 && gBaseAssigned <= 5);
+            const mySede = window.userSede || 'Central';
+
             if (rol === 'admin') {
               // Administradores de Sede: Solo ven grupos de su propia sede
-              const mySede = window.userSede || 'Central';
               uniqueGroups = uniqueGroups.filter(g => detectarSede(g) === mySede);
-            } else {
-              // Lectores (Directores de Grupo)
-              const gBaseAssigned = extraerGradoBase(window.assignedGrade);
-              const esDePrimaria = window.assignedGrade === "Primaria" || (gBaseAssigned >= 1 && gBaseAssigned <= 5);
-
-              const mySede = window.userSede || 'Central';
-              if (esDePrimaria) {
-                uniqueGroups = uniqueGroups.filter(g => extraerGradoBase(g) >= 1 && extraerGradoBase(g) <= 5 && detectarSede(g) === mySede);
-              } else if (window.assignedGrade) {
-                uniqueGroups = [window.assignedGrade.toString()];
-              } else {
-                uniqueGroups = [];
+              
+              // RESTRICCIÓN ADICIONAL CENTRAL PRIMARIA (Solo 301, 401, 501 incluso para admin)
+              if (esDePrimaria && mySede === 'Central') {
+                uniqueGroups = uniqueGroups.filter(g => ['301', '401', '501'].includes(g.toString()));
               }
+            } else {
+              // Lectores (Directores de Grupo): Solo ven sus grupos asignados
+              const direccion = window.assignedGroups || [];
+              uniqueGroups = uniqueGroups.filter(g => {
+                const gBase = extraerGradoBase(g);
+                return direccion.some(d => d === g.toString() || d === gBase.toString());
+              });
             }
             console.log("🔒 [SEGURIDAD] Filtrando Informe Grupal:", uniqueGroups);
           }
@@ -5222,7 +5855,8 @@
                 const hasPermission = allowedPool.some(ap => ap === g.toString() || ap === gBase.toString());
 
                 // Si es primaria, forzamos filtro por sede
-                const esDePrimaria = window.assignedGrade === "Primaria" || (extraerGradoBase(window.assignedGrade) >= 1 && extraerGradoBase(window.assignedGrade) <= 5);
+                const assignedLower = (window.assignedGrade || "").toString().toLowerCase();
+                const esDePrimaria = assignedLower === "primaria" || (extraerGradoBase(window.assignedGrade) >= 1 && extraerGradoBase(window.assignedGrade) <= 5);
                 if (esDePrimaria && gBase <= 5) {
                   return detectarSede(g) === mySede;
                 }
@@ -5839,11 +6473,40 @@
           }
 
           // 1. Poblar selectores del Dashboard
-          const gruposUnicos = [...new Set(dataPeriodoActual.map(d => extraerGrupo(d.zipgrade_id)))]
-            .sort((a, b) => a.localeCompare(b, undefined, { numeric: true }));
+          let gruposUnicos = [...new Set(dataPeriodoActual.map(d => extraerGrupo(d.zipgrade_id)))]
+            .filter(g => extraerGradoBase(g) > 0);
 
-          const gradosUnicos = [...new Set(dataPeriodoActual.map(d => extraerGradoBase(extraerGrupo(d.zipgrade_id))))]
-            .filter(g => g > 0)
+          // --- Filtro de Privacidad: Solo mostrar grupos permitidos ---
+          if (currentRole !== 'superadmin') {
+            const assignedLower = (window.assignedGrade || "").toString().toLowerCase();
+            const gBaseAssigned = extraerGradoBase(window.assignedGrade);
+            const esDePrimaria = assignedLower === "primaria" || (gBaseAssigned >= 1 && gBaseAssigned <= 5);
+            const mySede = window.userSede || 'Central';
+
+            if (currentRole === 'admin') {
+              gruposUnicos = gruposUnicos.filter(g => detectarSede(g) === mySede);
+              if (esDePrimaria) {
+                if (mySede === 'Central') {
+                  gruposUnicos = gruposUnicos.filter(g => ['301', '401', '501'].includes(g.toString()));
+                } else {
+                  gruposUnicos = gruposUnicos.filter(g => extraerGradoBase(g) >= 1 && extraerGradoBase(g) <= 5);
+                }
+              }
+            } else {
+              const dictan = userPermissions.filter(p => p.tipo === 'ASIGNACION').map(p => p.grado.toString());
+              const direccion = window.assignedGroups || [];
+              gruposUnicos = gruposUnicos.filter(g => {
+                const gBase = extraerGradoBase(g);
+                return dictan.some(d => d === g.toString() || d === gBase.toString()) || 
+                       direccion.some(d => d === g.toString() || d === gBase.toString());
+              });
+            }
+          }
+          // ----------------------------------------------------------
+
+          gruposUnicos.sort((a, b) => a.localeCompare(b, undefined, { numeric: true }));
+
+          const gradosUnicos = [...new Set(gruposUnicos.map(g => extraerGradoBase(g)))]
             .sort((a, b) => a - b);
 
           const selAsig = $('est-sel-grado');
@@ -6009,84 +6672,66 @@
         const ctxC = $('chart-comparativo-grupos').getContext('2d');
         chartComparativo = new Chart(ctxC, {
           type: 'bar',
-          data: {
-            labels: labels,
-            datasets: datasets
-          },
+          data: { labels: labels, datasets: datasets },
           options: {
-            responsive: true,
-            maintainAspectRatio: false,
+            responsive: true, maintainAspectRatio: false,
             plugins: {
-              legend: {
-                display: true,
-                position: 'top',
-                labels: { font: { size: 10, weight: 'bold' }, usePointStyle: true }
-              },
-              datalabels: {
-                display: false // Ocultar etiquetas numéricas para evitar amontonamiento en barras agrupadas
-              },
-              tooltip: {
-                mode: 'index',
-                intersect: false
-              }
+              legend: { display: true, position: 'top', labels: { font: { size: 10, weight: 'bold' }, usePointStyle: true } },
+              datalabels: { display: false },
+              tooltip: { mode: 'index', intersect: false }
             },
             scales: {
-              y: {
-                min: 0,
-                max: 100,
-                ticks: { font: { size: 10 } },
-                title: { display: true, text: 'Promedio (%)', font: { weight: 'bold' } }
-              },
-              x: {
-                ticks: {
-                  font: { size: 9 },
-                  autoSkip: false,
-                  maxRotation: 45,
-                  minRotation: 0
-                }
-              }
+              y: { min: 0, max: 100, ticks: { font: { size: 10 } }, title: { display: true, text: 'Promedio (%)', font: { weight: 'bold' } } },
+              x: { ticks: { font: { size: 9 }, autoSkip: false, maxRotation: 45, minRotation: 0 } }
             }
           }
         });
       }
     </script>
 
-
     <script>
       // LIMPIEZA PROFUNDA DE CACHÉ SI CAMBIA VERSIÓN
-      const CURRENT_APP_VERSION = 'v31';
-      if (localStorage.getItem('app_version') !== CURRENT_APP_VERSION) {
-        if ('serviceWorker' in navigator) {
-          navigator.serviceWorker.getRegistrations().then(registrations => {
-            for (let registration of registrations) registration.unregister();
-          });
-        }
-        caches.keys().then(names => {
-          for (let name of names) caches.delete(name);
-        });
-        localStorage.setItem('app_version', CURRENT_APP_VERSION);
-        console.log('Limpieza profunda realizada. Recargando...');
-        setTimeout(() => window.location.reload(true), 1000);
-      }
-
-      if ('serviceWorker' in navigator) {
-        window.addEventListener('load', () => {
-          navigator.serviceWorker.register('sw.js')
-            .then(reg => {
-              reg.onupdatefound = () => {
-                const installingWorker = reg.installing;
-                installingWorker.onstatechange = () => {
-                  if (installingWorker.state === 'installed' && navigator.serviceWorker.controller) {
-                    window.location.reload();
-                  }
-                };
-              };
+      const CURRENT_APP_VERSION = 'v64';
+            window.addEventListener('load', () => {
+              if ('serviceWorker' in navigator) {
+                navigator.serviceWorker.register('sw.js')
+                  .then(reg => {
+                    reg.onupdatefound = () => {
+                      const installingWorker = reg.installing;
+                      installingWorker.onstatechange = () => {
+                        if (installingWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                          window.location.reload();
+                        }
+                      };
+                    };
+                  });
+              }
             });
-        });
-      }
-      window.addEventListener('DOMContentLoaded', () => {
-        if (typeof checkSession === 'function') checkSession();
-      });
+
+            if (localStorage.getItem('app_version') !== CURRENT_APP_VERSION) {
+              if ('serviceWorker' in navigator) {
+                navigator.serviceWorker.getRegistrations().then(registrations => {
+                  for (let registration of registrations) registration.unregister();
+                });
+              }
+              caches.keys().then(names => {
+                for (let name of names) caches.delete(name);
+              });
+              localStorage.setItem('app_version', CURRENT_APP_VERSION);
+              console.log('Limpieza profunda realizada. Recargando...');
+              setTimeout(() => window.location.reload(true), 1000);
+            }
+            window.addEventListener('DOMContentLoaded', () => {
+              if (typeof checkSession === 'function') {
+                checkSession().then(() => {
+                  if (typeof switchMainTab === 'function') {
+                    switchMainTab('analisis');
+                  }
+                });
+              } else {
+                console.error("Error: La función checkSession no está cargada.");
+              }
+            });
     </script>
 </body>
 
