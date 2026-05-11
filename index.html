@@ -6708,20 +6708,6 @@
             }
           }
         });
-      }
-    </script>
-            window.addEventListener('DOMContentLoaded', () => {
-              if (typeof checkSession === 'function') {
-                checkSession().then(() => {
-                  if (typeof switchMainTab === 'function') {
-                    switchMainTab('analisis');
-                  }
-                });
-              } else {
-                console.error("Error: La función checkSession no está cargada.");
-              }
-            });
-    </script>
 </body>
 
 </html>

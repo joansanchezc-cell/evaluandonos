@@ -18,7 +18,6 @@ combined = []
 with open('estudiantes/codigos zipgrade estudiantes.csv', mode='r', encoding='utf-8') as f:
     reader = csv.DictReader(f)
     for row in reader:
-        # ZipGrade separa nombre y apellido
         zg_name = normalize(row['Last Name'] + " " + row['First Name'])
         zg_name_alt = normalize(row['First Name'] + " " + row['Last Name'])
         
@@ -26,16 +25,16 @@ with open('estudiantes/codigos zipgrade estudiantes.csv', mode='r', encoding='ut
         
         if identificacion:
             combined.append({
-                'Identificación': identificacion,
-                'ZipGrade_ID': row['ZipGrade ID'],
-                'Nombre_Oficial': zg_name,
-                'Grado': row['Classes']
+                'identificacion': identificacion,
+                'zipgrade_id': row['ZipGrade ID'],
+                'nombre': zg_name,
+                'grado': row['Classes']
             })
 
-# Guardar resultado (usando punto y coma para compatibilidad)
-with open('estudiantes/maestro_actualizado.csv', mode='w', encoding='utf-8', newline='') as f:
-    writer = csv.DictWriter(f, fieldnames=['Identificación', 'ZipGrade_ID', 'Nombre_Oficial', 'Grado'], delimiter=';')
+# Guardar con nombres de columna exactos para Supabase
+with open('estudiantes/maestro_actualizado_v2.csv', mode='w', encoding='utf-8', newline='') as f:
+    writer = csv.DictWriter(f, fieldnames=['identificacion', 'zipgrade_id', 'nombre', 'grado'], delimiter=';')
     writer.writeheader()
     writer.writerows(combined)
 
-print(f"Combinación completada. Se encontraron {len(combined)} coincidencias.")
+print(f"Combinación v2 completada. Archivo 'maestro_actualizado_v2.csv' generado.")
