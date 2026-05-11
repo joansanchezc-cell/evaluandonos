@@ -4941,9 +4941,11 @@
           });
 
           // Resumen
+          const finalCorrectKey = respKey || (respEst ? respEst.key : "?");
+          
           if (respEst) {
             $('est-det-resp-est').textContent = respEst.stu || "?";
-            $('est-det-resp-key').textContent = respKey || "?";
+            $('est-det-resp-key').textContent = finalCorrectKey;
             $('est-det-pts').textContent = respEst.pts || 0;
             $('est-det-box-pts').style.background = respEst.pts > 0 ? '#f0fdf4' : '#fef2f2';
 
@@ -4953,6 +4955,12 @@
                 ? '<span style="background:#10b981; color:white; padding:5px 15px; border-radius:20px; font-weight:800; font-size:0.8rem;">ACIERTO ✅</span>'
                 : '<span style="background:#ef4444; color:white; padding:5px 15px; border-radius:20px; font-weight:800; font-size:0.8rem;">INCORRECTO ❌</span>';
             }
+          } else {
+            // Si no hay respuesta del estudiante pero tenemos la correcta del banco
+            $('est-det-resp-est').textContent = "-";
+            $('est-det-resp-key').textContent = finalCorrectKey;
+            $('est-det-pts').textContent = "0";
+            $('est-det-box-pts').style.background = '#f8fafc';
           }
 
           if (registroFinal) {
@@ -6707,7 +6715,7 @@
     </script>
 
     <script>
-      const CURRENT_APP_VERSION = 'v83';
+      const CURRENT_APP_VERSION = 'v84';
       window.addEventListener('load', () => {
         if ('serviceWorker' in navigator) {
           navigator.serviceWorker.register('sw.js')
