@@ -5200,12 +5200,12 @@
           let historico = resHist.data || [];
           const todos = resTodos.data || [];
 
-          // FALLBACK: Si no hay historial por ID, intentar por nombre de forma inteligente
+          // FALLBACK: Si no hay historial por ID, intentar por nombre EXACTO (solo si es necesario)
           if (historico.length === 0 && isStudentMode) {
             const sName = localStorage.getItem('studentName');
             if (sName) {
               const cleanedName = normalizeText(sName);
-              // 1. Intento por nombre exacto normalizado
+              // Intento por nombre exacto normalizado (sin tildes, mayúsculas iguales)
               const { data: resName } = await supabaseClient.from('eval_estudiantes_notas')
                 .select('*')
                 .ilike('estudiante_nombre', cleanedName)
@@ -5213,18 +5213,6 @@
               
               if (resName && resName.length > 0) {
                 historico = resName;
-              } else {
-                // 2. Búsqueda Inteligente: Primera y última palabra del nombre
-                const words = cleanedName.split(' ').filter(w => w.length > 2);
-                if (words.length >= 2) {
-                  const first = words[0];
-                  const last = words[words.length - 1];
-                  const { data: resSmart } = await supabaseClient.from('eval_estudiantes_notas')
-                    .select('*')
-                    .ilike('estudiante_nombre', `%${first}%${last}%`)
-                    .order('periodo', { ascending: true });
-                  if (resSmart && resSmart.length > 0) historico = resSmart;
-                }
               }
             }
           }
