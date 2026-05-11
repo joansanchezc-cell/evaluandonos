@@ -5187,7 +5187,7 @@
           const [resHist, resTodos] = await Promise.all([
             supabaseClient.from('eval_estudiantes_notas')
               .select('*')
-              .or(`zipgrade_id.eq.${zipId},zipgrade_id.ilike.%-${zipId}`)
+              .or(`zipgrade_id.eq.${zipId},zipgrade_id.ilike.%${zipId}%`)
               .order('periodo', { ascending: true }),
             supabaseClient.from('eval_estudiantes_notas')
               .select('*')
@@ -5200,12 +5200,12 @@
           let historico = resHist.data || [];
           const todos = resTodos.data || [];
 
-          // FALLBACK: Si no hay historial por ID, intentar por nombre completo (si estamos en modo estudiante)
+          // FALLBACK: Si no hay historial por ID, intentar por nombre de forma inteligente
           if (historico.length === 0 && isStudentMode) {
             const sName = localStorage.getItem('studentName');
             if (sName) {
-              const cleanedName = sName.trim();
-              // 1. Intento por nombre exacto (case-insensitive)
+              const cleanedName = normalizeText(sName);
+              // 1. Intento por nombre exacto normalizado
               const { data: resName } = await supabaseClient.from('eval_estudiantes_notas')
                 .select('*')
                 .ilike('estudiante_nombre', cleanedName)
@@ -5214,15 +5214,16 @@
               if (resName && resName.length > 0) {
                 historico = resName;
               } else {
-                // 2. Intento por coincidencia parcial (primeras dos palabras del nombre)
-                const parts = cleanedName.split(' ').filter(p => p.length > 2);
-                if (parts.length >= 2) {
-                  const searchPattern = `%${parts[0]}%${parts[1]}%`;
-                  const { data: resFuzzy } = await supabaseClient.from('eval_estudiantes_notas')
+                // 2. Búsqueda Inteligente: Primera y última palabra del nombre
+                const words = cleanedName.split(' ').filter(w => w.length > 2);
+                if (words.length >= 2) {
+                  const first = words[0];
+                  const last = words[words.length - 1];
+                  const { data: resSmart } = await supabaseClient.from('eval_estudiantes_notas')
                     .select('*')
-                    .ilike('estudiante_nombre', searchPattern)
+                    .ilike('estudiante_nombre', `%${first}%${last}%`)
                     .order('periodo', { ascending: true });
-                  if (resFuzzy && resFuzzy.length > 0) historico = resFuzzy;
+                  if (resSmart && resSmart.length > 0) historico = resSmart;
                 }
               }
             }
