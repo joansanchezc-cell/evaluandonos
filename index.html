@@ -2700,8 +2700,8 @@
           containerIds.forEach(id => { if ($(id)) $(id).style.display = 'none'; });
 
           const tabMap = {
-            'analisis': ['resultado-container'],
-            'estudiante_detalle': ['resultado-container'],
+            'analisis': ['resultado-container', 'estudiante-detalle-container'],
+            'estudiante_detalle': ['resultado-container', 'estudiante-detalle-container'],
             'individual': ['individual-container'],
             'estadisticas': ['estadisticas-container'],
             'grupal': ['grupal-container'],
@@ -2728,7 +2728,11 @@
             filtrarMateriasEstaticas();
           }
           if (tab === 'analisis') {
-            if ($('analisis-general-view').style.display === 'none' && ($('estudiante-detalle-container') && $('estudiante-detalle-container').style.display === 'none')) {
+            // Solo abrir general si AMBOS están ocultos (primera vez)
+            const genVisible = $('analisis-general-view') && $('analisis-general-view').style.display !== 'none';
+            const detVisible = $('estudiante-detalle-container') && $('estudiante-detalle-container').style.display !== 'none';
+            
+            if (!genVisible && !detVisible) {
               await switchSubAnalisis('general');
             }
           }
@@ -4864,101 +4868,99 @@
         const grado = $('sel-est-det-grado').value;
         if (!qNum) return;
 
-        showLoading(true);
-        $('est-det-main-card').style.display = 'block';
+        try {
+          showLoading(true);
+          $('est-det-main-card').style.display = 'block';
 
-        // --- Mapeo de Asignatura (igual que en Análisis General) ---
-        let queryAsig = asigLabel;
-        const gBase = extraerGradoBase(grado);
-        if (gBase < 10 && normalizeText(asigLabel) === "biologia") {
-          queryAsig = "CIENCIAS NATURALES";
-        }
-
-        // 1. Obtener la pregunta del banco
-        const { data: pregDataArr } = await supabaseClient.from('eval_preguntas')
-          .select('*')
-          .eq('grado', gBase)
-          .eq('periodo', currentPeriodo)
-          .or(`asignatura.eq."${queryAsig}",asignatura.eq."${asigLabel}"`)
-          .eq('pregunta_num', qNum)
-          .limit(1);
-
-        const qData = (pregDataArr && pregDataArr.length > 0) ? pregDataArr[0] : null;
-
-        // 2. Obtener la respuesta del estudiante
-        // Buscamos en currentDetalleData el registro que contenga esta pregunta
-        let respEst = null;
-        let registroFinal = null;
-        for (const reg of currentDetalleData) {
-          if (reg.respuestas && reg.respuestas[qNum]) {
-            respEst = reg.respuestas[qNum];
-            registroFinal = reg;
-            break;
-          }
-        }
-
-        // Renderizar
-        $('est-det-pregunta-num').textContent = `Pregunta #${qNum} - ${asigLabel}`;
-        $('est-det-texto').innerHTML = qData ? qData.texto_pregunta : "Texto no disponible en el banco.";
-
-        // Media
-        const mediaCont = $('est-det-media');
-        const mediaAuto = $('est-det-media-auto');
-        mediaCont.innerHTML = ""; mediaAuto.innerHTML = ""; mediaAuto.style.display = 'none';
-
-        if (qData) {
-          renderMedia('est-det-texto', 'est-det-media', qData.texto_pregunta, gBase, asigLabel, qNum);
-        }
-
-        // Opciones
-        const opts = ['a', 'b', 'c', 'd'];
-        let respKey = (qData && qData.respuesta_correcta) ? qData.respuesta_correcta.toString().toUpperCase().trim() : (respEst ? respEst.key.toUpperCase().trim() : "-");
-
-        opts.forEach(o => {
-          const el = $(`est-opt-${o}`);
-          const txt = $(`est-txt-${o}`);
-          el.className = 'option';
-
-          // Asignar contenido de la opción (desde qData si existe)
-          if (qData) {
-            const content = qData[`opcion_${o}`];
-            renderMedia(`est-txt-${o}`, `est-media-opt-${o}`, content, gBase, asigLabel, qNum, o);
-          } else {
-            txt.innerHTML = "";
-            $(`est-media-opt-${o}`).innerHTML = "";
+          // --- Mapeo de Asignatura (igual que en Análisis General) ---
+          let queryAsig = asigLabel;
+          const gBase = extraerGradoBase(grado);
+          if (gBase < 10 && normalizeText(asigLabel) === "biologia") {
+            queryAsig = "CIENCIAS NATURALES";
           }
 
-          // Lógica de marcado (Aplica incluso si no hay qData, para mostrar solo los colores)
-          const isCorrect = (o.toUpperCase() === respKey);
-          const isSelected = (respEst && o.toUpperCase() === respEst.stu.toUpperCase());
+          // 1. Obtener la pregunta del banco
+          const { data: pregDataArr } = await supabaseClient.from('eval_preguntas')
+            .select('*')
+            .eq('grado', gBase)
+            .eq('periodo', currentPeriodo)
+            .or(`asignatura.eq."${queryAsig}",asignatura.eq."${asigLabel}"`)
+            .eq('pregunta_num', qNum)
+            .limit(1);
 
-          if (isCorrect) el.classList.add('correct');
-          if (isSelected && !isCorrect) el.classList.add('incorrect');
-          if (isSelected) el.style.borderWidth = "4px"; else el.style.borderWidth = "2px";
-        });
+          const qData = (pregDataArr && pregDataArr.length > 0) ? pregDataArr[0] : null;
 
-        // Resumen
-        if (respEst) {
-          $('est-det-resp-est').textContent = respEst.stu || "?";
-          $('est-det-resp-key').textContent = respKey || "?";
-          $('est-det-pts').textContent = respEst.pts || 0;
-          $('est-det-box-pts').style.background = respEst.pts > 0 ? '#f0fdf4' : '#fef2f2';
-
-          const badge = $('est-det-status-badge');
-          if (badge) {
-            badge.innerHTML = respEst.pts > 0
-              ? '<span style="background:#10b981; color:white; padding:5px 15px; border-radius:20px; font-weight:800; font-size:0.8rem;">ACIERTO ✅</span>'
-              : '<span style="background:#ef4444; color:white; padding:5px 15px; border-radius:20px; font-weight:800; font-size:0.8rem;">INCORRECTO ❌</span>';
+          // 2. Obtener la respuesta del estudiante
+          let respEst = null;
+          let registroFinal = null;
+          if (window.currentDetalleData) {
+            for (const reg of window.currentDetalleData) {
+              if (reg.respuestas && reg.respuestas[qNum]) {
+                respEst = reg.respuestas[qNum];
+                registroFinal = reg;
+                break;
+              }
+            }
           }
-        }
 
-        if (registroFinal) {
-          $('est-det-quiz-name').textContent = registroFinal.quiz_name;
-          $('est-det-score').textContent = registroFinal.percent_correct;
-        }
+          const respKey = qData ? qData.respuesta_correcta : null;
 
-        triggerMath();
-        showLoading(false);
+          // Renderizar Título
+          $('est-det-pregunta-num').innerText = `Pregunta #${qNum}`;
+
+          // Texto e Imagen Pregunta
+          const txtPreg = qData ? qData.texto_pregunta : "Pregunta no encontrada en el banco.";
+          $('est-det-texto').innerHTML = txtPreg;
+          renderMedia('est-det-texto', 'est-det-media', txtPreg, gBase, asigLabel, qNum);
+
+          // Opciones
+          const options = ['a', 'b', 'c', 'd'];
+          options.forEach(o => {
+            const optDiv = $(`est-opt-${o}`);
+            const txt = $(`est-txt-${o}`);
+            optDiv.classList.remove('correct', 'incorrect', 'selected');
+
+            if (qData) {
+              const content = qData[`opcion_${o}`];
+              renderMedia(`est-txt-${o}`, `est-media-opt-${o}`, content, gBase, asigLabel, qNum, o);
+            } else {
+              txt.innerHTML = "";
+              $(`est-media-opt-${o}`).innerHTML = "";
+            }
+
+            if (o.toUpperCase() === respKey) optDiv.classList.add('correct');
+            if (respEst && o.toUpperCase() === respEst.stu) {
+              optDiv.classList.add('selected');
+              if (o.toUpperCase() !== respKey) optDiv.classList.add('incorrect');
+            }
+          });
+
+          // Resumen
+          if (respEst) {
+            $('est-det-resp-est').textContent = respEst.stu || "?";
+            $('est-det-resp-key').textContent = respKey || "?";
+            $('est-det-pts').textContent = respEst.pts || 0;
+            $('est-det-box-pts').style.background = respEst.pts > 0 ? '#f0fdf4' : '#fef2f2';
+
+            const badge = $('est-det-status-badge');
+            if (badge) {
+              badge.innerHTML = respEst.pts > 0
+                ? '<span style="background:#10b981; color:white; padding:5px 15px; border-radius:20px; font-weight:800; font-size:0.8rem;">ACIERTO ✅</span>'
+                : '<span style="background:#ef4444; color:white; padding:5px 15px; border-radius:20px; font-weight:800; font-size:0.8rem;">INCORRECTO ❌</span>';
+            }
+          }
+
+          if (registroFinal) {
+            $('est-det-quiz-name').textContent = registroFinal.quiz_name;
+            $('est-det-score').textContent = registroFinal.percent_correct;
+          }
+
+          triggerMath();
+        } catch (e) {
+          console.error("Error en mostrarAnalisisEstudiante:", e);
+        } finally {
+          showLoading(false);
+        }
       }
 
       async function resetearBaseDeDatos() {
@@ -5039,6 +5041,8 @@
         showLoading(true);
         try {
           const sedeManual = $('rep-sede').value;
+          const { data } = await supabaseClient.from('eval_estudiantes_notas').select('zipgrade_id').eq('periodo', currentPeriodo);
+
           // Obtener todos los grupos únicos y filtrar válidos (longitud min 3 o primaria)
           let allGroups = data ? [...new Set(data.map(d => extraerGrupo(d.zipgrade_id)))] : [];
           allGroups = allGroups.filter(g => {
@@ -6698,7 +6702,7 @@
     </script>
 
     <script>
-      const CURRENT_APP_VERSION = 'v80';
+      const CURRENT_APP_VERSION = 'v82';
       window.addEventListener('load', () => {
         if ('serviceWorker' in navigator) {
           navigator.serviceWorker.register('sw.js')
