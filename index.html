@@ -2209,24 +2209,19 @@
         <!-- Resumen del Estudiante -->
         <div class="card" style="box-shadow:none; border:none; padding:0;">
           <h2 class="question-title">Resumen del Estudiante</h2>
-          <div class="stats-summary" style="grid-template-columns: 1fr; gap: 10px;">
-            <div class="stat-box" style="background: white; border: 1px solid #e2e8f0;">
-              <span id="est-det-resp-est" class="stat-val" style="font-size: 2rem;">-</span>
-              <span class="stat-label">Su Respuesta</span>
+          <div class="stats-summary" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px;">
+            <div class="stat-box" style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 20px; padding: 15px; display: flex; flex-direction: column; align-items: center; justify-content: center; transition: all 0.3s ease;">
+              <span id="est-det-resp-est" class="stat-val" style="font-size: 2.2rem; font-weight: 900; color: #4f46e5;">-</span>
+              <span class="stat-label" style="font-size: 0.65rem; font-weight: 800; color: #64748b; text-transform: uppercase; margin-top: 5px; text-align: center;">Tu Respuesta</span>
             </div>
-            <div class="stat-box" style="background: #f0fdf4; border: 1px solid #bbf7d0;">
-              <span id="est-det-resp-key" class="stat-val" style="color: #16a34a; font-size: 2rem;">-</span>
-              <span class="stat-label">Respuesta Correcta</span>
+            <div class="stat-box" style="background: #f0fdf4; border: 2px solid #bbf7d0; border-radius: 20px; padding: 15px; display: flex; flex-direction: column; align-items: center; justify-content: center; transition: all 0.3s ease;">
+              <span id="est-det-resp-key" class="stat-val" style="font-size: 2.2rem; font-weight: 900; color: #16a34a;">-</span>
+              <span class="stat-label" style="font-size: 0.65rem; font-weight: 800; color: #166534; text-transform: uppercase; margin-top: 5px; text-align: center;">Correcta</span>
             </div>
-            <div id="est-det-box-pts" class="stat-box">
-              <span id="est-det-pts" class="stat-val">0</span>
-              <span class="stat-label">Puntos Ganados</span>
+            <div id="est-det-box-pts" class="stat-box" style="background: #eff6ff; border: 2px solid #bfdbfe; border-radius: 20px; padding: 15px; display: flex; flex-direction: column; align-items: center; justify-content: center; transition: all 0.3s ease;">
+              <span id="est-det-pts" class="stat-val" style="font-size: 2.2rem; font-weight: 900; color: #3b82f6;">0</span>
+              <span class="stat-label" style="font-size: 0.65rem; font-weight: 800; color: #1e40af; text-transform: uppercase; margin-top: 5px; text-align: center;">Puntos</span>
             </div>
-          </div>
-          <div
-            style="margin-top:20px; padding:15px; background:#f8fafc; border-radius:12px; font-size:0.85rem; color:#64748b;">
-            <p><b>Prueba:</b> <span id="est-det-quiz-name"></span></p>
-            <p><b>Puntaje Total:</b> <span id="est-det-score"></span>%</p>
           </div>
         </div>
       </div>
@@ -6713,7 +6708,7 @@
     </script>
 
     <script>
-      const CURRENT_APP_VERSION = 'v76';
+      const CURRENT_APP_VERSION = 'v77';
       window.addEventListener('load', () => {
         if ('serviceWorker' in navigator) {
           navigator.serviceWorker.register('sw.js')
