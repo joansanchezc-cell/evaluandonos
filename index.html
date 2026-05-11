@@ -2827,7 +2827,7 @@
         if (!grupo) return 0;
         const s = grupo.toString().trim();
         if (s.toLowerCase() === "primaria") return 1;
-        if (s.length < 3 && !["10", "11"].includes(s)) return 0; 
+        if (s.length === 2 && !["10", "11"].includes(s)) return 0; 
         if (s.startsWith("10") || s.startsWith("11")) return parseInt(s.substring(0, 2));
         const firstDigit = parseInt(s.substring(0, 1));
         return isNaN(firstDigit) ? 0 : firstDigit;
@@ -6708,7 +6708,7 @@
     </script>
 
     <script>
-      const CURRENT_APP_VERSION = 'v77';
+      const CURRENT_APP_VERSION = 'v78';
       window.addEventListener('load', () => {
         if ('serviceWorker' in navigator) {
           navigator.serviceWorker.register('sw.js')
