@@ -2820,25 +2820,28 @@
       function extraerGrupo(zipId) {
         if (!zipId) return "";
         let s = zipId.toString().trim();
-        if (s.length <= 2) return s;
+        
+        // Prioridad: Formato con guion (ej: 1101-1065826808)
+        if (s.includes("-")) return s.split("-")[0];
+        
+        // Si es corto, probablemente sea solo el grupo
+        if (s.length <= 4) return s;
+        
+        // Si es muy largo (ej: 1065826808), y no tiene guion, 
+        // no podemos determinar el grupo confiablemente solo con el ID.
+        // Pero mantenemos la lógica anterior para compatibilidad con IDs de 5-6 dígitos sin guion.
+        if (s.length > 6) return ""; 
+
         let prefix = s.slice(0, -2);
-        // Corrección ceros: 111 -> 1101
         if ((prefix.startsWith("10") || prefix.startsWith("11")) && prefix.length === 3) {
           prefix = prefix.substring(0, 2) + "0" + prefix.substring(2);
         }
 
         const gradoBase = extraerGradoBase(prefix);
         const ultimo = prefix.slice(-1);
-
-        // Mapeo de Sedes a Abreviaturas
         const mapaSedes = { "4": "PJ", "5": "YA", "6": "SE", "7": "PU" };
+        if (mapaSedes[ultimo]) return gradoBase + mapaSedes[ultimo];
 
-        // Si el último dígito corresponde a una sede, le agregamos la abreviatura
-        if (mapaSedes[ultimo]) {
-          return gradoBase + mapaSedes[ultimo];
-        }
-
-        // Si es de la central (1, 2, 3), retorna los 3 números completos (ej. 901, 903)
         return prefix;
       }
 
@@ -2944,7 +2947,7 @@
 
         try {
           // 1. Validar contra la tabla maestra de estudiantes
-          const { data, error } = await supabaseClient.from('maestro_estudiantes')
+          const { data, error } = await supabaseClient.from('maestro_estudiante')
             .select('nombre, identificacion')
             .eq('identificacion', idVal)
             .maybeSingle();
@@ -3011,11 +3014,13 @@
               }
             }
 
+            if (students.length === 0) throw new Error("No se encontraron datos válidos.");
+
             status.style.color = "var(--primary)";
             status.innerText = `Subiendo ${students.length} estudiantes...`;
 
             // UPSERT para no duplicar
-            const { error } = await supabaseClient.from('maestro_estudiantes').upsert(students, { onConflict: 'identificacion' });
+            const { error } = await supabaseClient.from('maestro_estudiante').upsert(students, { onConflict: 'identificacion' });
 
             if (error) throw error;
 
@@ -4588,16 +4593,19 @@
           const quizRaw = row[quizIdx] || "";
           const quizName = quizRaw.toString().trim();
 
-          // Siempre extraemos el grupo desde el ZipGrade ID (fuente más confiable)
-          // El grupo puede ser: 901, 902, 9PJ, 9YA, 305, 3SE, etc.
-          const grupo = extraerGrupo(zipId);
+          // Obtener grupo del ZipGrade ID o de la columna Class
+          let grupo = extraerGrupo(zipId);
+          const classVal = (row[classIdx] || "").toString().trim();
+          
+          // Si el ID no nos dio un grupo claro pero la columna Class sí, usamos Class
+          if (!grupo || grupo.length > 4) {
+            if (classVal && classVal.length <= 5) grupo = classVal;
+          }
+          
           const sede = detectarSede(grupo);
-          // El grado numérico base lo sacamos del grupo
           const gradoNumBase = extraerGradoBase(grupo);
-          // Guardamos el grupo completo (ej. "9PJ", "901") en la columna grado
           let gradoLimpio = grupo || gradoNumBase.toString();
 
-          // Fallback: si aún está vacío, sacarlo del nombre del quiz
           if (!gradoLimpio) {
             const matchG = quizName.match(/(\d+)/);
             if (matchG) gradoLimpio = matchG[1];
@@ -5157,10 +5165,11 @@
         }
 
         const { data } = await supabaseClient.from('eval_estudiantes_notas')
-          .select('estudiante_nombre, zipgrade_id')
+          .select('estudiante_nombre, zipgrade_id, grado')
           .eq('periodo', currentPeriodo);
 
-        const filtrados = data ? data.filter(e => extraerGrupo(e.zipgrade_id) === grupo) : [];
+        // Filtrar usando la columna 'grado' que almacena el grupo asignado durante la importación
+        const filtrados = data ? data.filter(e => (e.grado || extraerGrupo(e.zipgrade_id)) === grupo) : [];
         const uniqueMap = new Map();
         filtrados.forEach(e => uniqueMap.set(e.zipgrade_id, e.estudiante_nombre));
 
