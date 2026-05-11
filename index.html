@@ -5200,50 +5200,10 @@
           let historico = resHist.data || [];
           const todos = resTodos.data || [];
 
-          // FALLBACK INTELIGENTE: Si no hay historial por ID, buscar por nombre usando puntuación de palabras
+          // NO usar fallback por nombre para evitar confusiones entre estudiantes con apellidos iguales.
+          // El sistema ahora es 100% basado en el Número de Identificación para garantizar privacidad.
           if (historico.length === 0 && isStudentMode) {
-            const sName = localStorage.getItem('studentName');
-            if (sName) {
-              const officialName = normalizeText(sName);
-              const officialWords = officialName.split(' ').filter(w => w.length > 2);
-
-              // Traemos un directorio de nombres únicos de la base de notas para buscar
-              const { data: directory } = await supabaseClient.from('eval_estudiantes_notas')
-                .select('estudiante_nombre, zipgrade_id');
-
-              if (directory && directory.length > 0) {
-                // Eliminar duplicados para agilizar
-                const uniqueStudents = [];
-                const seen = new Set();
-                directory.forEach(item => {
-                  if (!seen.has(item.zipgrade_id)) {
-                    uniqueStudents.push(item);
-                    seen.add(item.zipgrade_id);
-                  }
-                });
-
-                // Calcular puntuación para cada estudiante en el directorio
-                const matches = uniqueStudents.map(s => {
-                  const tName = normalizeText(s.estudiante_nombre);
-                  const tWords = tName.split(' ').filter(w => w.length > 2);
-                  const common = officialWords.filter(w => tWords.includes(w));
-                  return { zipId: s.zipgrade_id, score: common.length, exact: tName === officialName };
-                }).filter(m => m.score >= 3 || m.exact);
-
-                // Ordenar por mejor puntuación
-                matches.sort((a, b) => b.score - a.score);
-
-                if (matches.length > 0) {
-                  const bestMatch = matches[0];
-                  // Ahora traemos el historial completo del ZipGrade ID ganador
-                  const { data: resSmart } = await supabaseClient.from('eval_estudiantes_notas')
-                    .select('*')
-                    .eq('zipgrade_id', bestMatch.zipId)
-                    .order('periodo', { ascending: true });
-                  if (resSmart && resSmart.length > 0) historico = resSmart;
-                }
-              }
-            }
+             // Si llegamos aquí, el ID no está en la base de notas.
           }
 
           const est = historico.find(t => t.periodo === parseInt(currentPeriodo)) || historico[historico.length - 1];
