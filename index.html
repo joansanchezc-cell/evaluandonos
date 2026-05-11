@@ -2579,32 +2579,27 @@
 
       function checkSubjectPermission(allowedAsigs, targetAsig, gBase) {
         if (!allowedAsigs || allowedAsigs.length === 0) return false;
-        const subTerms = ["biologia", "fisica", "quimica"];
-        const natTerms = ["ciencias naturales", "naturales"];
+        const subTerms = ["biologia", "fisica", "quimica", "naturales", "ciencias naturales"];
         const t = normalizeText(targetAsig);
+        const mySede = window.userSede || 'Central';
 
         return allowedAsigs.some(perm => {
           const p = normalizeText(perm);
           if (!p) return false;
 
-          const isP_Nat = natTerms.some(term => p.includes(term));
-          const isT_Nat = natTerms.some(term => t.includes(term));
           const isP_Sub = subTerms.some(term => p.includes(term));
           const isT_Sub = subTerms.some(term => t.includes(term));
 
-          if (gBase < 6) {
-            // Primaria (1-5): Solo Biología/Naturales combinados
-            if ((isT_Nat || t.includes("biologia")) && (isP_Nat || isP_Sub)) return true;
-          } else {
-            // Secundaria (6-11): las sub-disciplinas individuales combinan con el permiso general de "Naturales"
-            // y viceversa (si tiene permiso de sub-disciplina puede ver Naturales/Biología)
-            if ((isT_Sub || isT_Nat || t.includes("biologia")) && (isP_Nat || isP_Sub)) return true;
-          }
+          // Regla 3: Secundaria (6-11) en Sede Central
+          // Si tiene permiso en cualquier rama de Naturales, puede ver todas las de Naturales
+          if (gBase >= 6 && mySede === 'Central' && isP_Sub && isT_Sub) return true;
 
-          // Coincidencia por subcadena o exacta para mayor flexibilidad
+          // Primaria (1-5): Se agrupan bajo términos de Naturales/Biología
+          if (gBase < 6 && isP_Sub && isT_Sub) return true;
+
+          // Regla 1: Coincidencia estándar por subcadena o exacta
           if (t.includes(p) || p.includes(t)) return true;
 
-          // Coincidencia estándar por palabras
           try {
             const regex = new RegExp(`\\b${p}\\b`, 'i');
             return regex.test(t);
@@ -3452,18 +3447,18 @@
             const esDePrimaria = assignedLower === "primaria" || (gBaseAssigned >= 1 && gBaseAssigned <= 5);
             const esNivelPrimaria = parseInt(nivel) >= 1 && parseInt(nivel) <= 5;
 
-            // Si el docente es director de ESTE nivel específico, tiene acceso total a las asignaturas
-            const isDirectorDeEsteNivel = window.assignedGroups && window.assignedGroups.some(g => extraerGradoBase(g).toString() === nivel.toString());
-
-            if (!(esDePrimaria && esNivelPrimaria) && !isDirectorDeEsteNivel) {
+            // REGLA 1: Docentes ven lo que dictan.
+            // Los directores ven Informe Grupal (Regla 2), pero en Análisis General 
+            // solo ven las asignaturas que dictan.
+            if (!(esDePrimaria && esNivelPrimaria)) {
               const myPermissions = userPermissions
                 .filter(p => p.tipo === 'ASIGNACION' && extraerGradoBase(p.grado).toString() === nivel.toString())
                 .map(p => p.asignatura);
 
-              console.log("🎯 Materias permitidas para el nivel:", nivel, myPermissions);
+              console.log("🎯 Materias permitidas (Regla 1):", nivel, myPermissions);
               unique = unique.filter(a => checkSubjectPermission(myPermissions, a, parseInt(nivel)));
             } else {
-              console.log("🌟 Docente de primaria en nivel primaria o Director de Grupo: Acceso total a asignaturas.");
+              console.log("🌟 Primaria: Acceso total a asignaturas del nivel.");
             }
           }
           // --------------------------------------------------------------------------------
@@ -4908,14 +4903,24 @@
             }
           }
 
-          const respKey = qData ? qData.respuesta_correcta : null;
+          // 3. Obtener la Clave Correcta (Prioridad: Banco > Resultados > Reporte Individual)
+          let keyFound = (qData && qData.respuesta_correcta) ? qData.respuesta_correcta : null;
+          
+          if (!keyFound) {
+            const { data: resKeyData } = await supabaseClient.from('eval_resultados')
+              .select('key').eq('grado', gBase).eq('periodo', currentPeriodo).eq('pregunta_num', qNum).limit(1);
+            if (resKeyData && resKeyData.length > 0) keyFound = resKeyData[0].key;
+          }
+          
+          if (!keyFound && respEst) keyFound = respEst.key;
+          
+          const respKey = keyFound ? keyFound.trim().toUpperCase() : null;
 
           // Renderizar Título
           $('est-det-pregunta-num').innerText = `Pregunta #${qNum}`;
 
           // Texto e Imagen Pregunta
           const txtPreg = qData ? qData.texto_pregunta : "Pregunta no encontrada en el banco.";
-          $('est-det-texto').innerHTML = txtPreg;
           renderMedia('est-det-texto', 'est-det-media', txtPreg, gBase, asigLabel, qNum);
 
           // Opciones
@@ -4929,11 +4934,12 @@
               const content = qData[`opcion_${o}`];
               renderMedia(`est-txt-${o}`, `est-media-opt-${o}`, content, gBase, asigLabel, qNum, o);
             } else {
-              txt.innerHTML = "";
-              $(`est-media-opt-${o}`).innerHTML = "";
+              if (txt) txt.innerHTML = "";
+              if ($(`est-media-opt-${o}`)) $(`est-media-opt-${o}`).innerHTML = "";
             }
 
             if (o.toUpperCase() === respKey) optDiv.classList.add('correct');
+            
             if (respEst && o.toUpperCase() === respEst.stu) {
               optDiv.classList.add('selected');
               if (o.toUpperCase() !== respKey) optDiv.classList.add('incorrect');
@@ -4941,11 +4947,9 @@
           });
 
           // Resumen
-          const finalCorrectKey = respKey || (respEst ? respEst.key : "?");
-          
           if (respEst) {
-            $('est-det-resp-est').textContent = respEst.stu || "?";
-            $('est-det-resp-key').textContent = finalCorrectKey;
+            $('est-det-resp-est').textContent = respEst.stu || "-";
+            $('est-det-resp-key').textContent = respKey || "-";
             $('est-det-pts').textContent = respEst.pts || 0;
             $('est-det-box-pts').style.background = respEst.pts > 0 ? '#f0fdf4' : '#fef2f2';
 
@@ -4956,16 +4960,15 @@
                 : '<span style="background:#ef4444; color:white; padding:5px 15px; border-radius:20px; font-weight:800; font-size:0.8rem;">INCORRECTO ❌</span>';
             }
           } else {
-            // Si no hay respuesta del estudiante pero tenemos la correcta del banco
             $('est-det-resp-est').textContent = "-";
-            $('est-det-resp-key').textContent = finalCorrectKey;
+            $('est-det-resp-key').textContent = respKey || "-";
             $('est-det-pts').textContent = "0";
             $('est-det-box-pts').style.background = '#f8fafc';
           }
 
           if (registroFinal) {
             $('est-det-quiz-name').textContent = registroFinal.quiz_name;
-            $('est-det-score').textContent = registroFinal.percent_correct;
+            $('est-det-score').textContent = registroFinal.percent_correct + "%";
           }
 
           triggerMath();
