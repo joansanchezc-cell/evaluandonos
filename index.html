@@ -2395,7 +2395,7 @@
       </div>
       <p class="footer-copy"
         style="margin: 0; color: #64748b; font-weight: 800; font-size: 0.9rem; letter-spacing: 0.5px;">© 2026 AndréSán
-        - Evaluándonos System <span style="color:#4f46e5; margin-left:10px;">[ v64 ACTIVADA ]</span></p>
+        - Evaluándonos System <span style="color:#4f46e5; margin-left:10px;">[ v66 ACTIVADA ]</span></p>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -3389,9 +3389,7 @@
 
           let dataCombined = (resResults.data || []).concat(resPreguntas.data || []);
 
-          // Fallback: Si no hay datos en el periodo actual (ej. P2), intentar en P1 silenciosamente
           if (dataCombined.length === 0 && currentPeriodo === 2) {
-            console.log("⚠️ No hay datos en P2, intentando P1...");
             const [r1, p1] = await Promise.all([
               supabaseClient.from('eval_resultados').select('grado').eq('periodo', 1),
               supabaseClient.from('eval_preguntas').select('grado').eq('periodo', 1)
@@ -3399,11 +3397,9 @@
             dataCombined = (r1.data || []).concat(p1.data || []);
           }
 
-          // --- LÓGICA DE NIVELES ---
           let uniqueLevels = [...new Set(dataCombined.map(d => extraerGradoBase(d.grado)))]
             .filter(l => l > 0);
 
-          // --- Filtro de Privacidad: Solo mostrar niveles permitidos ---
           if (currentRole !== 'superadmin') {
             const assignedLower = (window.assignedGrade || "").toString().toLowerCase();
             const gBaseAssigned = extraerGradoBase(window.assignedGrade);
@@ -3411,13 +3407,10 @@
             const mySede = window.userSede || 'Central';
 
             if (currentRole === 'admin') {
-              // Si es un docente de primaria elevado a admin
               if (esDePrimaria) {
                 if (mySede === 'Central') {
-                  // Solo ven 3, 4 y 5
                   uniqueLevels = uniqueLevels.filter(l => [3, 4, 5].includes(l));
                 } else {
-                  // Primaria de otras sedes ven 1 a 5
                   uniqueLevels = uniqueLevels.filter(l => l >= 1 && l <= 5);
                 }
               }
@@ -3425,8 +3418,11 @@
               const dictan = userPermissions.filter(p => p.tipo === 'ASIGNACION').map(p => extraerGradoBase(p.grado));
               const direccion = window.assignedGroups ? window.assignedGroups.map(g => extraerGradoBase(g)) : [];
               let allowedLevels = [...new Set([...dictan, ...direccion])];
-              console.log("🎯 Niveles permitidos en Análisis:", allowedLevels);
               uniqueLevels = uniqueLevels.filter(l => allowedLevels.includes(l));
+              
+              if (esDePrimaria && mySede === 'Central') {
+                uniqueLevels = uniqueLevels.filter(l => [3, 4, 5].includes(l));
+              }
             }
           }
           // -----------------------------------------------------------------------
@@ -5100,6 +5096,11 @@
                 
                 return matchDictan || matchDireccion;
               });
+
+              // RESTRICCIÓN ADICIONAL CENTRAL PRIMARIA
+              if (esDePrimaria && mySede === 'Central') {
+                allGroups = allGroups.filter(g => ['301', '401', '501'].includes(g.toString()));
+              }
             }
 
             // --- FALLBACK PARA SEDES RURALES SIN ASIGNACIÓN EXPLÍCITA ---
@@ -5546,11 +5547,10 @@
               },
               x: {
                 grid: { display: false },
-                ticks: { font: { weight: 'bold', size: 9 } }
+                ticks: { font: { size: 9 } }
               }
             }
-          },
-          plugins: [ChartDataLabels]
+          }
         });
       }
 
@@ -5558,22 +5558,18 @@
         showLoading(true);
         try {
           const { data } = await supabaseClient.from('eval_estudiantes_notas').select('zipgrade_id').eq('periodo', currentPeriodo);
-          const rol = currentRole;
 
           let uniqueGroups = data ? [...new Set(data.map(d => extraerGrupo(d.zipgrade_id)))] : [];
 
-          // --- Filtro de Privacidad Estricto 2026 ---
-          if (rol !== 'superadmin') {
+          // --- Filtro de Privacidad: Solo mostrar grupos permitidos ---
+          if (currentRole !== 'superadmin') {
             const assignedLower = (window.assignedGrade || "").toString().toLowerCase();
             const gBaseAssigned = extraerGradoBase(window.assignedGrade);
             const esDePrimaria = assignedLower === "primaria" || (gBaseAssigned >= 1 && gBaseAssigned <= 5);
             const mySede = window.userSede || 'Central';
 
-            if (rol === 'admin') {
-              // Administradores de Sede: Solo ven grupos de su propia sede
+            if (currentRole === 'admin') {
               uniqueGroups = uniqueGroups.filter(g => detectarSede(g) === mySede);
-              
-              // RESTRICCIÓN ADICIONAL CENTRAL PRIMARIA (Solo 301, 401, 501 incluso para admin)
               if (esDePrimaria && mySede === 'Central') {
                 uniqueGroups = uniqueGroups.filter(g => ['301', '401', '501'].includes(g.toString()));
               }
@@ -5584,6 +5580,11 @@
                 const gBase = extraerGradoBase(g);
                 return direccion.some(d => d === g.toString() || d === gBase.toString());
               });
+
+              // RESTRICCIÓN ADICIONAL CENTRAL PRIMARIA
+              if (esDePrimaria && mySede === 'Central') {
+                uniqueGroups = uniqueGroups.filter(g => ['301', '401', '501'].includes(g.toString()));
+              }
             }
             console.log("🔒 [SEGURIDAD] Filtrando Informe Grupal:", uniqueGroups);
           }
@@ -5837,13 +5838,19 @@
 
           // --- Filtro de Privacidad: Solo mostrar grados permitidos ---
           if (currentRole !== 'superadmin') {
+            const assignedLower = (window.assignedGrade || "").toString().toLowerCase();
+            const gBaseAssigned = extraerGradoBase(window.assignedGrade);
+            const esDePrimaria = assignedLower === "primaria" || (gBaseAssigned >= 1 && gBaseAssigned <= 5);
+            const mySede = window.userSede || 'Central';
+
             if (currentRole === 'admin') {
               // Administradores de Sede: Solo ven grupos de su propia sede
-              const mySede = window.userSede || 'Central';
               uniqueGroups = uniqueGroups.filter(g => detectarSede(g) === mySede);
+              if (esDePrimaria && mySede === 'Central') {
+                uniqueGroups = uniqueGroups.filter(g => ['301', '401', '501'].includes(g.toString()));
+              }
             } else {
               // Lectores (Docentes)
-              const mySede = window.userSede || 'Central';
               const direccion = window.assignedGroups || [];
               const dictan = userPermissions
                 .filter(p => p.tipo === 'ASIGNACION' && isSubjectEvaluated(p.asignatura, p.grado))
@@ -5853,12 +5860,10 @@
               uniqueGroups = uniqueGroups.filter(g => {
                 const gBase = extraerGradoBase(g);
                 const hasPermission = allowedPool.some(ap => ap === g.toString() || ap === gBase.toString());
-
-                // Si es primaria, forzamos filtro por sede
-                const assignedLower = (window.assignedGrade || "").toString().toLowerCase();
-                const esDePrimaria = assignedLower === "primaria" || (extraerGradoBase(window.assignedGrade) >= 1 && extraerGradoBase(window.assignedGrade) <= 5);
-                if (esDePrimaria && gBase <= 5) {
-                  return detectarSede(g) === mySede;
+                
+                // RESTRICCIÓN ADICIONAL CENTRAL PRIMARIA
+                if (esDePrimaria && mySede === 'Central') {
+                   return ['301', '401', '501'].includes(g.toString());
                 }
                 return hasPermission;
               });
@@ -6485,12 +6490,8 @@
 
             if (currentRole === 'admin') {
               gruposUnicos = gruposUnicos.filter(g => detectarSede(g) === mySede);
-              if (esDePrimaria) {
-                if (mySede === 'Central') {
-                  gruposUnicos = gruposUnicos.filter(g => ['301', '401', '501'].includes(g.toString()));
-                } else {
-                  gruposUnicos = gruposUnicos.filter(g => extraerGradoBase(g) >= 1 && extraerGradoBase(g) <= 5);
-                }
+              if (esDePrimaria && mySede === 'Central') {
+                gruposUnicos = gruposUnicos.filter(g => ['301', '401', '501'].includes(g.toString()));
               }
             } else {
               const dictan = userPermissions.filter(p => p.tipo === 'ASIGNACION').map(p => p.grado.toString());
@@ -6500,6 +6501,11 @@
                 return dictan.some(d => d === g.toString() || d === gBase.toString()) || 
                        direccion.some(d => d === g.toString() || d === gBase.toString());
               });
+
+              // RESTRICCIÓN ADICIONAL CENTRAL PRIMARIA
+              if (esDePrimaria && mySede === 'Central') {
+                gruposUnicos = gruposUnicos.filter(g => ['301', '401', '501'].includes(g.toString()));
+              }
             }
           }
           // ----------------------------------------------------------
@@ -6691,7 +6697,7 @@
 
     <script>
       // LIMPIEZA PROFUNDA DE CACHÉ SI CAMBIA VERSIÓN
-      const CURRENT_APP_VERSION = 'v64';
+      const CURRENT_APP_VERSION = 'v66';
             window.addEventListener('load', () => {
               if ('serviceWorker' in navigator) {
                 navigator.serviceWorker.register('sw.js')
