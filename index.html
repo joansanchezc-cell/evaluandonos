@@ -4893,12 +4893,17 @@
           // 2. Obtener la respuesta del estudiante
           let respEst = null;
           let registroFinal = null;
-          if (window.currentDetalleData) {
-            for (const reg of window.currentDetalleData) {
-              if (reg.respuestas && reg.respuestas[qNum]) {
-                respEst = reg.respuestas[qNum];
-                registroFinal = reg;
-                break;
+          
+          const dataToSearch = currentDetalleData || [];
+          if (dataToSearch.length > 0) {
+            for (const reg of dataToSearch) {
+              if (reg.respuestas) {
+                // Buscamos la respuesta (puede ser clave string o number)
+                respEst = reg.respuestas[qNum] || reg.respuestas[parseInt(qNum)];
+                if (respEst) {
+                  registroFinal = reg;
+                  break;
+                }
               }
             }
           }
@@ -6702,7 +6707,7 @@
     </script>
 
     <script>
-      const CURRENT_APP_VERSION = 'v82';
+      const CURRENT_APP_VERSION = 'v83';
       window.addEventListener('load', () => {
         if ('serviceWorker' in navigator) {
           navigator.serviceWorker.register('sw.js')
