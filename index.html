@@ -3032,6 +3032,7 @@
         if ($('user-nombre')) $('user-nombre').innerText = nombre;
         if ($('user-avatar')) $('user-avatar').innerText = "ST";
         if ($('st-display-name')) $('st-display-name').innerText = nombre;
+        if ($('user-role-label')) $('user-role-label').innerText = "Estudiante";
 
         document.body.classList.add('is-student');
         if ($('student-portal-info')) $('student-portal-info').style.setProperty('display', 'block', 'important');
@@ -4931,7 +4932,7 @@
           // Asignar contenido de la opción (desde qData si existe)
           if (qData) {
             const content = qData[`opcion_${o}`];
-            renderMedia(`est-txt-${o}`, `est-media-opt-${o}`, content, grado, asigLabel, qNum, o);
+            renderMedia(`est-txt-${o}`, `est-media-opt-${o}`, content, gBase, asigLabel, qNum, o);
           } else {
             txt.innerHTML = "";
             $(`est-media-opt-${o}`).innerHTML = "";
@@ -6702,7 +6703,7 @@
     </script>
 
     <script>
-      const CURRENT_APP_VERSION = 'v71';
+      const CURRENT_APP_VERSION = 'v73';
       window.addEventListener('load', () => {
         if ('serviceWorker' in navigator) {
           navigator.serviceWorker.register('sw.js')
