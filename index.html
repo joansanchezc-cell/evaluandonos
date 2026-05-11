@@ -5229,21 +5229,16 @@
           }
 
           const grupoEst = extraerGrupo(est.zipgrade_id);
-          const actualZipId = est.zipgrade_id; // USAR EL ID REAL DE LA TABLA DE NOTAS
-
-          const alumnosGrupo = todos.filter(t => extraerGrupo(t.zipgrade_id) === grupoEst);
-
+          const actualZipId = est.zipgrade_id.toString().trim();
+          const alumnosGrupo = todos.filter(t => t.zipgrade_id && extraerGrupo(t.zipgrade_id.toString()) === grupoEst);
           const gradoBase = extraerGradoBase(grupoEst);
-          const alumnosNivel = todos.filter(t => extraerGradoBase(extraerGrupo(t.zipgrade_id)) === gradoBase);
-          const sortedGrupo = [...alumnosGrupo].sort((a, b) => {
-            if ((b.porcentaje || 0) !== (a.porcentaje || 0)) return (b.porcentaje || 0) - (a.porcentaje || 0);
-            return (b.porcentaje || 0) - (a.porcentaje || 0);
-          });
-          const puestoGrupo = sortedGrupo.findIndex(t => t.zipgrade_id === actualZipId) + 1;
-
-          // Puesto Global en el NIVEL (ej: Grado 9°)
+          const alumnosNivel = todos.filter(t => t.zipgrade_id && extraerGradoBase(extraerGrupo(t.zipgrade_id.toString())) === gradoBase);
+          const sortedGrupo = [...alumnosGrupo].sort((a, b) => (b.porcentaje || 0) - (a.porcentaje || 0));
+          const idxG = sortedGrupo.findIndex(t => t.zipgrade_id.toString().trim() === actualZipId);
+          const puestoGrupo = idxG >= 0 ? idxG + 1 : "-";
           const sortedNivel = [...alumnosNivel].sort((a, b) => (b.porcentaje || 0) - (a.porcentaje || 0));
-          const puestoNivel = sortedNivel.findIndex(t => t.zipgrade_id === actualZipId) + 1;
+          const idxN = sortedNivel.findIndex(t => t.zipgrade_id.toString().trim() === actualZipId);
+          const puestoNivelFinal = idxN >= 0 ? idxN + 1 : "-";
 
           const gNum = extraerGradoBase(grupoEst);
           let mKey = '6-9';
@@ -5269,7 +5264,7 @@
             puestosMaterias[subj.label] = rankings.findIndex(r => r.id === actualZipId) + 1;
           });
 
-          const html = construirHTMLBoletin(est, puestoGrupo, alumnosGrupo.length, puestosMaterias, config, historico, puestoNivel, alumnosNivel.length);
+          const html = construirHTMLBoletin(est, puestoGrupo, alumnosGrupo.length, puestosMaterias, config, historico, puestoNivelFinal, alumnosNivel.length);
 
           const printActions = `
           <div class="no-print" style="margin-bottom:1rem; display:flex; gap:10px; justify-content: flex-end;">
@@ -6712,7 +6707,7 @@
     </script>
 
     <script>
-      const CURRENT_APP_VERSION = 'v68';
+      const CURRENT_APP_VERSION = 'v69';
       window.addEventListener('load', () => {
         if ('serviceWorker' in navigator) {
           navigator.serviceWorker.register('sw.js')
