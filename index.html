@@ -2679,49 +2679,47 @@
 
       async function switchMainTab(tab) {
         showLoading(true);
-        currentView = tab;
-        isEnPestañaGrupal = (tab === 'grupal');
-
-        // Update Tab Visuals
-        document.querySelectorAll('.tab-btn').forEach(b => {
-          b.classList.remove('active');
-          b.style.background = 'transparent';
-          b.style.color = 'inherit';
-        });
-
-        const activeBtn = $(`tab-${tab}`);
-        if (activeBtn) {
-          activeBtn.classList.add('active');
-          // El CSS de .tab-btn.active se encargará del fondo azul
-        }
-
-        // Visibility Toggle (Limpiar todos los posibles contenedores)
-        const containerIds = ['resultado-container', 'individual-container', 'estadisticas-container', 'grupal-container', 'asignatura-container', 'estudiante-detalle-container'];
-        containerIds.forEach(id => { if ($(id)) $(id).style.display = 'none'; });
-
-        // Mapeo de vistas (agregamos estudiante_detalle como parte de resultado-container o similar)
-        const tabMap = {
-          'analisis': ['resultado-container'],
-          'estudiante_detalle': ['resultado-container'],
-          'individual': ['individual-container'],
-          'estadisticas': ['estadisticas-container'],
-          'grupal': ['grupal-container'],
-          'asignatura': ['asignatura-container']
-        };
-
-        if (tabMap[tab]) {
-          tabMap[tab].forEach(id => { if ($(id)) $(id).style.display = 'block'; });
-        }
-
-        // Background Effect
-        if (['individual', 'grupal', 'asignatura'].includes(tab)) {
-          document.body.classList.add('blurred-bg');
-        } else {
-          document.body.classList.remove('blurred-bg');
-        }
-
-        // Specific Loaders
         try {
+          currentView = tab;
+          isEnPestañaGrupal = (tab === 'grupal');
+
+          // Update Tab Visuals
+          document.querySelectorAll('.tab-btn').forEach(b => {
+            b.classList.remove('active');
+            b.style.background = 'transparent';
+            b.style.color = 'inherit';
+          });
+
+          const activeBtn = $(`tab-${tab}`);
+          if (activeBtn) {
+            activeBtn.classList.add('active');
+          }
+
+          // Visibility Toggle
+          const containerIds = ['resultado-container', 'individual-container', 'estadisticas-container', 'grupal-container', 'asignatura-container', 'estudiante-detalle-container'];
+          containerIds.forEach(id => { if ($(id)) $(id).style.display = 'none'; });
+
+          const tabMap = {
+            'analisis': ['resultado-container'],
+            'estudiante_detalle': ['resultado-container'],
+            'individual': ['individual-container'],
+            'estadisticas': ['estadisticas-container'],
+            'grupal': ['grupal-container'],
+            'asignatura': ['asignatura-container']
+          };
+
+          if (tabMap[tab]) {
+            tabMap[tab].forEach(id => { if ($(id)) $(id).style.display = 'block'; });
+          }
+
+          // Background Effect
+          if (['individual', 'grupal', 'asignatura'].includes(tab)) {
+            document.body.classList.add('blurred-bg');
+          } else {
+            document.body.classList.remove('blurred-bg');
+          }
+
+          // Specific Loaders
           if (tab === 'individual') await cargarGradosReporte();
           if (tab === 'estadisticas') await cargarEstadisticas();
           if (tab === 'grupal') await cargarGruposInformeGrupal();
@@ -2730,24 +2728,15 @@
             filtrarMateriasEstaticas();
           }
           if (tab === 'analisis') {
-            // Por defecto abrir General si no hay nada seleccionado
-            if ($('analisis-general-view').style.display === 'none' && $('analisis-estudiante-view').style.display === 'none') {
-              switchSubAnalisis('general');
-            }
-            if ($('sel-grado').value && $('sel-pregunta').value) {
-              await mostrarAnalisis();
+            if ($('analisis-general-view').style.display === 'none' && ($('estudiante-detalle-container') && $('estudiante-detalle-container').style.display === 'none')) {
+              await switchSubAnalisis('general');
             }
           }
         } catch (err) {
           console.error("Error switching tab:", err);
+        } finally {
+          showLoading(false);
         }
-
-        // Update Mobile Nav
-        document.querySelectorAll('.mobile-nav-item').forEach(i => i.classList.remove('active'));
-        const mobTab = $(`m-nav-${tab}`);
-        if (mobTab) mobTab.classList.add('active');
-
-        showLoading(false);
       }
 
       function toggleDropdown(id) {
@@ -2764,20 +2753,20 @@
         }
       });
 
-      function selectAnalisis(view) {
+      async function selectAnalisis(view) {
         // Cerrar dropdowns inmediatamente
         document.querySelectorAll('.dropdown').forEach(d => d.classList.remove('open'));
-        switchMainTab('analisis');
-        switchSubAnalisis(view);
+        await switchMainTab('analisis');
+        await switchSubAnalisis(view);
       }
 
-      function switchSubAnalisis(view) {
+      async function switchSubAnalisis(view) {
         const isGen = view === 'general';
         
         // Bloqueo estricto por requerimiento: Solo Super Admin ve análisis por estudiante
         if (!isGen && currentRole !== 'superadmin') {
           alert("Acceso Restringido: Solo el Super Administrador puede ver el análisis detallado por estudiante.");
-          switchSubAnalisis('general');
+          await switchSubAnalisis('general');
           return;
         }
 
@@ -2794,7 +2783,7 @@
         } else {
           if (btnEst) { btnEst.style.background = 'white'; btnEst.style.color = 'var(--primary)'; btnEst.style.boxShadow = '0 2px 8px rgba(0,0,0,0.1)'; }
           if (btnGen) { btnGen.style.background = 'transparent'; btnGen.style.color = '#64748b'; btnGen.style.boxShadow = 'none'; }
-          cargarGradosDetalle(); // Una sola llamada
+          await cargarGradosDetalle();
         }
       }
 
@@ -6709,7 +6698,7 @@
     </script>
 
     <script>
-      const CURRENT_APP_VERSION = 'v79';
+      const CURRENT_APP_VERSION = 'v80';
       window.addEventListener('load', () => {
         if ('serviceWorker' in navigator) {
           navigator.serviceWorker.register('sw.js')
