@@ -5256,7 +5256,7 @@
               return b.promedioGlobal - a.promedioGlobal; // Tie-breaker: promedio global
             });
 
-            puestosMaterias[subj.label] = rankings.findIndex(r => r.id === actualZipId) + 1;
+            puestosMaterias[subj.label] = rankings.findIndex(r => r.id.toString().trim() === actualZipId) + 1;
           });
 
           const html = construirHTMLBoletin(est, puestoGrupo, alumnosGrupo.length, puestosMaterias, config, historico, puestoNivelFinal, alumnosNivel.length);
