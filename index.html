@@ -2947,7 +2947,7 @@
         try {
           // 1. Validar contra la tabla maestra de estudiantes
           const { data, error } = await supabaseClient.from('maestro_estudiantes')
-            .select('nombre, identificacion')
+            .select('nombre, identificacion, zipgrade_id')
             .eq('identificacion', idVal)
             .maybeSingle();
 
@@ -2958,6 +2958,7 @@
             studentId = idVal;
             localStorage.setItem('studentId', idVal);
             localStorage.setItem('studentName', data.nombre);
+            localStorage.setItem('studentZipId', data.zipgrade_id || "");
             loguearExitosoEstudiante(data.nombre, idVal);
           } else {
             // Fallback: Buscar en notas si no está en la maestra aún
@@ -3000,7 +3001,7 @@
             const text = e.target.result;
             const rows = text.split(/\r?\n/).filter(r => r.trim() !== "");
 
-            // Saltar cabecera: SEDE;Estudiante;Identificación
+            // Saltar cabecera: SEDE;Estudiante;Identificación;ZipGrade_ID
             const students = [];
             for (let i = 1; i < rows.length; i++) {
               const cols = rows[i].split(';');
@@ -3008,7 +3009,8 @@
                 students.push({
                   sede: cols[0].trim(),
                   nombre: cols[1].trim(),
-                  identificacion: cols[2].trim()
+                  identificacion: cols[2].trim(),
+                  zipgrade_id: (cols[3] || "").trim()
                 });
               }
             }
@@ -3121,6 +3123,7 @@
         // Limpiar rastro de estudiante para evitar conflictos al recargar
         localStorage.removeItem('studentId');
         localStorage.removeItem('studentName');
+        localStorage.removeItem('studentZipId');
 
         // Ocultar máscara inmediatamente
         if ($('login-mask')) $('login-mask').style.display = 'none';
@@ -3301,6 +3304,7 @@
       async function logout() {
         localStorage.removeItem('studentId');
         localStorage.removeItem('studentName');
+        localStorage.removeItem('studentZipId');
         await supabaseClient.auth.signOut();
         location.reload();
       }
@@ -5179,8 +5183,13 @@
 
       // --- GENERACIÓN DE REPORTES Y PUESTOS ---
       async function generarReporteIndividual(forcedZipId = null) {
-        const zipId = forcedZipId || $('rep-estudiante').value;
-        if (!zipId) return;
+        const sId = forcedZipId || $('rep-estudiante').value;
+        if (!sId) return;
+
+        // Prioridad: Usar el zipgrade_id oficial si existe en el maestro
+        const isStudentMode = !!localStorage.getItem('studentId');
+        const officialZipId = localStorage.getItem('studentZipId');
+        const zipId = (isStudentMode && officialZipId) ? officialZipId : sId;
 
         showLoading(true);
         try {
