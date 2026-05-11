@@ -2784,21 +2784,17 @@
         if ($('analisis-general-view')) $('analisis-general-view').style.display = isGen ? 'block' : 'none';
         if ($('estudiante-detalle-container')) $('estudiante-detalle-container').style.display = isGen ? 'none' : 'block';
 
-        if (!isGen) {
-          cargarGradosDetalle();
-        }
-
         // Estilos de botones
         const btnGen = $('btn-sub-analisis-general');
         const btnEst = $('btn-sub-analisis-estudiante');
 
         if (isGen) {
-          btnGen.style.background = 'white'; btnGen.style.color = 'var(--primary)'; btnGen.style.boxShadow = '0 2px 8px rgba(0,0,0,0.1)';
-          btnEst.style.background = 'transparent'; btnEst.style.color = '#64748b'; btnEst.style.boxShadow = 'none';
+          if (btnGen) { btnGen.style.background = 'white'; btnGen.style.color = 'var(--primary)'; btnGen.style.boxShadow = '0 2px 8px rgba(0,0,0,0.1)'; }
+          if (btnEst) { btnEst.style.background = 'transparent'; btnEst.style.color = '#64748b'; btnEst.style.boxShadow = 'none'; }
         } else {
-          btnEst.style.background = 'white'; btnEst.style.color = 'var(--primary)'; btnEst.style.boxShadow = '0 2px 8px rgba(0,0,0,0.1)';
-          btnGen.style.background = 'transparent'; btnGen.style.color = '#64748b'; btnGen.style.boxShadow = 'none';
-          cargarGradosDetalle(); // Cargar datos iniciales del detalle
+          if (btnEst) { btnEst.style.background = 'white'; btnEst.style.color = 'var(--primary)'; btnEst.style.boxShadow = '0 2px 8px rgba(0,0,0,0.1)'; }
+          if (btnGen) { btnGen.style.background = 'transparent'; btnGen.style.color = '#64748b'; btnGen.style.boxShadow = 'none'; }
+          cargarGradosDetalle(); // Una sola llamada
         }
       }
 
@@ -4766,24 +4762,29 @@
 
       async function cargarGradosDetalle() {
         showLoading(true);
-        const { data, error } = await supabaseClient.from('eval_estudiantes_completos').select('grado').eq('periodo', currentPeriodo);
-        if (error) console.error(error);
-        const uniqueGrados = [...new Set((data || []).map(d => d.grado))]
-          .filter(g => {
-            const gb = extraerGradoBase(g);
-            return gb > 0 && gb <= 11;
-          })
-          .sort((a, b) => a.localeCompare(b, undefined, { numeric: true }));
+        try {
+          const { data, error } = await supabaseClient.from('eval_estudiantes_completos').select('grado').eq('periodo', currentPeriodo);
+          if (error) console.error(error);
+          const uniqueGrados = [...new Set((data || []).map(d => d.grado))]
+            .filter(g => {
+              const gb = extraerGradoBase(g);
+              return gb > 0 && gb <= 11;
+            })
+            .sort((a, b) => a.localeCompare(b, undefined, { numeric: true }));
 
-        const sel = $('sel-est-det-grado');
-        sel.innerHTML = '<option value="">Grado...</option>';
-        uniqueGrados.forEach(g => {
-          const opt = document.createElement('option');
-          opt.value = g;
-          opt.textContent = g;
-          sel.appendChild(opt);
-        });
-        showLoading(false);
+          const sel = $('sel-est-det-grado');
+          sel.innerHTML = '<option value="">Grado...</option>';
+          uniqueGrados.forEach(g => {
+            const opt = document.createElement('option');
+            opt.value = g;
+            opt.textContent = g;
+            sel.appendChild(opt);
+          });
+        } catch (e) {
+          console.error("Error en cargarGradosDetalle:", e);
+        } finally {
+          showLoading(false);
+        }
       }
 
       async function cargarEstudiantesDetalle() {
@@ -6708,7 +6709,7 @@
     </script>
 
     <script>
-      const CURRENT_APP_VERSION = 'v78';
+      const CURRENT_APP_VERSION = 'v79';
       window.addEventListener('load', () => {
         if ('serviceWorker' in navigator) {
           navigator.serviceWorker.register('sw.js')
