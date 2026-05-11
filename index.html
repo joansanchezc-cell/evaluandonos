@@ -5179,8 +5179,13 @@
         showLoading(true);
         try {
           const [resHist, resTodos] = await Promise.all([
-            supabaseClient.from('eval_estudiantes_notas').select('*').eq('zipgrade_id', zipId).order('periodo', { ascending: true }),
-            supabaseClient.from('eval_estudiantes_notas').select('*').eq('periodo', currentPeriodo)
+            supabaseClient.from('eval_estudiantes_notas')
+              .select('*')
+              .or(`zipgrade_id.eq.${zipId},zipgrade_id.ilike.%-${zipId}`)
+              .order('periodo', { ascending: true }),
+            supabaseClient.from('eval_estudiantes_notas')
+              .select('*')
+              .eq('periodo', currentPeriodo)
           ]);
 
           if (resHist.error) throw resHist.error;
@@ -5194,7 +5199,9 @@
             const sName = localStorage.getItem('studentName');
             if (sName) {
               const { data: resName } = await supabaseClient.from('eval_estudiantes_notas')
-                .select('*').eq('estudiante_nombre', sName).order('periodo', { ascending: true });
+                .select('*')
+                .ilike('estudiante_nombre', sName.trim())
+                .order('periodo', { ascending: true });
               if (resName && resName.length > 0) historico = resName;
             }
           }
