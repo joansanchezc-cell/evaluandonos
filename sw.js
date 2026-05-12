@@ -34,17 +34,17 @@ self.addEventListener('activate', event => {
 
 // Estrategia Network First (Red primero, luego caché)
 self.addEventListener('fetch', event => {
-  // Ignorar peticiones que no sean GET (ej. llamadas a Supabase)
-  if (event.request.method !== 'GET') return;
+  // Ignorar peticiones que no sean GET o esquemas no soportados por la caché (ej. chrome-extension)
+  if (event.request.method !== 'GET' || !event.request.url.startsWith('http')) return;
 
   event.respondWith(
     fetch(event.request)
       .then(response => {
-        // Actualizamos la caché con la respuesta de red
-        if (response && response.status === 200) {
+        // Actualizamos la caché con la respuesta de red si es válida
+        if (response && response.status === 200 && response.type === 'basic') {
           const responseToCache = response.clone();
           caches.open(CACHE_NAME).then(cache => {
-            cache.put(event.request, responseToCache);
+            cache.put(event.request, responseToCache).catch(err => console.log("Cache ignorada:", err));
           });
         }
         return response;
