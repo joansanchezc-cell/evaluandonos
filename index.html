@@ -2406,7 +2406,7 @@
       </div>
       <p class="footer-copy"
         style="margin: 0; color: #64748b; font-weight: 800; font-size: 0.9rem; letter-spacing: 0.5px;">© 2026 AndréSán
-        - Evaluándonos System <span style="color:#4f46e5; margin-left:10px;">[ v88 ACTIVADA ]</span></p>
+        - Evaluándonos System <span style="color:#4f46e5; margin-left:10px;">[ v89 ACTIVADA ]</span></p>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -2415,7 +2415,7 @@
     <script src="https://cdn.jsdelivr.net/npm/papaparse@5.3.2/papaparse.min.js"></script>
     <script>
       // --- CONFIGURACIÓN Y ESTADO GLOBAL ---
-      const CURRENT_APP_VERSION = 'v88';
+      const CURRENT_APP_VERSION = 'v89';
       const SB_URL = "https://txnecdeccianklqqyrav.supabase.co";
       const SB_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InR4bmVjZGVjY2lhbmtscXF5cmF2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY0MDQzMDIsImV4cCI6MjA5MTk4MDMwMn0.e2ybyt2Y8yHsZwRC-MZqi_qK525-CWpk-huQcQy-icM";
 
@@ -2813,25 +2813,35 @@
         let s = zipId.toString().trim();
         if (s.includes("-")) return s.split("-")[0];
         
-        // Lógica para IDs numéricos (ZipGrade)
         const len = s.length;
-        if (len === 5) return s.substring(0, 3); // 301xx -> 301
-        if (len === 6) {
-          // Puede ser 1001xx (4+2) o 301xxx (3+3)
-          if (s.startsWith("10") || s.startsWith("11")) return s.substring(0, 4);
-          return s.substring(0, 3);
+        // Para grados 10 y 11 (siempre deben ser 4 dígitos: 1001, 1101, etc.)
+        if (s.startsWith("10") || s.startsWith("11")) {
+            if (len >= 4) return s.substring(0, 4);
+            return s; // Muy corto, retornar tal cual para validación posterior
         }
-        if (len === 7) return s.substring(0, 4); // 1101xxx -> 1101
 
+        // Para grados 3 a 9 (3 dígitos: 301, 401, etc.)
+        if (len === 5) return s.substring(0, 3);
+        if (len === 6) return s.substring(0, 3);
         if (len >= 3 && len <= 4) return s;
         if (s.toLowerCase() === "primaria") return s;
         
-        // Fallback: Si es un número largo no identificado, intentar los primeros 3 o 4 dígitos
-        if (len > 4 && /^\d+$/.test(s)) {
-           return (s.startsWith("10") || s.startsWith("11")) ? s.substring(0, 4) : s.substring(0, 3);
-        }
-        
         return s;
+      }
+
+      function esGrupoValido(g) {
+        if (!g) return false;
+        const s = g.toString().trim();
+        if (s.toLowerCase() === "primaria") return true;
+        // Regla: 3 dígitos -> debe empezar con 3-9. 4 dígitos -> debe empezar con 10-11.
+        if (s.length === 3) {
+          const first = parseInt(s.charAt(0));
+          return first >= 3 && first <= 9;
+        }
+        if (s.length === 4) {
+          return s.startsWith("10") || s.startsWith("11");
+        }
+        return false;
       }
       function extraerGradoBase(grupo) {
         if (!grupo) return 0;
@@ -3158,11 +3168,11 @@
             console.log("🔒 Permisos cargados (Match Robusto) para", userName, ":", userPermissions);
 
             // Obtener la sede del docente de cualquiera de sus permisos (todos tienen la columna 'sede')
-            if (userPermissions && userPermissions.length > 0) {
+            if (userPermissions && userPermissions.length > 0 && userPermissions[0].sede) {
               userSede = userPermissions[0].sede;
             } else {
-              // Fallback: detectar sede del grado asignado si existe
-              userSede = assignedGrade ? detectarSede(assignedGrade) : null;
+              // Fallback: detectar sede del grado asignado si existe, o usar la del perfil
+              userSede = assignedGrade ? detectarSede(assignedGrade) : (perfil?.sede || 'Central');
             }
 
             const profileSede = (perfil && perfil.sede) ? perfil.sede.toUpperCase() : '';
@@ -4588,9 +4598,11 @@
           const classVal = (row[classIdx] || "").toString().trim();
           
           // Si el ID no nos dio un grupo claro pero la columna Class sí, usamos Class
-          if (!grupo || grupo.length > 4) {
-            if (classVal && classVal.length <= 5) grupo = classVal;
+          if (!esGrupoValido(grupo)) {
+            if (esGrupoValido(classVal)) grupo = classVal;
           }
+          
+          if (!esGrupoValido(grupo)) continue; // Ignorar si el grupo no es válido después de extraerlo
           
           const sede = detectarSede(grupo);
           const gradoNumBase = extraerGradoBase(grupo);
@@ -4782,10 +4794,7 @@
           if (error) console.error(error);
           
           let uniqueGrados = [...new Set((data || []).map(d => d.grado))]
-            .filter(g => {
-              const gb = extraerGradoBase(g);
-              return gb > 0 && gb <= 11;
-            });
+            .filter(esGrupoValido);
 
           // --- Filtro de Privacidad: Solo mostrar grados permitidos ---
           if (currentRole !== 'superadmin') {
@@ -5124,15 +5133,7 @@
 
           // Obtener todos los grupos únicos
           const groupsNotas = data.map(d => extraerGrupo(d.zipgrade_id));
-          let allGroups = [...new Set([...groupsNotas, ...dataCompGrados])];
-          allGroups = allGroups.filter(g => {
-            const s = g.toString().toLowerCase();
-            return s === 'primaria' || s.length >= 3;
-          });
-          allGroups = allGroups.filter(g => {
-            const gb = extraerGradoBase(g);
-            return gb > 0 && gb <= 11;
-          });
+          let allGroups = [...new Set([...groupsNotas, ...dataCompGrados])].filter(esGrupoValido);
 
           // --- Filtro de Privacidad: Solo mostrar grupos permitidos ---
           if (currentRole !== 'superadmin') {
@@ -5632,7 +5633,7 @@
 
           const groupsNotas = resNotas.data ? resNotas.data.map(d => extraerGrupo(d.zipgrade_id)) : [];
           const groupsComp = resComp.data ? resComp.data.map(d => d.grado.toString()) : [];
-          let uniqueGroups = [...new Set([...groupsNotas, ...groupsComp])];
+          let uniqueGroups = [...new Set([...groupsNotas, ...groupsComp])].filter(esGrupoValido);
 
           if (currentRole !== 'superadmin') {
             const assignedLower = (window.assignedGrade || "").toString().toLowerCase();
@@ -5844,7 +5845,7 @@
 
           const groupsNotas = resNotas.data ? resNotas.data.map(d => extraerGrupo(d.zipgrade_id)) : [];
           const groupsComp = resComp.data ? resComp.data.map(d => d.grado.toString()) : [];
-          let uniqueGroups = [...new Set([...groupsNotas, ...groupsComp])];
+          let uniqueGroups = [...new Set([...groupsNotas, ...groupsComp])].filter(esGrupoValido);
 
           if (currentRole !== 'superadmin') {
             const assignedLower = (window.assignedGrade || "").toString().toLowerCase();
@@ -6470,7 +6471,7 @@
 
           // 1. Poblar selectores del Dashboard
           let gruposUnicos = [...new Set(dataPeriodoActual.map(d => extraerGrupo(d.zipgrade_id)))]
-            .filter(g => extraerGradoBase(g) > 0);
+            .filter(g => esGrupoValido(g));
 
           // --- Filtro de Privacidad: Solo mostrar grupos permitidos ---
           if (currentRole !== 'superadmin') {
@@ -6692,7 +6693,6 @@
     </script>
 
     <script>
-      const CURRENT_APP_VERSION = 'v88';
       window.addEventListener('load', () => {
         if ('serviceWorker' in navigator) {
           navigator.serviceWorker.register('sw.js')
