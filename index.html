@@ -2487,7 +2487,7 @@
     <script src="https://cdn.jsdelivr.net/npm/papaparse@5.3.2/papaparse.min.js"></script>
     <script>
       // --- CONFIGURACIÓN Y ESTADO GLOBAL ---
-      var CURRENT_APP_VERSION = 'v95';
+      var CURRENT_APP_VERSION = 'v96';
       var SB_URL = "https://txnecdeccianklqqyrav.supabase.co";
       var SB_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InR4bmVjZGVjY2lhbmtscXF5cmF2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY0MDQzMDIsImV4cCI6MjA5MTk4MDMwMn0.e2ybyt2Y8yHsZwRC-MZqi_qK525-CWpk-huQcQy-icM";
 
@@ -2903,16 +2903,29 @@
 
       function esGrupoValido(g) {
         if (!g) return false;
-        const s = g.toString().trim();
-        if (s.toLowerCase() === "primaria") return true;
-        // Regla: 3 dígitos -> debe empezar con 3-9. 4 dígitos -> debe empezar con 10-11.
-        if (s.length === 3) {
-          const first = parseInt(s.charAt(0));
-          return first >= 3 && first <= 9;
+        const s = g.toString().trim().toUpperCase();
+        if (s === "PRIMARIA") return true;
+
+        // Lista cerrada y estricta de grupos legítimos de la Sede Central
+        const centralPermitidos = [
+          "301", "401", "501",
+          "601", "602", "603",
+          "701", "702", "703",
+          "801", "802",
+          "901", "902", "903",
+          "1001", "1002", "1003",
+          "1101", "1102", "1103"
+        ];
+        if (centralPermitidos.includes(s)) return true;
+
+        // Para las sedes rurales (las que detectarSede clasifica como diferentes de 'Central')
+        const sede = detectarSede(s);
+        if (sede !== 'Central') {
+          // Validamos que el grado base extraído tenga sentido institucional (1 a 11)
+          const base = extraerGradoBase(s);
+          if (base >= 1 && base <= 11) return true;
         }
-        if (s.length === 4) {
-          return s.startsWith("10") || s.startsWith("11");
-        }
+
         return false;
       }
       function extraerGradoBase(grupo) {
