@@ -2478,7 +2478,7 @@
       </div>
       <p class="footer-copy"
         style="margin: 0; color: #64748b; font-weight: 800; font-size: 0.9rem; letter-spacing: 0.5px;">© 2026 AndréSán
-        - Evaluándonos System <span style="color:#4f46e5; margin-left:10px;">[ v90 ACTIVADA ]</span></p>
+        - Evaluándonos System <span style="color:#4f46e5; margin-left:10px;">[ v91 ACTIVADA ]</span></p>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -2487,7 +2487,7 @@
     <script src="https://cdn.jsdelivr.net/npm/papaparse@5.3.2/papaparse.min.js"></script>
     <script>
       // --- CONFIGURACIÓN Y ESTADO GLOBAL ---
-      var CURRENT_APP_VERSION = 'v90';
+      var CURRENT_APP_VERSION = 'v91';
       var SB_URL = "https://txnecdeccianklqqyrav.supabase.co";
       var SB_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InR4bmVjZGVjY2lhbmtscXF5cmF2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY0MDQzMDIsImV4cCI6MjA5MTk4MDMwMn0.e2ybyt2Y8yHsZwRC-MZqi_qK525-CWpk-huQcQy-icM";
 
@@ -3267,21 +3267,19 @@
             const userSedeClean = userSede ? userSede.toUpperCase() : '';
             const assignedLower = assignedGrade ? assignedGrade.toString().toLowerCase() : '';
 
+            // Normalización estricta de la sede del usuario para garantizar que coincida con detectarSede
+            const sedeBruta = userSede || profileSede || assignedGrade || 'Central';
+            window.userSede = detectarSede(sedeBruta);
+            userSede = window.userSede; // Sincronizar variable local
+
             // === ELEVACIÓN DE PERMISOS PARA SEDES RURALES ===
             const sedesRurales = ['PUEBLILLO', 'SENDERO', 'YANACONAS', 'PISOJE BAJO', 'PRIMARIA'];
             const isPrimariaDocente = assignedLower === "primaria";
 
             if (sedesRurales.includes(userSedeClean) || sedesRurales.includes(profileSede) || isPrimariaDocente) {
-              console.log(`🌟 Elevando permisos a ADMIN por pertenecer a sede rural o ser docente de Primaria: ${userSedeClean || profileSede || 'Primaria'}`);
+              console.log(`🌟 Elevando permisos a ADMIN por pertenecer a sede rural o ser docente de Primaria: ${window.userSede}`);
               currentRole = 'admin';
               document.body.classList.add('is-admin');
-
-              // Normalizar la sede para que coincida con la detección de grupos
-              const sedeBruta = userSede || profileSede || assignedGrade || 'Central';
-              window.userSede = detectarSede(sedeBruta);
-            } else {
-              // Asegurar que window.userSede esté definido para todos
-              window.userSede = userSede || detectarSede(assignedGrade) || 'Central';
             }
 
             // --- OCULTAR SELECTORES DE SEDE SI NO ES SUPERADMIN ---
@@ -3507,13 +3505,13 @@
             const allowedLevels = [...new Set([...dictan, ...direccion])];
 
             if (currentRole === 'admin') {
-              if (esDePrimaria && mySede === 'Central') {
+              if (esDePrimaria && mySede.toUpperCase() === 'CENTRAL') {
                 uniqueLevels = uniqueLevels.filter(l => [3, 4, 5].includes(l) || allowedLevels.includes(l));
               }
             } else {
               uniqueLevels = uniqueLevels.filter(l => allowedLevels.includes(l));
 
-              if (esDePrimaria && mySede === 'Central') {
+              if (esDePrimaria && mySede.toUpperCase() === 'CENTRAL') {
                 uniqueLevels = uniqueLevels.filter(l => [3, 4, 5].includes(l) || allowedLevels.includes(l));
               }
             }
@@ -4893,7 +4891,7 @@
 
             if (currentRole === 'admin') {
               // Administradores de Sede: Ven grupos de su sede
-              uniqueGrados = uniqueGrados.filter(g => detectarSede(g) === mySede);
+              uniqueGrados = uniqueGrados.filter(g => detectarSede(g).toUpperCase() === mySede.toUpperCase());
             } else {
               // Lectores (Docentes): Ven grupos de dirección o donde dictan
               const direccion = window.assignedGroups || [];
@@ -4909,7 +4907,7 @@
             }
 
             // Restricción Central Primaria
-            if (esDePrimaria && mySede === 'Central') {
+            if (esDePrimaria && mySede.toUpperCase() === 'CENTRAL') {
               uniqueGrados = uniqueGrados.filter(g => ['301', '401', '501'].includes(g.toString()));
             }
           }
@@ -5232,11 +5230,11 @@
 
             if (currentRole === 'admin') {
               // Administradores de Sede: Ven todo lo de su sede
-              allGroups = allGroups.filter(g => detectarSede(g) === mySede);
+              allGroups = allGroups.filter(g => detectarSede(g).toUpperCase() === mySede.toUpperCase());
 
               // Si es un docente de primaria elevado a admin, filtrar solo grados 1-5
               if (esDePrimaria) {
-                if (mySede === 'Central') {
+                if (mySede.toUpperCase() === 'CENTRAL') {
                   allGroups = allGroups.filter(g => ['301', '401', '501'].includes(g.toString()));
                 } else {
                   allGroups = allGroups.filter(g => extraerGradoBase(g) >= 1 && extraerGradoBase(g) <= 5);
@@ -5254,7 +5252,7 @@
                 const hasPermission = dictan.some(d => d === g.toString() || d === gBase.toString()) ||
                   direccion.some(d => d === g.toString() || d === gBase.toString());
 
-                if (esDePrimaria && mySede === 'Central') {
+                if (esDePrimaria && mySede.toUpperCase() === 'CENTRAL') {
                   return ['301', '401', '501'].includes(g.toString()) || hasPermission;
                 }
                 return hasPermission;
@@ -5267,7 +5265,7 @@
               // Intentar recuperar TODOS los grupos de la sede si no hay asignación específica pero es admin
               const { data: sedeData } = await supabaseClient.from('eval_estudiantes_notas').select('zipgrade_id').eq('periodo', currentPeriodo);
               if (sedeData) {
-                allGroups = [...new Set(sedeData.map(d => extraerGrupo(d.zipgrade_id)))].filter(g => detectarSede(g) === mySede);
+                allGroups = [...new Set(sedeData.map(d => extraerGrupo(d.zipgrade_id)))].filter(g => detectarSede(g).toUpperCase() === mySede.toUpperCase());
               }
             }
 
@@ -5280,7 +5278,7 @@
           // Si es superadmin, usamos el selector manual.
           let uniqueGroups = allGroups;
           if (currentRole === 'superadmin' && sedeManual) {
-            uniqueGroups = allGroups.filter(g => detectarSede(g) === sedeManual);
+            uniqueGroups = allGroups.filter(g => detectarSede(g).toUpperCase() === sedeManual.toUpperCase());
           }
           uniqueGroups.sort((a, b) => a.localeCompare(b, undefined, { numeric: true }));
 
@@ -5297,7 +5295,7 @@
             if (btnBasica) btnBasica.style.display = 'block';
             if (btnSuperior) {
               // Solo mostrar botón de superior si es superadmin en Central o si es admin de Central
-              btnSuperior.style.display = (sedeManual === 'Central' || userSede === 'Central') ? 'block' : 'none';
+              btnSuperior.style.display = (sedeManual.toUpperCase() === 'CENTRAL' || (window.userSede || '').toUpperCase() === 'CENTRAL') ? 'block' : 'none';
             }
           }
           cargarEstudiantesReporte();
@@ -5734,9 +5732,9 @@
 
             if (currentRole === 'admin') {
               uniqueGroups = uniqueGroups.filter(g => {
-                if (detectarSede(g) !== mySede) return false;
+                if (detectarSede(g).toUpperCase() !== mySede.toUpperCase()) return false;
                 const hasPermission = allowedPool.some(ap => ap === g.toString() || extraerGradoBase(g).toString() === ap);
-                if (esDePrimaria && mySede === 'Central') {
+                if (esDePrimaria && mySede.toUpperCase() === 'CENTRAL') {
                   return ['301', '401', '501'].includes(g.toString()) || hasPermission;
                 }
                 return true;
@@ -5744,7 +5742,7 @@
             } else {
               uniqueGroups = uniqueGroups.filter(g => {
                 const hasPermission = allowedPool.some(ap => ap === g.toString() || extraerGradoBase(g).toString() === ap);
-                if (esDePrimaria && mySede === 'Central') {
+                if (esDePrimaria && mySede.toUpperCase() === 'CENTRAL') {
                   return ['301', '401', '501'].includes(g.toString()) || hasPermission;
                 }
                 return hasPermission;
@@ -5945,9 +5943,9 @@
             const allowedPool = [...new Set([...direccion, ...dictan])];
 
             uniqueGroups = uniqueGroups.filter(g => {
-              if (currentRole === 'admin' && detectarSede(g) !== mySede) return false;
+              if (currentRole === 'admin' && detectarSede(g).toUpperCase() !== mySede.toUpperCase()) return false;
               const hasPermission = allowedPool.some(ap => ap === g.toString() || extraerGradoBase(g).toString() === ap);
-              if (esDePrimaria && mySede === 'Central') {
+              if (esDePrimaria && mySede.toUpperCase() === 'CENTRAL') {
                 return ['301', '401', '501'].includes(g.toString()) || hasPermission;
               }
               if (currentRole === 'admin') return true;
