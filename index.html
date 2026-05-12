@@ -5771,28 +5771,10 @@
         if (!grupo) return;
         showLoading(true);
         try {
-          const [resNotas, resComp] = await Promise.all([
-            supabaseClient.from('eval_estudiantes_notas').select('*').eq('periodo', currentPeriodo),
-            supabaseClient.from('eval_estudiantes_completos').select('*').eq('periodo', currentPeriodo)
-          ]);
+          const { data: todosData, error } = await supabaseClient.from('eval_estudiantes_notas').select('*').eq('periodo', currentPeriodo);
+          if (error) throw error;
 
-          const dataNotas = resNotas.data || [];
-          const dataComp = (resComp.data || []).map(d => {
-            const normResp = {};
-            if (d.respuestas) {
-              Object.keys(d.respuestas).forEach(q => { normResp[q] = d.respuestas[q].pts >= 1 ? 1 : 0; });
-            }
-            return {
-              zipgrade_id: d.student_id,
-              estudiante_nombre: d.estudiante_nombre,
-              respuestas: normResp,
-              porcentaje: d.percent_correct
-            };
-          });
-
-          const todosData = [...dataNotas, ...dataComp];
-
-          const alumnosGrupo = todosData.filter(t => extraerGrupo(t.zipgrade_id) === grupo)
+          const alumnosGrupo = (todosData || []).filter(t => extraerGrupo(t.zipgrade_id) === grupo)
             .sort((a, b) => a.estudiante_nombre.localeCompare(b.estudiante_nombre, 'es', { sensitivity: 'base' }));
 
           if (alumnosGrupo.length === 0) {
