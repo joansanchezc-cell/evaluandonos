@@ -91,7 +91,7 @@
   <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
   <script>
-    var CURRENT_APP_VERSION = "v90";
+    const CURRENT_APP_VERSION = "1.0.0";
     window.MathJax = {
       tex: {
         inlineMath: [['$', '$'], ['\\(', '\\)']],
@@ -1323,142 +1323,144 @@
           word-break: break-word;
         }
       }
+    }
 
-      @media (max-width: 768px) {
-        .mobile-nav {
-          display: flex !important;
-          visibility: visible !important;
-          opacity: 1 !important;
-          position: fixed !important;
-          bottom: 0 !important;
-          left: 0 !important;
-          right: 0 !important;
-          background: #ffffff !important;
-          border-top: 2px solid #4f46e5 !important;
-          justify-content: space-around !important;
-          padding: 10px 5px 25px !important;
-          z-index: 999999 !important;
-          box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.2) !important;
-          height: 80px !important;
-        }
+    .mobile-nav {
+      display: flex !important;
+      visibility: visible !important;
+      opacity: 1 !important;
+      position: fixed !important;
+      bottom: 0 !important;
+      left: 0 !important;
+      right: 0 !important;
+      background: #ffffff !important;
+      border-top: 2px solid #4f46e5 !important;
+      /* Borde azul para confirmar visibilidad */
+      justify-content: space-around !important;
+      padding: 10px 5px 25px !important;
+      z-index: 999999 !important;
+      box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.2) !important;
+      height: 80px !important;
+    }
 
-        .mobile-nav-item {
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          gap: 4px;
-          color: #64748b;
-          cursor: pointer;
-          transition: all 0.2s ease;
-          flex: 1;
-          min-width: 0;
-        }
+    .mobile-nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      color: var(--gray);
+      text-decoration: none !important;
+      font-size: 0.7rem;
+      font-weight: 700;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      flex: 1;
+      outline: none;
+      -webkit-tap-highlight-color: transparent;
+    }
 
-        .mobile-nav-item span {
-          font-size: 24px;
-        }
+    .mobile-nav-item:hover,
+    .mobile-nav-item:active,
+    .mobile-nav-item:visited {
+      text-decoration: none !important;
+      color: var(--gray);
+    }
 
-        .mobile-nav-item span:last-child {
-          font-size: 0.65rem;
-          font-weight: 700;
-          text-transform: uppercase;
-          white-space: nowrap;
-        }
-
-        .mobile-nav-item.active {
-          color: #4f46e5;
-          transform: translateY(-5px);
-        }
-
-        body {
-          padding-bottom: 100px;
-        }
-
-        footer,
-        .tabs {
-          display: none !important;
-        }
-      }
-
-      header {
-        display: block !important;
-        padding: 10px 0;
-      }
-
-      .header-banner {
-        padding: 6px 12px !important;
-      }
-
-      .header-banner img.header-logo-img {
-        height: 40px !important;
-        /* Banner más pequeño en móvil */
-        margin-bottom: 0;
-      }
+    .mobile-nav-item.active {
+      color: var(--primary) !important;
+      transform: translateY(-4px);
+    }
 
 
-      .est-det-list-item:hover {
-        background-color: #f8fafc;
-        color: #4f46e5;
-      }
 
-      /* Stacking filter headers on mobile */
-      .card>div[style*="display: flex"] {
-        flex-direction: column !important;
-        align-items: stretch !important;
-        gap: 15px !important;
-      }
+    .mobile-nav-item .material-symbols-outlined {
+      font-size: 28px !important;
+      display: block !important;
+      margin-bottom: 2px !important;
+    }
 
-      .card>div[style*="display: flex"]>div {
-        width: 100% !important;
-        justify-content: space-between !important;
-      }
+    body {
+      padding-bottom: 100px;
+    }
 
-      .top-nav-container {
-        padding: 0.5rem 0 !important;
-        margin-bottom: 0.5rem !important;
-      }
+    footer,
+    .tabs {
+      display: none !important;
+    }
 
-      .top-nav-container .container>div:first-child {
-        justify-content: center !important;
-      }
+    header {
+      display: block !important;
+      padding: 10px 0;
+    }
 
-      .top-nav-container img {
-        height: 50px !important;
-      }
+    .header-banner {
+      padding: 6px 12px !important;
+    }
 
-      .print-btn {
-        width: 100% !important;
-        margin-top: 10px;
-      }
+    .header-banner img.header-logo-img {
+      height: 40px !important;
+      /* Banner más pequeño en móvil */
+      margin-bottom: 0;
+    }
 
-      select,
-      button,
-      input {
-        font-size: 16px !important;
-      }
 
-      /* Aprovechar espacio lateral en móviles */
-      .container {
-        padding-left: 10px !important;
-        padding-right: 10px !important;
-        width: 100% !important;
-        max-width: 100% !important;
-      }
+    /* Stacking filter headers on mobile */
+    .card>div[style*="display: flex"] {
+      flex-direction: column !important;
+      align-items: stretch !important;
+      gap: 15px !important;
+    }
 
-      .card {
-        padding: 1.25rem 0.75rem !important;
-      }
+    .card>div[style*="display: flex"]>div {
+      width: 100% !important;
+      justify-content: space-between !important;
+    }
 
-      #reporte-content {
-        overflow-x: auto !important;
-        -webkit-overflow-scrolling: touch;
-      }
+    .top-nav-container {
+      padding: 0.5rem 0 !important;
+      margin-bottom: 0.5rem !important;
+    }
 
-      .individual-report-wrapper {
-        width: 820px !important;
-        zoom: 0.42;
-        /* Reducir un poco más para asegurar que quepa en pantallas de 360px */
-      }
+    .top-nav-container .container>div:first-child {
+      justify-content: center !important;
+    }
+
+    .top-nav-container img {
+      height: 50px !important;
+    }
+
+    .print-btn {
+      width: 100% !important;
+      margin-top: 10px;
+    }
+
+    select,
+    button,
+    input {
+      font-size: 16px !important;
+    }
+
+    /* Aprovechar espacio lateral en móviles */
+    .container {
+      padding-left: 10px !important;
+      padding-right: 10px !important;
+      width: 100% !important;
+      max-width: 100% !important;
+    }
+
+    .card {
+      padding: 1.25rem 0.75rem !important;
+    }
+
+    #reporte-content {
+      overflow-x: auto !important;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .individual-report-wrapper {
+      width: 820px !important;
+      zoom: 0.42;
+      /* Reducir un poco más para asegurar que quepa en pantallas de 360px */
+    }
     }
 
     /* ── Footer ── */
@@ -1743,79 +1745,33 @@
 </head>
 
 <body>
-  <script>
-    // --- PRE-INICIALIZACIÓN BLINDADA (STABLE SCOPE HOISTING) ---
-    // Garantiza que los controladores de la interfaz existan en memoria antes de renderizar los botones, evitando ReferenceErrors.
-    window.$ = id => document.getElementById(id);
-    window.switchLoginMode = function(mode) {
-      const isEst = mode === 'estudiante';
-      const fDoc = document.getElementById('form-docente');
-      const fEst = document.getElementById('form-estudiante');
-      if(fDoc) fDoc.style.display = isEst ? 'none' : 'block';
-      if(fEst) fEst.style.display = isEst ? 'block' : 'none';
-
-      const btnDoc = document.getElementById('mode-docente');
-      const btnEst = document.getElementById('mode-estudiante');
-
-      if (btnDoc && btnEst) {
-        if (isEst) {
-          btnDoc.style.background = 'transparent'; btnDoc.style.color = '#64748b'; btnDoc.style.boxShadow = 'none';
-          btnEst.style.background = 'white'; btnEst.style.color = '#4f46e5'; btnEst.style.boxShadow = '0 2px 8px rgba(0,0,0,0.1)';
-        } else {
-          btnEst.style.background = 'transparent'; btnEst.style.color = '#64748b'; btnEst.style.boxShadow = 'none';
-          btnDoc.style.background = 'white'; btnDoc.style.color = '#4f46e5'; btnDoc.style.boxShadow = '0 2px 8px rgba(0,0,0,0.1)';
-        }
-      }
-      const err = document.getElementById('login-err');
-      if(err) err.style.display = 'none';
-    };
-
-    // Controladores de espera seguros para evitar que clics prematuros causen excepciones no capturadas
-    window.intentarLogin = function() {
-      const err = document.getElementById('login-err');
-      if(err) {
-        err.innerText = "Estableciendo conexión segura con el servidor. Por favor espera un segundo...";
-        err.style.display = 'block';
-      }
-    };
-    window.intentarLoginEstudiante = function() {
-      const err = document.getElementById('login-err');
-      if(err) {
-        err.innerText = "Conectando al sistema escolar. Por favor espera un segundo...";
-        err.style.display = 'block';
-      }
-    };
-  </script>
-
   <div id="loading">✨ Cargando análisis...</div>
 
   <div id="login-mask">
     <div class="login-card">
       <img src="https://txnecdeccianklqqyrav.supabase.co/storage/v1/object/public/assets/evaluandonos.png"
-        style="width: 220px; margin-bottom: 1.5rem;">
-      <h2 style="margin-bottom:1.5rem; color:#1e293b; font-weight:900;"></h2>
+        style="width: 180px; margin-bottom: 1.5rem;">
+      <h2 style="margin-bottom:1.5rem;"></h2>
 
       <div
         style="display:flex; background:#f1f5f9; border-radius:12px; padding:4px; margin-bottom:1.5rem; width:100%; box-sizing:border-box;">
-        <button id="mode-docente" type="button" onclick="switchLoginMode('docente')"
+        <button id="mode-docente" onclick="switchLoginMode('docente')"
           style="flex:1; border:none; padding:10px; border-radius:10px; font-weight:700; cursor:pointer; background:white; color:#4f46e5; box-shadow:0 2px 8px rgba(0,0,0,0.1); transition:0.3s;">Docentes</button>
-        <button id="mode-estudiante" type="button" onclick="switchLoginMode('estudiante')"
+        <button id="mode-estudiante" onclick="switchLoginMode('estudiante')"
           style="flex:1; border:none; padding:10px; border-radius:10px; font-weight:700; cursor:pointer; background:transparent; color:#64748b; transition:0.3s;">Estudiantes</button>
       </div>
 
       <div id="form-docente">
         <input type="text" id="li-user" placeholder="Usuario o Email">
         <input type="password" id="li-pass" placeholder="Contraseña">
-        <button type="button" onclick="intentarLogin()" id="btn-login" style="width:100%;">Ingresar como
-          Docente</button>
+        <button onclick="intentarLogin()" id="btn-login" style="width:100%;">Ingresar como Docente</button>
       </div>
 
       <div id="form-estudiante" style="display:none;">
         <input type="text" id="li-est-id" placeholder="Número de Identificación">
         <p style="font-size:0.75rem; color:#64748b; margin-bottom:1.5rem; line-height:1.4;">Consulta tu informe
           individual ingresando el documento registrado.</p>
-        <button type="button" onclick="intentarLoginEstudiante()" id="btn-login-est"
-          style="width:100%; background:#10b981;">Consultar
+        <button onclick="intentarLoginEstudiante()" id="btn-login-est" style="width:100%; background:#10b981;">Consultar
           Reporte</button>
       </div>
 
@@ -1878,8 +1834,7 @@
           </button>
           <div class="dropdown-content">
             <div class="dropdown-item" onclick="selectAnalisis('general')">📊 Análisis General</div>
-            <div class="dropdown-item" id="tab-estudiante-detalle-item" onclick="selectAnalisis('estudiante')">👤 Por
-              Estudiante</div>
+            <div class="dropdown-item admin-only" onclick="selectAnalisis('estudiante')">👤 Por Estudiante</div>
           </div>
         </div>
 
@@ -1899,11 +1854,9 @@
             </svg>
           </button>
           <div class="dropdown-content">
-            <div class="dropdown-item" id="tab-individual-item" onclick="switchMainTab('individual')">📄 Individual
-            </div>
-            <div class="dropdown-item" id="tab-grupal-item" onclick="switchMainTab('grupal')">👥 Grupal</div>
-            <div class="dropdown-item" id="tab-asignatura-item" onclick="switchMainTab('asignatura')">📚 Por Asignatura
-            </div>
+            <div class="dropdown-item" onclick="switchMainTab('individual')">📄 Individual</div>
+            <div class="dropdown-item" onclick="switchMainTab('grupal')">👥 Grupal</div>
+            <div class="dropdown-item" onclick="switchMainTab('asignatura')">📚 Por Asignatura</div>
           </div>
         </div>
 
@@ -2006,118 +1959,6 @@
       </div>
 
     </div> <!-- Cierra analisis-estudiante-view -->
-
-    <!-- Análisis Detallado por Estudiante -->
-    <div id="estudiante-detalle-container" style="display:none; margin-top:20px;">
-      <div class="card"
-        style="margin-bottom:20px; background:linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%); color:white;">
-        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:15px;">
-          <div>
-            <h2 style="margin:0; font-size:1.5rem; font-weight:800;">👤 Análisis por Estudiante</h2>
-            <p style="margin:5px 0 0 0; opacity:0.9; font-size:0.9rem;">Consulta el desempeño detallado y respuestas de
-              cada alumno.</p>
-          </div>
-          <div style="display:flex; gap:10px; flex-wrap:wrap;">
-            <select id="sel-est-det-grado" onchange="cargarEstudiantesDetalle()"
-              style="padding:10px; border-radius:10px; border:none; font-weight:700; background:rgba(255,255,255,0.2); color:white; outline:none; cursor:pointer;">
-              <option value="" style="color:#000;">Grado...</option>
-            </select>
-            <select id="sel-est-det-nombre" onchange="cargarAsignaturasEstudiante()"
-              style="padding:10px; border-radius:10px; border:none; font-weight:700; background:rgba(255,255,255,0.2); color:white; outline:none; cursor:pointer;">
-              <option value="" style="color:#000;">Estudiante...</option>
-            </select>
-            <select id="sel-est-det-asig" onchange="cargarPreguntasEstudiante()"
-              style="padding:10px; border-radius:10px; border:none; font-weight:700; background:rgba(255,255,255,0.2); color:white; outline:none; cursor:pointer;">
-              <option value="" style="color:#000;">Materia...</option>
-            </select>
-            <select id="sel-est-det-preg" onchange="mostrarAnalisisEstudiante()"
-              style="padding:10px; border-radius:10px; border:none; font-weight:700; background:rgba(255,255,255,0.2); color:white; outline:none; cursor:pointer;">
-              <option value="" style="color:#000;">#...</option>
-            </select>
-          </div>
-        </div>
-      </div>
-
-      <div id="est-det-content" style="display:none; margin-top:20px;">
-        <div
-          style="display:grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap:20px; align-items: start;">
-
-          <!-- Columna 1: Detalle de la Pregunta -->
-          <div id="est-det-main-card" class="card" style="margin:0;">
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem;">
-              <h2 id="est-det-pregunta-num" class="question-title" style="margin:0;">Pregunta #</h2>
-              <div id="est-det-status-badge"></div>
-            </div>
-
-            <div
-              style="background: rgba(255, 255, 255, 0.3); border: 2px solid rgba(255, 255, 255, 0.2); border-radius: 16px; padding: 1.5rem; margin-bottom: 2rem; backdrop-filter: blur(5px);">
-              <div id="est-det-pregunta-media"></div>
-              <div id="est-det-pregunta-texto" class="question-text"
-                style="font-size: 1.1rem; color: var(--text); font-weight: 500; margin: 0; line-height: 1.6;"></div>
-            </div>
-
-            <div class="options-list" id="est-det-options-list">
-              <div id="est-opt-a" class="option"><span class="option-letter">A</span>
-                <div class="option-content">
-                  <div id="est-txt-a"></div>
-                  <div id="est-media-opt-a"></div>
-                </div>
-              </div>
-              <div id="est-opt-b" class="option"><span class="option-letter">B</span>
-                <div class="option-content">
-                  <div id="est-txt-b"></div>
-                  <div id="est-media-opt-b"></div>
-                </div>
-              </div>
-              <div id="est-opt-c" class="option"><span class="option-letter">C</span>
-                <div class="option-content">
-                  <div id="est-txt-c"></div>
-                  <div id="est-media-opt-c"></div>
-                </div>
-              </div>
-              <div id="est-opt-d" class="option"><span class="option-letter">D</span>
-                <div class="option-content">
-                  <div id="est-txt-d"></div>
-                  <div id="est-media-opt-d"></div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Columna 2: Resumen del Estudiante -->
-          <div class="card" style="margin:0; position: sticky; top: 20px;">
-            <h2 class="question-title" style="font-size:1.2rem; margin-bottom:1.5rem;">Resumen de Respuesta</h2>
-            <div style="display: flex; flex-direction: column; gap: 15px;">
-              <div class="stat-box"
-                style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 20px; padding: 25px; display: flex; flex-direction: column; align-items: center; justify-content: center;">
-                <span id="est-det-resp-est" class="stat-val"
-                  style="font-size: 2.5rem; font-weight: 900; color: #4f46e5;">-</span>
-                <span class="stat-label"
-                  style="font-size: 0.8rem; font-weight: 800; color: #64748b; text-transform: uppercase;">Tu
-                  Respuesta</span>
-              </div>
-              <div class="stat-box"
-                style="background: #f0fdf4; border: 2px solid #bbf7d0; border-radius: 20px; padding: 25px; display: flex; flex-direction: column; align-items: center; justify-content: center;">
-                <span id="est-det-resp-key" class="stat-val"
-                  style="font-size: 2.5rem; font-weight: 900; color: #16a34a;">-</span>
-                <span class="stat-label"
-                  style="font-size: 0.8rem; font-weight: 800; color: #166534; text-transform: uppercase;">Clave
-                  Correcta</span>
-              </div>
-              <div id="est-det-box-pts" class="stat-box"
-                style="background: #eff6ff; border: 2px solid #bfdbfe; border-radius: 20px; padding: 25px; display: flex; flex-direction: column; align-items: center; justify-content: center;">
-                <span id="est-det-pts" class="stat-val"
-                  style="font-size: 2.5rem; font-weight: 900; color: #3b82f6;">0</span>
-                <span class="stat-label"
-                  style="font-size: 0.8rem; font-weight: 800; color: #1e40af; text-transform: uppercase;">Puntos
-                  Obtenidos</span>
-              </div>
-            </div>
-          </div>
-
-        </div>
-      </div>
-    </div>
     </div> <!-- Cierra resultado-container -->
   </main>
 
@@ -2269,7 +2110,7 @@
             <option value="">Seleccione grupo primero...</option>
           </select>
           <button onclick="imprimirInformeAsignatura()" class="print-btn admin-only"
-            style="display:none; background:#4036e5; color:white; border:none; padding:5px 12px; border-radius:8px; font-weight:700; cursor:pointer; font-size:0.7rem;">
+            style="display:none; background:#4036e5; color:white; border:none; padding:8px 16px; border-radius:10px; font-weight:700; cursor:pointer; font-size:0.75rem;">
             🖨️ Imprimir
           </button>
         </div>
@@ -2283,7 +2124,116 @@
     </div>
   </div>
 
+  <!-- Análisis Detallado por Estudiante (NUEVO) -->
+  <div id="estudiante-detalle-container" style="display:none; margin-top:2rem;">
+    <div id="filtros-est-detalle" class="controls"
+      style="display: grid; grid-template-columns: 1fr 1.5fr 1fr 0.8fr; gap: 1.5rem; align-items: end; background: rgba(255, 255, 255, 0.6); backdrop-filter: blur(20px); padding: 1.5rem; border-radius: 20px; border: 1px solid rgba(255, 255, 255, 0.5); width: 100%; box-sizing: border-box; margin-bottom: 2rem;">
+      <div class="control-group">
+        <label
+          style="display: block; font-size: 0.75rem; font-weight: 800; color: #64748b; margin-bottom: 8px; text-transform: uppercase;">Grado</label>
+        <select id="sel-est-det-grado" onchange="cargarEstudiantesDetalle()"
+          style="width: 100%; padding: 12px; border-radius: 12px; border: 1px solid #cbd5e1; background: white;">
+          <option value="">Grado...</option>
+        </select>
+      </div>
+      <div class="control-group">
+        <label
+          style="display: block; font-size: 0.75rem; font-weight: 800; color: #64748b; margin-bottom: 8px; text-transform: uppercase;">Estudiante</label>
+        <select id="sel-est-det-nombre" onchange="cargarAsignaturasEstudiante()"
+          style="width: 100%; padding: 12px; border-radius: 12px; border: 1px solid #cbd5e1; background: white;">
+          <option value="">Seleccione estudiante...</option>
+        </select>
+      </div>
+      <div class="control-group">
+        <label
+          style="display: block; font-size: 0.75rem; font-weight: 800; color: #64748b; margin-bottom: 8px; text-transform: uppercase;">Asignatura</label>
+        <select id="sel-est-det-asig" onchange="cargarPreguntasEstudiante()"
+          style="width: 100%; padding: 12px; border-radius: 12px; border: 1px solid #cbd5e1; background: white;">
+          <option value="">Asignatura...</option>
+        </select>
+      </div>
+      <div class="control-group">
+        <label
+          style="display: block; font-size: 0.75rem; font-weight: 800; color: #64748b; margin-bottom: 8px; text-transform: uppercase;">Pregunta</label>
+        <select id="sel-est-det-preg" onchange="mostrarAnalisisEstudiante()"
+          style="width: 100%; padding: 12px; border-radius: 12px; border: 1px solid #cbd5e1; background: white;">
+          <option value="">#</option>
+        </select>
+      </div>
+    </div>
 
+    <div id="est-det-main-card" class="card" style="display:none;">
+      <div class="dashboard-grid">
+        <!-- Pregunta y Opciones (Copiado de Análisis General) -->
+        <div class="card" style="box-shadow:none; border:none; padding:0;">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem;">
+            <h2 class="question-title" id="est-det-pregunta-num" style="margin:0;">Pregunta #</h2>
+            <div id="est-det-status-badge"></div>
+          </div>
+          <div
+            style="background: rgba(255, 255, 255, 0.3); border: 2px solid rgba(255, 255, 255, 0.2); border-radius: 16px; padding: 1.5rem; margin-bottom: 2rem; backdrop-filter: blur(5px);">
+            <div id="est-det-media" class="media-container"></div>
+            <div id="est-det-media-auto" class="media-container" style="display:none;"></div>
+            <p id="est-det-texto"
+              style="font-size: 1.1rem; color: var(--text); font-weight: 500; margin: 0; line-height: 1.6;"></p>
+          </div>
+
+          <div id="est-det-options" class="options-list">
+            <div id="est-opt-a" class="option"><span class="option-letter">A</span>
+              <div class="option-content">
+                <div id="est-txt-a"></div>
+                <div id="est-media-opt-a"></div>
+              </div>
+            </div>
+            <div id="est-opt-b" class="option"><span class="option-letter">B</span>
+              <div class="option-content">
+                <div id="est-txt-b"></div>
+                <div id="est-media-opt-b"></div>
+              </div>
+            </div>
+            <div id="est-opt-c" class="option"><span class="option-letter">C</span>
+              <div class="option-content">
+                <div id="est-txt-c"></div>
+                <div id="est-media-opt-c"></div>
+              </div>
+            </div>
+            <div id="est-opt-d" class="option"><span class="option-letter">D</span>
+              <div class="option-content">
+                <div id="est-txt-d"></div>
+                <div id="est-media-opt-d"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Resumen del Estudiante -->
+        <div class="card" style="box-shadow:none; border:none; padding:0;">
+          <h2 class="question-title">Resumen del Estudiante</h2>
+          <div class="stats-summary" style="grid-template-columns: 1fr; gap: 10px;">
+            <div class="stat-box" style="background: white; border: 1px solid #e2e8f0;">
+              <span id="est-det-resp-est" class="stat-val" style="font-size: 2rem;">-</span>
+              <span class="stat-label">Su Respuesta</span>
+            </div>
+            <div class="stat-box" style="background: #f0fdf4; border: 1px solid #bbf7d0;">
+              <span id="est-det-resp-key" class="stat-val" style="color: #16a34a; font-size: 2rem;">-</span>
+              <span class="stat-label">Respuesta Correcta</span>
+            </div>
+            <div id="est-det-box-pts" class="stat-box">
+              <span id="est-det-pts" class="stat-val">0</span>
+              <span class="stat-label">Puntos Ganados</span>
+            </div>
+          </div>
+          <div
+            style="margin-top:20px; padding:15px; background:#f8fafc; border-radius:12px; font-size:0.85rem; color:#64748b;">
+            <p><b>Prueba:</b> <span id="est-det-quiz-name"></span></p>
+            <p><b>Puntaje Total:</b> <span id="est-det-score"></span>%</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  </div>
+  </div>
 
   <!-- Panel de Administración (Modal con Cards) -->
   <div class="admin-trigger" onclick="toggleAdmin()"
@@ -2434,39 +2384,6 @@
 
   </main>
 
-  <!-- Mobile Nav: Barra de navegación inferior fija para móviles -->
-  <nav class="mobile-nav no-print">
-    <div class="mobile-nav-item active" id="m-nav-analisis" onclick="switchMainTab('analisis')">
-      <span class="material-symbols-outlined">analytics</span>
-      <span>Análisis</span>
-    </div>
-    <div class="mobile-nav-item" id="m-nav-estudiante_detalle" onclick="selectAnalisis('estudiante')"
-      style="display:none;">
-      <span class="material-symbols-outlined">person_search</span>
-      <span>Detalle</span>
-    </div>
-    <div class="mobile-nav-item" id="m-nav-estadisticas" onclick="switchMainTab('estadisticas')">
-      <span class="material-symbols-outlined">query_stats</span>
-      <span>Estadísticas</span>
-    </div>
-    <div class="mobile-nav-item" id="m-nav-individual" onclick="switchMainTab('individual')">
-      <span class="material-symbols-outlined">person</span>
-      <span>Individual</span>
-    </div>
-    <div class="mobile-nav-item" id="m-nav-grupal" onclick="switchMainTab('grupal')">
-      <span class="material-symbols-outlined">groups</span>
-      <span>Grupal</span>
-    </div>
-    <div class="mobile-nav-item" id="m-nav-asignatura" onclick="switchMainTab('asignatura')">
-      <span class="material-symbols-outlined">menu_book</span>
-      <span>Materia</span>
-    </div>
-    <div class="mobile-nav-item" id="m-nav-install" onclick="instalarPWA()" style="display:none; color:var(--success);">
-      <span class="material-symbols-outlined">download_for_offline</span>
-      <span>Instalar</span>
-    </div>
-  </nav>
-
   <footer style="background: white; border-top: 2px solid #f1f5f9; padding: 4rem 0; margin-top: 8rem;">
     <div class="container" style="display: flex; flex-direction: column; align-items: center; gap: 1rem;">
       <div style="display: flex; align-items: center; gap: 20px; justify-content: center;">
@@ -2478,7 +2395,7 @@
       </div>
       <p class="footer-copy"
         style="margin: 0; color: #64748b; font-weight: 800; font-size: 0.9rem; letter-spacing: 0.5px;">© 2026 AndréSán
-        - Evaluándonos System <span style="color:#4f46e5; margin-left:10px;">[ v90 ACTIVADA ]</span></p>
+        - Evaluándonos System <span style="color:#4f46e5; margin-left:10px;">[ v66 ACTIVADA ]</span></p>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -2486,10 +2403,10 @@
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
     <script src="https://cdn.jsdelivr.net/npm/papaparse@5.3.2/papaparse.min.js"></script>
     <script>
+      const CURRENT_APP_VERSION = 'v68';
       // --- CONFIGURACIÓN Y ESTADO GLOBAL ---
-      var CURRENT_APP_VERSION = 'v90';
-      var SB_URL = "https://txnecdeccianklqqyrav.supabase.co";
-      var SB_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InR4bmVjZGVjY2lhbmtscXF5cmF2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY0MDQzMDIsImV4cCI6MjA5MTk4MDMwMn0.e2ybyt2Y8yHsZwRC-MZqi_qK525-CWpk-huQcQy-icM";
+      const SB_URL = "https://txnecdeccianklqqyrav.supabase.co";
+      const SB_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InR4bmVjZGVjY2lhbmtscXF5cmF2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY0MDQzMDIsImV4cCI6MjA5MTk4MDMwMn0.e2ybyt2Y8yHsZwRC-MZqi_qK525-CWpk-huQcQy-icM";
 
       let supabaseClient;
       if (typeof supabase !== 'undefined') {
@@ -2497,7 +2414,7 @@
       }
 
       // --- UTILIDADES GLOBALES ---
-      var $ = id => document.getElementById(id);
+      const $ = id => document.getElementById(id);
       let currentPeriodo = parseInt(localStorage.getItem('currentPeriodo')) || 2;
       let assignedGrade = null;
       let userPermissions = [];
@@ -2659,8 +2576,8 @@
         return config.some(c => {
           const normLabel = normalizeText(c.label);
           // Mapping Naturales/Biologia/Fisica/Quimica
-          if ((normTarget.includes("naturales") || normTarget.includes("biologia") || normTarget.includes("fisica") || normTarget.includes("quimica") || normTarget.includes("ciencia") || normTarget.includes("bio")) &&
-            (normLabel.includes("naturales") || normLabel.includes("biologia") || normLabel.includes("fisica") || normLabel.includes("quimica") || normLabel.includes("ciencia") || normLabel.includes("bio"))) return true;
+          if ((normTarget.includes("naturales") || normTarget.includes("biologia") || normTarget.includes("fisica") || normTarget.includes("quimica")) &&
+            (normLabel.includes("naturales") || normLabel.includes("biologia") || normLabel.includes("fisica") || normLabel.includes("quimica"))) return true;
 
           return normLabel.includes(normTarget) || normTarget.includes(normLabel);
         });
@@ -2668,33 +2585,36 @@
 
       function checkSubjectPermission(allowedAsigs, targetAsig, gBase) {
         if (!allowedAsigs || allowedAsigs.length === 0) return false;
-        const normTarget = normalizeText(targetAsig);
-        const isBio = normTarget.includes("biologia") || normTarget.includes("naturales") || (normTarget.includes("ciencia") && !normTarget.includes("social")) || normTarget.includes("bio");
-        const isPhys = normTarget.includes("fisica") || normTarget.includes("fis");
-        const isChem = normTarget.includes("quimica") || normTarget.includes("qui");
+        const subTerms = ["biologia", "fisica", "quimica"];
+        const natTerms = ["ciencias naturales", "naturales"];
+        const t = normalizeText(targetAsig);
 
         return allowedAsigs.some(perm => {
           const p = normalizeText(perm);
           if (!p) return false;
 
-          const hasBio = p.includes("biologia") || p.includes("naturales") || (p.includes("ciencia") && !p.includes("social")) || p.includes("bio");
-          const hasPhys = p.includes("fisica") || p.includes("fis");
-          const hasChem = p.includes("quimica") || p.includes("qui");
+          const isP_Nat = natTerms.some(term => p.includes(term));
+          const isT_Nat = natTerms.some(term => t.includes(term));
+          const isP_Sub = subTerms.some(term => p.includes(term));
+          const isT_Sub = subTerms.some(term => t.includes(term));
 
-          // Regla de Vinculación de Naturales (Generalizada para todas las sedes)
-          if (gBase >= 6 && gBase <= 9) {
-            // En 6-9: Biología y Física están vinculadas
-            if ((isBio || isPhys) && (hasBio || hasPhys)) return true;
-          } else if (gBase >= 10) {
-            // En 10-11: Biología, Física y Química están vinculadas
-            if ((isBio || isPhys || isChem) && (hasBio || hasPhys || hasChem)) return true;
+          if (gBase < 6) {
+            // Primaria (1-5): Solo Biología/Naturales combinados
+            if ((isT_Nat || t.includes("biologia")) && (isP_Nat || isP_Sub)) return true;
+          } else {
+            // Secundaria (6-11): las sub-disciplinas individuales combinan con el permiso general de "Naturales"
+            // y viceversa (si tiene permiso de sub-disciplina puede ver Naturales/Biología)
+            if ((isT_Sub || isT_Nat || t.includes("biologia")) && (isP_Nat || isP_Sub)) return true;
           }
 
-          // Primaria (1-5): Se agrupan bajo términos de Naturales/Biología
-          if (gBase < 6 && isBio && hasBio) return true;
+          // Coincidencia por subcadena o exacta para mayor flexibilidad
+          if (t.includes(p) || p.includes(t)) return true;
 
-          // Regla 1: Coincidencia estándar
-          return normTarget.includes(p) || p.includes(normTarget);
+          // Coincidencia estándar por palabras
+          try {
+            const regex = new RegExp(`\\b${p}\\b`, 'i');
+            return regex.test(t);
+          } catch (e) { return false; }
         });
       }
 
@@ -2765,47 +2685,49 @@
 
       async function switchMainTab(tab) {
         showLoading(true);
+        currentView = tab;
+        isEnPestañaGrupal = (tab === 'grupal');
+
+        // Update Tab Visuals
+        document.querySelectorAll('.tab-btn').forEach(b => {
+          b.classList.remove('active');
+          b.style.background = 'transparent';
+          b.style.color = 'inherit';
+        });
+
+        const activeBtn = $(`tab-${tab}`);
+        if (activeBtn) {
+          activeBtn.classList.add('active');
+          // El CSS de .tab-btn.active se encargará del fondo azul
+        }
+
+        // Visibility Toggle (Limpiar todos los posibles contenedores)
+        const containerIds = ['resultado-container', 'individual-container', 'estadisticas-container', 'grupal-container', 'asignatura-container', 'estudiante-detalle-container'];
+        containerIds.forEach(id => { if ($(id)) $(id).style.display = 'none'; });
+
+        // Mapeo de vistas (agregamos estudiante_detalle como parte de resultado-container o similar)
+        const tabMap = {
+          'analisis': ['resultado-container'],
+          'estudiante_detalle': ['resultado-container'],
+          'individual': ['individual-container'],
+          'estadisticas': ['estadisticas-container'],
+          'grupal': ['grupal-container'],
+          'asignatura': ['asignatura-container']
+        };
+
+        if (tabMap[tab]) {
+          tabMap[tab].forEach(id => { if ($(id)) $(id).style.display = 'block'; });
+        }
+
+        // Background Effect
+        if (['individual', 'grupal', 'asignatura'].includes(tab)) {
+          document.body.classList.add('blurred-bg');
+        } else {
+          document.body.classList.remove('blurred-bg');
+        }
+
+        // Specific Loaders
         try {
-          currentView = tab;
-          isEnPestañaGrupal = (tab === 'grupal');
-
-          // Update Tab Visuals
-          document.querySelectorAll('.tab-btn').forEach(b => {
-            b.classList.remove('active');
-            b.style.background = 'transparent';
-            b.style.color = 'inherit';
-          });
-
-          const activeBtn = $(`tab-${tab}`);
-          if (activeBtn) {
-            activeBtn.classList.add('active');
-          }
-
-          // Visibility Toggle
-          const containerIds = ['resultado-container', 'individual-container', 'estadisticas-container', 'grupal-container', 'asignatura-container', 'estudiante-detalle-container'];
-          containerIds.forEach(id => { if ($(id)) $(id).style.display = 'none'; });
-
-          const tabMap = {
-            'analisis': ['resultado-container', 'estudiante-detalle-container'],
-            'estudiante_detalle': ['resultado-container', 'estudiante-detalle-container'],
-            'individual': ['individual-container'],
-            'estadisticas': ['estadisticas-container'],
-            'grupal': ['grupal-container'],
-            'asignatura': ['asignatura-container']
-          };
-
-          if (tabMap[tab]) {
-            tabMap[tab].forEach(id => { if ($(id)) $(id).style.display = 'block'; });
-          }
-
-          // Background Effect
-          if (['individual', 'grupal', 'asignatura'].includes(tab)) {
-            document.body.classList.add('blurred-bg');
-          } else {
-            document.body.classList.remove('blurred-bg');
-          }
-
-          // Specific Loaders
           if (tab === 'individual') await cargarGradosReporte();
           if (tab === 'estadisticas') await cargarEstadisticas();
           if (tab === 'grupal') await cargarGruposInformeGrupal();
@@ -2814,19 +2736,24 @@
             filtrarMateriasEstaticas();
           }
           if (tab === 'analisis') {
-            // Solo abrir general si AMBOS están ocultos (primera vez)
-            const genVisible = $('analisis-general-view') && $('analisis-general-view').style.display !== 'none';
-            const detVisible = $('estudiante-detalle-container') && $('estudiante-detalle-container').style.display !== 'none';
-
-            if (!genVisible && !detVisible) {
-              await switchSubAnalisis('general');
+            // Por defecto abrir General si no hay nada seleccionado
+            if ($('analisis-general-view').style.display === 'none' && $('analisis-estudiante-view').style.display === 'none') {
+              switchSubAnalisis('general');
+            }
+            if ($('sel-grado').value && $('sel-pregunta').value) {
+              await mostrarAnalisis();
             }
           }
         } catch (err) {
           console.error("Error switching tab:", err);
-        } finally {
-          showLoading(false);
         }
+
+        // Update Mobile Nav
+        document.querySelectorAll('.mobile-nav-item').forEach(i => i.classList.remove('active'));
+        const mobTab = $(`m-nav-${tab}`);
+        if (mobTab) mobTab.classList.add('active');
+
+        showLoading(false);
       }
 
       function toggleDropdown(id) {
@@ -2843,30 +2770,41 @@
         }
       });
 
-      async function selectAnalisis(view) {
+      function selectAnalisis(view) {
         // Cerrar dropdowns inmediatamente
         document.querySelectorAll('.dropdown').forEach(d => d.classList.remove('open'));
-        await switchMainTab('analisis');
-        await switchSubAnalisis(view);
+        switchMainTab('analisis');
+        switchSubAnalisis(view);
       }
 
-      async function switchSubAnalisis(view) {
+      function switchSubAnalisis(view) {
         const isGen = view === 'general';
+        
+        // Bloqueo estricto por requerimiento: Solo Super Admin ve análisis por estudiante
+        if (!isGen && currentRole !== 'superadmin') {
+          alert("Acceso Restringido: Solo el Super Administrador puede ver el análisis detallado por estudiante.");
+          switchSubAnalisis('general');
+          return;
+        }
 
         if ($('analisis-general-view')) $('analisis-general-view').style.display = isGen ? 'block' : 'none';
         if ($('estudiante-detalle-container')) $('estudiante-detalle-container').style.display = isGen ? 'none' : 'block';
+
+        if (!isGen) {
+          cargarGradosDetalle();
+        }
 
         // Estilos de botones
         const btnGen = $('btn-sub-analisis-general');
         const btnEst = $('btn-sub-analisis-estudiante');
 
         if (isGen) {
-          if (btnGen) { btnGen.style.background = 'white'; btnGen.style.color = 'var(--primary)'; btnGen.style.boxShadow = '0 2px 8px rgba(0,0,0,0.1)'; }
-          if (btnEst) { btnEst.style.background = 'transparent'; btnEst.style.color = '#64748b'; btnEst.style.boxShadow = 'none'; }
+          btnGen.style.background = 'white'; btnGen.style.color = 'var(--primary)'; btnGen.style.boxShadow = '0 2px 8px rgba(0,0,0,0.1)';
+          btnEst.style.background = 'transparent'; btnEst.style.color = '#64748b'; btnEst.style.boxShadow = 'none';
         } else {
-          if (btnEst) { btnEst.style.background = 'white'; btnEst.style.color = 'var(--primary)'; btnEst.style.boxShadow = '0 2px 8px rgba(0,0,0,0.1)'; }
-          if (btnGen) { btnGen.style.background = 'transparent'; btnGen.style.color = '#64748b'; btnGen.style.boxShadow = 'none'; }
-          await cargarGradosDetalle();
+          btnEst.style.background = 'white'; btnEst.style.color = 'var(--primary)'; btnEst.style.boxShadow = '0 2px 8px rgba(0,0,0,0.1)';
+          btnGen.style.background = 'transparent'; btnGen.style.color = '#64748b'; btnGen.style.boxShadow = 'none';
+          cargarGradosDetalle(); // Cargar datos iniciales del detalle
         }
       }
 
@@ -2883,44 +2821,38 @@
       function extraerGrupo(zipId) {
         if (!zipId) return "";
         let s = zipId.toString().trim();
+        
+        // Prioridad: Formato con guion (ej: 1101-1065826808)
         if (s.includes("-")) return s.split("-")[0];
+        
+        // Si es corto, probablemente sea solo el grupo
+        if (s.length <= 4) return s;
+        
+        // Si es muy largo (ej: 1065826808), y no tiene guion, 
+        // no podemos determinar el grupo confiablemente solo con el ID.
+        if (s.length > 6) return ""; 
 
-        const len = s.length;
-        // Para grados 10 y 11 (siempre deben ser 4 dígitos: 1001, 1101, etc.)
-        if (s.startsWith("10") || s.startsWith("11")) {
-          if (len >= 4) return s.substring(0, 4);
-          return s; // Muy corto, retornar tal cual para validación posterior
+        let prefix = s.slice(0, -2);
+        if ((prefix.startsWith("10") || prefix.startsWith("11")) && prefix.length === 3) {
+          prefix = prefix.substring(0, 2) + "0" + prefix.substring(2);
         }
 
-        // Para grados 3 a 9 (3 dígitos: 301, 401, etc.)
-        if (len === 5) return s.substring(0, 3);
-        if (len === 6) return s.substring(0, 3);
-        if (len >= 3 && len <= 4) return s;
-        if (s.toLowerCase() === "primaria") return s;
+        const gradoBase = extraerGradoBase(prefix);
+        const ultimo = prefix.slice(-1);
+        const mapaSedes = { "4": "PJ", "5": "YA", "6": "SE", "7": "PU" };
+        if (mapaSedes[ultimo]) return gradoBase + mapaSedes[ultimo];
 
-        return s;
+        return prefix;
       }
 
-      function esGrupoValido(g) {
-        if (!g) return false;
-        const s = g.toString().trim();
-        if (s.toLowerCase() === "primaria") return true;
-        // Regla: 3 dígitos -> debe empezar con 3-9. 4 dígitos -> debe empezar con 10-11.
-        if (s.length === 3) {
-          const first = parseInt(s.charAt(0));
-          return first >= 3 && first <= 9;
-        }
-        if (s.length === 4) {
-          return s.startsWith("10") || s.startsWith("11");
-        }
-        return false;
-      }
       function extraerGradoBase(grupo) {
         if (!grupo) return 0;
         const s = grupo.toString().trim();
-        if (s.toLowerCase() === "primaria") return 1;
-        if (s.length === 2 && !["10", "11"].includes(s)) return 0;
-        if (s.startsWith("10") || s.startsWith("11")) return parseInt(s.substring(0, 2));
+        // Si empieza por 10 o 11, ese es el grado
+        if (s.startsWith("10") || s.startsWith("11")) {
+          return parseInt(s.substring(0, 2));
+        }
+        // Para grados 1-9, el primer dígito es el grado
         const firstDigit = parseInt(s.substring(0, 1));
         return isNaN(firstDigit) ? 0 : firstDigit;
       }
@@ -2985,7 +2917,7 @@
 
       // Variables globales movidas al inicio del script.
 
-      window.switchLoginMode = function switchLoginMode(mode) {
+      function switchLoginMode(mode) {
         const isEst = mode === 'estudiante';
         $('form-docente').style.display = isEst ? 'none' : 'block';
         $('form-estudiante').style.display = isEst ? 'block' : 'none';
@@ -3001,9 +2933,9 @@
           btnDoc.style.background = 'white'; btnDoc.style.color = '#4f46e5'; btnDoc.style.boxShadow = '0 2px 8px rgba(0,0,0,0.1)';
         }
         $('login-err').style.display = 'none';
-      };
+      }
 
-      window.intentarLoginEstudiante = async function intentarLoginEstudiante() {
+      async function intentarLoginEstudiante() {
         const idVal = $('li-est-id').value.trim();
         const btn = $('btn-login-est');
         const err = $('login-err');
@@ -3014,14 +2946,6 @@
         btn.disabled = true; btn.innerText = "Buscando...";
 
         try {
-          if (!supabaseClient && typeof supabase !== 'undefined') {
-            console.log("🔄 Inicializando supabaseClient bajo demanda en login estudiante...");
-            supabaseClient = supabase.createClient(SB_URL, SB_KEY);
-          }
-          if (!supabaseClient) {
-            throw new Error("El servicio de conexión no está listo. Por favor verifica tu red o recarga la página.");
-          }
-
           // 1. Validar contra la tabla maestra de estudiantes
           const { data, error } = await supabaseClient.from('maestro_estudiantes')
             .select('nombre, identificacion, zipgrade_id')
@@ -3054,11 +2978,11 @@
           }
         } catch (e) {
           console.error("Error login estudiante:", e);
-          err.innerText = e.message || "Error de conexión.";
+          err.innerText = "Error de conexión.";
           err.style.display = 'block';
           btn.disabled = false; btn.innerText = "Consultar Reporte";
         }
-      };
+      }
 
       async function importarBaseEstudiantes() {
         const fileInput = $('students-csv');
@@ -3127,7 +3051,6 @@
         if ($('user-nombre')) $('user-nombre').innerText = nombre;
         if ($('user-avatar')) $('user-avatar').innerText = "ST";
         if ($('st-display-name')) $('st-display-name').innerText = nombre;
-        if ($('user-role-label')) $('user-role-label').innerText = "Estudiante";
 
         document.body.classList.add('is-student');
         if ($('student-portal-info')) $('student-portal-info').style.setProperty('display', 'block', 'important');
@@ -3150,11 +3073,6 @@
           return;
         }
 
-        if (!supabaseClient) {
-          console.warn("Supabase client not ready for session check.");
-          return;
-        }
-
         try {
           const { data: { session }, error } = await supabaseClient.auth.getSession();
           if (error) throw error;
@@ -3169,7 +3087,7 @@
         }
       }
 
-      window.intentarLogin = async function intentarLogin() {
+      async function intentarLogin() {
         const userVal = $('li-user').value.trim();
         const pass = $('li-pass').value;
         const btn = $('btn-login');
@@ -3181,31 +3099,23 @@
         btn.disabled = true; btn.innerText = "Verificando...";
 
         try {
-          if (!supabaseClient && typeof supabase !== 'undefined') {
-            console.log("🔄 Inicializando supabaseClient bajo demanda en login docente...");
-            supabaseClient = supabase.createClient(SB_URL, SB_KEY);
-          }
-          if (!supabaseClient) {
-            throw new Error("El servicio de conexión no está listo. Por favor verifica tu red o recarga la página.");
-          }
-
           const email = userVal.includes('@') ? userVal : `${userVal}@andresan.com`;
           const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password: pass });
 
           if (error) {
             err.innerText = "Usuario o contraseña incorrectos";
             err.style.display = 'block';
-            btn.disabled = false; btn.innerText = "Ingresar como Docente";
+            btn.disabled = false; btn.innerText = "Ingresar";
           } else {
             loguearExitoso(data.user);
           }
         } catch (e) {
           console.error("Error crítico de login:", e);
-          err.innerText = e.message || "Error de conexión. Intenta de nuevo.";
+          err.innerText = "Error de conexión. Intenta de nuevo.";
           err.style.display = 'block';
-          btn.disabled = false; btn.innerText = "Ingresar como Docente";
+          btn.disabled = false; btn.innerText = "Ingresar";
         }
-      };
+      }
 
       async function loguearExitoso(user) {
         if (!user) return;
@@ -3221,46 +3131,38 @@
         if ($('loading')) $('loading').style.display = 'none';
 
         try {
-          if (!supabaseClient) {
-            console.error("Supabase client not initialized in loguearExitoso");
-            // Intentar re-inicializar
-            if (typeof supabase !== 'undefined') {
-              supabaseClient = supabase.createClient(SB_URL, SB_KEY);
-            }
-            if (!supabaseClient) throw new Error("Servicio de datos no disponible. Recarga la página.");
-          }
-
-          const { data: perfil, error: perError } = await supabaseClient.from('perfiles').select('rol, nombre, grado_asignado, sede').eq('email', user.email).maybeSingle();
-          if (perError) console.error("Error al obtener perfil:", perError);
-
+          const { data: perfil } = await supabaseClient.from('perfiles').select('rol, nombre, grado_asignado').eq('email', user.email).maybeSingle();
           const userName = perfil?.nombre || user.user_metadata?.full_name || user.email.split('@')[0];
           const assignedGrade = perfil?.grado_asignado || "";
           const role = (perfil && perfil.rol) ? perfil.rol.toLowerCase() : 'lector';
 
           // Gestión de permisos de impresión
-          document.body.classList.toggle('is-admin', (role === 'admin' || role === 'superadmin'));
+          if (role === 'admin' || role === 'superadmin') {
+            document.body.classList.add('is-admin');
+          } else {
+            document.body.classList.remove('is-admin');
+          }
+
+          const res = await supabaseClient.from('docentes_privacidad').select('*').eq('nombre', userName);
+
           currentRole = role;
 
-          // --- Nueva Lógica de Privacidad 2026: Búsqueda Robusta ---
+          // --- Nueva Lgica de Privacidad 2026 ---
           try {
-            // Obtenemos todos los permisos y filtramos en JS para mayor flexibilidad con los nombres
-            const { data: allPriv } = await supabaseClient.from('docentes_privacidad').select('*');
-            const searchParts = normalizeText(userName).split(' ').filter(p => p.length >= 2);
+            // Bsqueda flexible por nombre
+            const { data: privData } = await supabaseClient.from('docentes_privacidad')
+              .select('*')
+              .ilike('nombre', `%${userName.trim()}%`);
 
-            userPermissions = (allPriv || []).filter(d => {
-              const dbName = normalizeText(d.nombre || "");
-              if (searchParts.length === 0) return dbName.includes(normalizeText(userName));
-              return searchParts.every(part => dbName.includes(part));
-            });
-
-            console.log("🔒 Permisos cargados (Match Robusto) para", userName, ":", userPermissions);
+            userPermissions = privData || [];
+            console.log("🔒 Permisos cargados para", userName, ":", userPermissions);
 
             // Obtener la sede del docente de cualquiera de sus permisos (todos tienen la columna 'sede')
-            if (userPermissions && userPermissions.length > 0 && userPermissions[0].sede) {
+            if (userPermissions && userPermissions.length > 0) {
               userSede = userPermissions[0].sede;
             } else {
-              // Fallback: detectar sede del grado asignado si existe, o usar la del perfil
-              userSede = assignedGrade ? detectarSede(assignedGrade) : (perfil?.sede || 'Central');
+              // Fallback: detectar sede del grado asignado si existe
+              userSede = assignedGrade ? detectarSede(assignedGrade) : null;
             }
 
             const profileSede = (perfil && perfil.sede) ? perfil.sede.toUpperCase() : '';
@@ -3380,10 +3282,19 @@
             if ($('m-nav-asignatura')) $('m-nav-asignatura').style.display = 'flex';
           }
 
-          // --- VISIBILIDAD DE ANÁLISIS POR ESTUDIANTE (TODOS LOS ROLES) ---
-          if (detalleTab) detalleTab.style.display = 'block';
-          if ($('tab-estudiante-detalle-item')) $('tab-estudiante-detalle-item').style.display = 'block';
-          if ($('m-nav-estudiante_detalle')) $('m-nav-estudiante_detalle').style.display = 'flex';
+          // --- RESTRICCIÓN DE ANÁLISIS POR ESTUDIANTE (BLOQUEO ESTRICTO) ---
+          // El usuario solicitó que SOLO el superadministrador pueda ver esta parte.
+          if (currentRole === 'superadmin') {
+            if (detalleTab) detalleTab.style.display = 'block';
+            if ($('m-nav-estudiante_detalle')) $('m-nav-estudiante_detalle').style.display = 'flex';
+            const ddItem = document.querySelector('.dropdown-item.admin-only');
+            if (ddItem && ddItem.innerText.includes('Estudiante')) ddItem.style.display = 'block';
+          } else {
+            if (detalleTab) detalleTab.style.display = 'none';
+            if ($('m-nav-estudiante_detalle')) $('m-nav-estudiante_detalle').style.display = 'none';
+            const ddItem = document.querySelector('.dropdown-item.admin-only');
+            if (ddItem && ddItem.innerText.includes('Estudiante')) ddItem.style.display = 'none';
+          }
         } catch (e) {
           console.error("Error cargando perfil:", e);
         }
@@ -3494,7 +3405,7 @@
           }
 
           let uniqueLevels = [...new Set(dataCombined.map(d => extraerGradoBase(d.grado)))]
-            .filter(l => l > 0 && l <= 11);
+            .filter(l => l > 0);
 
           if (currentRole !== 'superadmin') {
             const assignedLower = (window.assignedGrade || "").toString().toLowerCase();
@@ -3502,19 +3413,22 @@
             const esDePrimaria = assignedLower === "primaria" || (gBaseAssigned >= 1 && gBaseAssigned <= 5);
             const mySede = window.userSede || 'Central';
 
-            const dictan = userPermissions.filter(p => p.tipo === 'ASIGNACION').map(p => extraerGradoBase(p.grado));
-            const direccion = window.assignedGroups ? window.assignedGroups.map(g => extraerGradoBase(g)) : [];
-            const allowedLevels = [...new Set([...dictan, ...direccion])];
-
             if (currentRole === 'admin') {
-              if (esDePrimaria && mySede === 'Central') {
-                uniqueLevels = uniqueLevels.filter(l => [3, 4, 5].includes(l) || allowedLevels.includes(l));
+              if (esDePrimaria) {
+                if (mySede === 'Central') {
+                  uniqueLevels = uniqueLevels.filter(l => [3, 4, 5].includes(l));
+                } else {
+                  uniqueLevels = uniqueLevels.filter(l => l >= 1 && l <= 5);
+                }
               }
             } else {
+              const dictan = userPermissions.filter(p => p.tipo === 'ASIGNACION').map(p => extraerGradoBase(p.grado));
+              const direccion = window.assignedGroups ? window.assignedGroups.map(g => extraerGradoBase(g)) : [];
+              let allowedLevels = [...new Set([...dictan, ...direccion])];
               uniqueLevels = uniqueLevels.filter(l => allowedLevels.includes(l));
-
+              
               if (esDePrimaria && mySede === 'Central') {
-                uniqueLevels = uniqueLevels.filter(l => [3, 4, 5].includes(l) || allowedLevels.includes(l));
+                uniqueLevels = uniqueLevels.filter(l => [3, 4, 5].includes(l));
               }
             }
           }
@@ -3572,18 +3486,18 @@
             const esDePrimaria = assignedLower === "primaria" || (gBaseAssigned >= 1 && gBaseAssigned <= 5);
             const esNivelPrimaria = parseInt(nivel) >= 1 && parseInt(nivel) <= 5;
 
-            // REGLA 1: Docentes ven lo que dictan.
-            // Los directores ven Informe Grupal (Regla 2), pero en Análisis General 
-            // solo ven las asignaturas que dictan.
-            if (!(esDePrimaria && esNivelPrimaria)) {
+            // Si el docente es director de ESTE nivel específico, tiene acceso total a las asignaturas
+            const isDirectorDeEsteNivel = window.assignedGroups && window.assignedGroups.some(g => extraerGradoBase(g).toString() === nivel.toString());
+
+            if (!(esDePrimaria && esNivelPrimaria) && !isDirectorDeEsteNivel) {
               const myPermissions = userPermissions
                 .filter(p => p.tipo === 'ASIGNACION' && extraerGradoBase(p.grado).toString() === nivel.toString())
                 .map(p => p.asignatura);
 
-              console.log("🎯 Materias permitidas (Regla 1):", nivel, myPermissions);
+              console.log("🎯 Materias permitidas para el nivel:", nivel, myPermissions);
               unique = unique.filter(a => checkSubjectPermission(myPermissions, a, parseInt(nivel)));
             } else {
-              console.log("🌟 Primaria: Acceso total a asignaturas del nivel.");
+              console.log("🌟 Docente de primaria en nivel primaria o Director de Grupo: Acceso total a asignaturas.");
             }
           }
           // --------------------------------------------------------------------------------
@@ -4684,14 +4598,12 @@
           // Obtener grupo del ZipGrade ID o de la columna Class
           let grupo = extraerGrupo(zipId);
           const classVal = (row[classIdx] || "").toString().trim();
-
+          
           // Si el ID no nos dio un grupo claro pero la columna Class sí, usamos Class
-          if (!esGrupoValido(grupo)) {
-            if (esGrupoValido(classVal)) grupo = classVal;
+          if (!grupo || grupo.length > 4) {
+            if (classVal && classVal.length <= 5) grupo = classVal;
           }
-
-          if (!esGrupoValido(grupo)) continue; // Ignorar si el grupo no es válido después de extraerlo
-
+          
           const sede = detectarSede(grupo);
           const gradoNumBase = extraerGradoBase(grupo);
           let gradoLimpio = grupo || gradoNumBase.toString();
@@ -4877,54 +4789,19 @@
 
       async function cargarGradosDetalle() {
         showLoading(true);
-        try {
-          const { data, error } = await supabaseClient.from('eval_estudiantes_completos').select('grado, sede').eq('periodo', currentPeriodo);
-          if (error) console.error(error);
+        const { data, error } = await supabaseClient.from('eval_estudiantes_completos').select('grado').eq('periodo', currentPeriodo);
+        if (error) console.error(error);
+        const uniqueGrados = [...new Set((data || []).map(d => d.grado))].sort((a, b) => a.localeCompare(b, undefined, { numeric: true }));
 
-          let uniqueGrados = [...new Set((data || []).map(d => d.grado))]
-            .filter(esGrupoValido);
-
-          // --- Filtro de Privacidad: Solo mostrar grados permitidos ---
-          if (currentRole !== 'superadmin') {
-            const assignedLower = (window.assignedGrade || "").toString().toLowerCase();
-            const gBaseAssigned = extraerGradoBase(window.assignedGrade);
-            const esDePrimaria = assignedLower === "primaria" || (gBaseAssigned >= 1 && gBaseAssigned <= 5);
-            const mySede = window.userSede || 'Central';
-
-            if (currentRole === 'admin') {
-              // Administradores de Sede: Ven grupos de su sede
-              uniqueGrados = uniqueGrados.filter(g => detectarSede(g) === mySede);
-            } else {
-              // Lectores (Docentes): Ven grupos de dirección o donde dictan
-              const direccion = window.assignedGroups || [];
-              const dictan = userPermissions
-                .filter(p => p.tipo === 'ASIGNACION')
-                .map(p => p.grado.toString());
-
-              const allowedPool = [...new Set([...direccion, ...dictan])];
-              uniqueGrados = uniqueGrados.filter(g => {
-                const gb = extraerGradoBase(g);
-                return allowedPool.some(ap => ap === g.toString() || ap === gb.toString());
-              });
-            }
-
-            // Restricción Central Primaria
-            if (esDePrimaria && mySede === 'Central') {
-              uniqueGrados = uniqueGrados.filter(g => ['301', '401', '501'].includes(g.toString()));
-            }
-          }
-
-          uniqueGrados.sort((a, b) => a.localeCompare(b, undefined, { numeric: true }));
-
-          const sel = $('sel-est-det-grado');
-          sel.innerHTML = uniqueGrados.length > 0
-            ? '<option value="">Grado...</option>' + uniqueGrados.map(g => `<option value="${g}">${g}</option>`).join('')
-            : '<option value="">Sin datos...</option>';
-        } catch (e) {
-          console.error("Error en cargarGradosDetalle:", e);
-        } finally {
-          showLoading(false);
-        }
+        const sel = $('sel-est-det-grado');
+        sel.innerHTML = '<option value="">Grado...</option>';
+        uniqueGrados.forEach(g => {
+          const opt = document.createElement('option');
+          opt.value = g;
+          opt.textContent = g;
+          sel.appendChild(opt);
+        });
+        showLoading(false);
       }
 
       async function cargarEstudiantesDetalle() {
@@ -5001,15 +4878,12 @@
 
         const sel = $('sel-est-det-preg');
         sel.innerHTML = '<option value="">#</option>';
-
         for (let i = start; i <= end; i++) {
           const opt = document.createElement('option');
           opt.value = i;
           opt.textContent = i;
           sel.appendChild(opt);
         }
-
-        if ($('est-det-content')) $('est-det-content').style.display = 'block';
       }
 
       async function mostrarAnalisisEstudiante() {
@@ -5018,113 +4892,101 @@
         const grado = $('sel-est-det-grado').value;
         if (!qNum) return;
 
-        try {
-          showLoading(true);
-          if ($('est-det-content')) $('est-det-content').style.display = 'block';
-          if ($('est-det-main-card')) $('est-det-main-card').style.display = 'block';
+        showLoading(true);
+        $('est-det-main-card').style.display = 'block';
 
-          // --- Mapeo de Asignatura (igual que en Análisis General) ---
-          let queryAsig = asigLabel;
-          const gBase = extraerGradoBase(grado);
-          if (gBase < 10 && normalizeText(asigLabel) === "biologia") {
-            queryAsig = "CIENCIAS NATURALES";
-          }
-
-          // 1. Obtener la pregunta del banco
-          const { data: pregDataArr } = await supabaseClient.from('eval_preguntas')
-            .select('*')
-            .eq('grado', gBase)
-            .eq('periodo', currentPeriodo)
-            .or(`asignatura.eq."${queryAsig}",asignatura.eq."${asigLabel}"`)
-            .eq('pregunta_num', qNum)
-            .limit(1);
-
-          const qData = (pregDataArr && pregDataArr.length > 0) ? pregDataArr[0] : null;
-
-          // 2. Obtener la respuesta del estudiante
-          let respEst = null;
-          let registroFinal = null;
-
-          const dataToSearch = currentDetalleData || [];
-          if (dataToSearch.length > 0) {
-            for (const reg of dataToSearch) {
-              if (reg.respuestas) {
-                respEst = reg.respuestas[qNum] || reg.respuestas[parseInt(qNum)];
-                if (respEst) {
-                  registroFinal = reg;
-                  break;
-                }
-              }
-            }
-          }
-
-          // 3. Obtener la Clave Correcta
-          let keyFound = (qData && qData.respuesta_correcta) ? qData.respuesta_correcta : null;
-          if (!keyFound) {
-            const { data: resKeyData } = await supabaseClient.from('eval_resultados')
-              .select('key').eq('grado', gBase).eq('periodo', currentPeriodo).eq('pregunta_num', qNum).limit(1);
-            if (resKeyData && resKeyData.length > 0) keyFound = resKeyData[0].key;
-          }
-          if (!keyFound && respEst) keyFound = respEst.key;
-
-          const respKey = keyFound ? keyFound.trim().toUpperCase() : null;
-
-          // Renderizar Título e Información
-          $('est-det-pregunta-num').innerText = `Pregunta #${qNum} - ${asigLabel}`;
-
-          // Texto e Imagen Pregunta (ID CORREGIDOS)
-          const txtPreg = qData ? qData.texto_pregunta : "Pregunta no encontrada en el banco.";
-          renderMedia('est-det-pregunta-texto', 'est-det-pregunta-media', txtPreg, gBase, asigLabel, qNum);
-
-          // Opciones
-          const opts = ['a', 'b', 'c', 'd'];
-          opts.forEach(o => {
-            const optDiv = $(`est-opt-${o}`);
-            const txt = $(`est-txt-${o}`);
-            if (!optDiv) return;
-            optDiv.classList.remove('correct', 'incorrect', 'selected');
-
-            if (qData) {
-              const content = qData[`opcion_${o}`];
-              renderMedia(`est-txt-${o}`, `est-media-opt-${o}`, content, gBase, asigLabel, qNum, o);
-            } else {
-              if (txt) txt.innerHTML = "(Sin texto)";
-              if ($(`est-media-opt-${o}`)) $(`est-media-opt-${o}`).innerHTML = "";
-            }
-
-            if (o.toUpperCase() === respKey) optDiv.classList.add('correct');
-            if (respEst && o.toUpperCase() === respEst.stu) {
-              optDiv.classList.add('selected');
-              if (o.toUpperCase() !== respKey) optDiv.classList.add('incorrect');
-            }
-          });
-
-          // Resumen
-          if (respEst) {
-            $('est-det-resp-est').textContent = respEst.stu || "-";
-            $('est-det-resp-key').textContent = respKey || "-";
-            $('est-det-pts').textContent = respEst.pts || 0;
-            $('est-det-box-pts').style.background = respEst.pts > 0 ? '#f0fdf4' : '#fef2f2';
-
-            const badge = $('est-det-status-badge');
-            if (badge) {
-              badge.innerHTML = respEst.pts > 0
-                ? '<span style="background:#10b981; color:white; padding:5px 15px; border-radius:20px; font-weight:800; font-size:0.8rem;">ACIERTO ✅</span>'
-                : '<span style="background:#ef4444; color:white; padding:5px 15px; border-radius:20px; font-weight:800; font-size:0.8rem;">INCORRECTO ❌</span>';
-            }
-          } else {
-            $('est-det-resp-est').textContent = "-";
-            $('est-det-resp-key').textContent = respKey || "-";
-            $('est-det-pts').textContent = "0";
-            $('est-det-box-pts').style.background = '#f8fafc';
-          }
-
-          triggerMath();
-        } catch (e) {
-          console.error("Error en mostrarAnalisisEstudiante:", e);
-        } finally {
-          showLoading(false);
+        // --- Mapeo de Asignatura (igual que en Análisis General) ---
+        let queryAsig = asigLabel;
+        const gBase = extraerGradoBase(grado);
+        if (gBase < 10 && normalizeText(asigLabel) === "biologia") {
+          queryAsig = "CIENCIAS NATURALES";
         }
+
+        // 1. Obtener la pregunta del banco
+        const { data: pregDataArr } = await supabaseClient.from('eval_preguntas')
+          .select('*')
+          .eq('grado', gBase)
+          .eq('periodo', currentPeriodo)
+          .or(`asignatura.eq."${queryAsig}",asignatura.eq."${asigLabel}"`)
+          .eq('pregunta_num', qNum)
+          .limit(1);
+
+        const qData = (pregDataArr && pregDataArr.length > 0) ? pregDataArr[0] : null;
+
+        // 2. Obtener la respuesta del estudiante
+        // Buscamos en currentDetalleData el registro que contenga esta pregunta
+        let respEst = null;
+        let registroFinal = null;
+        for (const reg of currentDetalleData) {
+          if (reg.respuestas && reg.respuestas[qNum]) {
+            respEst = reg.respuestas[qNum];
+            registroFinal = reg;
+            break;
+          }
+        }
+
+        // Renderizar
+        $('est-det-pregunta-num').textContent = `Pregunta #${qNum} - ${asigLabel}`;
+        $('est-det-texto').innerHTML = qData ? qData.texto_pregunta : "Texto no disponible en el banco.";
+
+        // Media
+        const mediaCont = $('est-det-media');
+        const mediaAuto = $('est-det-media-auto');
+        mediaCont.innerHTML = ""; mediaAuto.innerHTML = ""; mediaAuto.style.display = 'none';
+
+        if (qData) {
+          renderMedia('est-det-texto', 'est-det-media', qData.texto_pregunta, gBase, asigLabel, qNum);
+        }
+
+        // Opciones
+        const opts = ['a', 'b', 'c', 'd'];
+        let respKey = (qData && qData.respuesta_correcta) ? qData.respuesta_correcta.toString().toUpperCase().trim() : (respEst ? respEst.key.toUpperCase().trim() : "-");
+
+        opts.forEach(o => {
+          const el = $(`est-opt-${o}`);
+          const txt = $(`est-txt-${o}`);
+          el.className = 'option';
+
+          // Asignar contenido de la opción (desde qData si existe)
+          if (qData) {
+            const content = qData[`opcion_${o}`];
+            renderMedia(`est-txt-${o}`, `est-media-opt-${o}`, content, grado, asigLabel, qNum, o);
+          } else {
+            txt.innerHTML = "";
+            $(`est-media-opt-${o}`).innerHTML = "";
+          }
+
+          // Lógica de marcado (Aplica incluso si no hay qData, para mostrar solo los colores)
+          const isCorrect = (o.toUpperCase() === respKey);
+          const isSelected = (respEst && o.toUpperCase() === respEst.stu.toUpperCase());
+
+          if (isCorrect) el.classList.add('correct');
+          if (isSelected && !isCorrect) el.classList.add('incorrect');
+          if (isSelected) el.style.borderWidth = "4px"; else el.style.borderWidth = "2px";
+        });
+
+        // Resumen
+        if (respEst) {
+          $('est-det-resp-est').textContent = respEst.stu || "?";
+          $('est-det-resp-key').textContent = respKey || "?";
+          $('est-det-pts').textContent = respEst.pts || 0;
+          $('est-det-box-pts').style.background = respEst.pts > 0 ? '#f0fdf4' : '#fef2f2';
+
+          const badge = $('est-det-status-badge');
+          if (badge) {
+            badge.innerHTML = respEst.pts > 0
+              ? '<span style="background:#10b981; color:white; padding:5px 15px; border-radius:20px; font-weight:800; font-size:0.8rem;">ACIERTO ✅</span>'
+              : '<span style="background:#ef4444; color:white; padding:5px 15px; border-radius:20px; font-weight:800; font-size:0.8rem;">INCORRECTO ❌</span>';
+          }
+        }
+
+        if (registroFinal) {
+          $('est-det-quiz-name').textContent = registroFinal.quiz_name;
+          $('est-det-score').textContent = registroFinal.percent_correct;
+        }
+
+        triggerMath();
+        showLoading(false);
       }
 
       async function resetearBaseDeDatos() {
@@ -5205,23 +5067,11 @@
         showLoading(true);
         try {
           const sedeManual = $('rep-sede').value;
-          const [resNotas, resComp] = await Promise.all([
-            supabaseClient.from('eval_estudiantes_notas').select('zipgrade_id').eq('periodo', currentPeriodo),
-            supabaseClient.from('eval_estudiantes_completos').select('grado').eq('periodo', currentPeriodo)
-          ]);
-
-          let data = resNotas.data || [];
-          const dataCompGrados = resComp.data ? resComp.data.map(d => d.grado.toString()) : [];
-
-          // FALLBACK SI NO HAY DATOS EN EL PERIODO ACTUAL (Notas)
-          if (data.length === 0 && currentPeriodo > 1) {
-            const { data: fb } = await supabaseClient.from('eval_estudiantes_notas').select('zipgrade_id').eq('periodo', 1);
-            if (fb && fb.length > 0) data = fb;
-          }
+          const { data } = await supabaseClient.from('eval_estudiantes_notas').select('zipgrade_id').eq('periodo', currentPeriodo);
+          const rol = currentRole;
 
           // Obtener todos los grupos únicos
-          const groupsNotas = data.map(d => extraerGrupo(d.zipgrade_id));
-          let allGroups = [...new Set([...groupsNotas, ...dataCompGrados])].filter(esGrupoValido);
+          let allGroups = data ? [...new Set(data.map(d => extraerGrupo(d.zipgrade_id)))] : [];
 
           // --- Filtro de Privacidad: Solo mostrar grupos permitidos ---
           if (currentRole !== 'superadmin') {
@@ -5251,14 +5101,16 @@
 
               allGroups = allGroups.filter(g => {
                 const gBase = extraerGradoBase(g);
-                const hasPermission = dictan.some(d => d === g.toString() || d === gBase.toString()) ||
-                  direccion.some(d => d === g.toString() || d === gBase.toString());
-
-                if (esDePrimaria && mySede === 'Central') {
-                  return ['301', '401', '501'].includes(g.toString()) || hasPermission;
-                }
-                return hasPermission;
+                const matchDictan = dictan.some(d => d === g.toString() || d === gBase.toString());
+                const matchDireccion = direccion.some(d => d === g.toString() || d === gBase.toString());
+                
+                return matchDictan || matchDireccion;
               });
+
+              // RESTRICCIÓN ADICIONAL CENTRAL PRIMARIA
+              if (esDePrimaria && mySede === 'Central') {
+                allGroups = allGroups.filter(g => ['301', '401', '501'].includes(g.toString()));
+              }
             }
 
             // --- FALLBACK PARA SEDES RURALES SIN ASIGNACIÓN EXPLÍCITA ---
@@ -5314,20 +5166,14 @@
           return;
         }
 
-        const [resNotas, resComp] = await Promise.all([
-          supabaseClient.from('eval_estudiantes_notas').select('estudiante_nombre, zipgrade_id, grado').eq('periodo', currentPeriodo),
-          supabaseClient.from('eval_estudiantes_completos').select('estudiante_nombre, student_id, grado').eq('periodo', currentPeriodo)
-        ]);
+        const { data } = await supabaseClient.from('eval_estudiantes_notas')
+          .select('estudiante_nombre, zipgrade_id, grado')
+          .eq('periodo', currentPeriodo);
 
-        const dataNotas = resNotas.data || [];
-        const filtradosNotas = dataNotas.filter(e => (e.grado || extraerGrupo(e.zipgrade_id)) === grupo);
-
-        const dataComp = resComp.data || [];
-        const filtradosComp = dataComp.filter(e => e.grado === grupo);
-
+        // Filtrar usando la columna 'grado' que almacena el grupo asignado durante la importación
+        const filtrados = data ? data.filter(e => (e.grado || extraerGrupo(e.zipgrade_id)) === grupo) : [];
         const uniqueMap = new Map();
-        filtradosNotas.forEach(e => uniqueMap.set(e.zipgrade_id, e.estudiante_nombre));
-        filtradosComp.forEach(e => uniqueMap.set(e.student_id, e.estudiante_nombre));
+        filtrados.forEach(e => uniqueMap.set(e.zipgrade_id, e.estudiante_nombre));
 
         const sel = $('rep-estudiante');
         sel.innerHTML = '<option value="">Seleccione estudiante...</option>' +
@@ -5348,26 +5194,26 @@
 
         showLoading(true);
         try {
-          const [resHistNotas, resTodosNotas, resHistComp, resTodosComp] = await Promise.all([
-            supabaseClient.from('eval_estudiantes_notas').select('*').or(`zipgrade_id.eq.${zipId},zipgrade_id.ilike.%${zipId}%`).order('periodo', { ascending: true }),
-            supabaseClient.from('eval_estudiantes_notas').select('*').eq('periodo', currentPeriodo),
-            supabaseClient.from('eval_estudiantes_completos').select('*').or(`student_id.eq.${zipId},student_id.ilike.%${zipId}%`).order('periodo', { ascending: true }),
-            supabaseClient.from('eval_estudiantes_completos').select('*').eq('periodo', currentPeriodo)
+          const [resHist, resTodos] = await Promise.all([
+            supabaseClient.from('eval_estudiantes_notas')
+              .select('*')
+              .or(`zipgrade_id.eq.${zipId},zipgrade_id.ilike.%${zipId}%`)
+              .order('periodo', { ascending: true }),
+            supabaseClient.from('eval_estudiantes_notas')
+              .select('*')
+              .eq('periodo', currentPeriodo)
           ]);
 
-          const normComp = (list) => (list || []).map(d => {
-            const nr = {};
-            if (d.respuestas) Object.keys(d.respuestas).forEach(q => { nr[q] = d.respuestas[q].pts >= 1 ? 1 : 0; });
-            return { zipgrade_id: d.student_id, estudiante_nombre: d.estudiante_nombre, respuestas: nr, porcentaje: d.percent_correct, periodo: d.periodo, grado: d.grado };
-          });
+          if (resHist.error) throw resHist.error;
+          if (resTodos.error) throw resTodos.error;
 
-          const historico = [...(resHistNotas.data || []), ...normComp(resHistComp.data)].sort((a, b) => a.periodo - b.periodo);
-          const todos = [...(resTodosNotas.data || []), ...normComp(resTodosComp.data)];
+          let historico = resHist.data || [];
+          const todos = resTodos.data || [];
 
           // NO usar fallback por nombre para evitar confusiones entre estudiantes con apellidos iguales.
           // El sistema ahora es 100% basado en el Número de Identificación para garantizar privacidad.
           if (historico.length === 0 && isStudentMode) {
-            // Si llegamos aquí, el ID no está en la base de notas.
+             // Si llegamos aquí, el ID no está en la base de notas.
           }
 
           const est = historico.find(t => t.periodo === parseInt(currentPeriodo)) || historico[historico.length - 1];
@@ -5383,30 +5229,22 @@
             return;
           }
 
-          const actualZipId = est.zipgrade_id.toString().trim();
-          const actualPeriodoNum = parseInt(est.periodo);
-          const grupoEst = extraerGrupo(actualZipId);
+          const grupoEst = extraerGrupo(est.zipgrade_id);
+          const actualZipId = est.zipgrade_id; // USAR EL ID REAL DE LA TABLA DE NOTAS
 
-          const alumnosGrupo = todos.filter(t =>
-            parseInt(t.periodo) === actualPeriodoNum &&
-            t.zipgrade_id &&
-            extraerGrupo(t.zipgrade_id.toString().trim()) === grupoEst
-          );
+          const alumnosGrupo = todos.filter(t => extraerGrupo(t.zipgrade_id) === grupoEst);
 
           const gradoBase = extraerGradoBase(grupoEst);
-          const alumnosNivel = todos.filter(t =>
-            parseInt(t.periodo) === actualPeriodoNum &&
-            t.zipgrade_id &&
-            extraerGradoBase(extraerGrupo(t.zipgrade_id.toString().trim())) === gradoBase
-          );
+          const alumnosNivel = todos.filter(t => extraerGradoBase(extraerGrupo(t.zipgrade_id)) === gradoBase);
+          const sortedGrupo = [...alumnosGrupo].sort((a, b) => {
+            if ((b.porcentaje || 0) !== (a.porcentaje || 0)) return (b.porcentaje || 0) - (a.porcentaje || 0);
+            return (b.porcentaje || 0) - (a.porcentaje || 0);
+          });
+          const puestoGrupo = sortedGrupo.findIndex(t => t.zipgrade_id === actualZipId) + 1;
 
-          const sortedGrupo = [...alumnosGrupo].sort((a, b) => (b.porcentaje || 0) - (a.porcentaje || 0));
-          const idxG = sortedGrupo.findIndex(t => t.zipgrade_id.toString().trim() === actualZipId);
-          const puestoGrupo = idxG >= 0 ? idxG + 1 : "-";
-
+          // Puesto Global en el NIVEL (ej: Grado 9°)
           const sortedNivel = [...alumnosNivel].sort((a, b) => (b.porcentaje || 0) - (a.porcentaje || 0));
-          const idxN = sortedNivel.findIndex(t => t.zipgrade_id.toString().trim() === actualZipId);
-          const puestoNivelFinal = idxN >= 0 ? idxN + 1 : "-";
+          const puestoNivel = sortedNivel.findIndex(t => t.zipgrade_id === actualZipId) + 1;
 
           const gNum = extraerGradoBase(grupoEst);
           let mKey = '6-9';
@@ -5429,10 +5267,10 @@
               return b.promedioGlobal - a.promedioGlobal; // Tie-breaker: promedio global
             });
 
-            puestosMaterias[subj.label] = rankings.findIndex(r => r.id.toString().trim() === actualZipId) + 1;
+            puestosMaterias[subj.label] = rankings.findIndex(r => r.id === actualZipId) + 1;
           });
 
-          const html = construirHTMLBoletin(est, puestoGrupo, alumnosGrupo.length, puestosMaterias, config, historico, puestoNivelFinal, alumnosNivel.length);
+          const html = construirHTMLBoletin(est, puestoGrupo, alumnosGrupo.length, puestosMaterias, config, historico, puestoNivel, alumnosNivel.length);
 
           const printActions = `
           <div class="no-print" style="margin-bottom:1rem; display:flex; gap:10px; justify-content: flex-end;">
@@ -5572,7 +5410,7 @@
                 </div>
 
                 <!-- Puestos -->
-                <div style="display:flex; gap:6px; flex-wrap:wrap; justify-content:center;">
+                <div style="display:flex; gap:6px;">
                    <div style="border:2px solid #2563eb; border-radius:8px; padding:4px 8px; text-align:center; background:#eff6ff;">
                       <div style="font-size:0.55rem; font-weight:900; color:#3b82f6; text-transform:uppercase; margin-bottom:2px;">Puesto Grupo</div>
                       <div style="display:flex; align-items:baseline; justify-content:center; gap:2px;">
@@ -5705,7 +5543,30 @@
             }]
           },
           options: {
-            responsive: true
+            responsive: true,
+            maintainAspectRatio: false,
+            animation: false,
+            plugins: {
+              legend: { display: false },
+              datalabels: {
+                align: 'top',
+                offset: 2,
+                color: '#1e293b',
+                font: { weight: 'bold', size: 9 },
+                formatter: (v) => v
+              }
+            },
+            scales: {
+              y: {
+                display: false,
+                min: 0,
+                max: 110
+              },
+              x: {
+                grid: { display: false },
+                ticks: { font: { size: 9 } }
+              }
+            }
           }
         });
       }
@@ -5713,114 +5574,174 @@
       async function cargarGruposInformeGrupal() {
         showLoading(true);
         try {
-          // Consultar ambas tablas para asegurar que aparezcan todos los grupos (Notas y Completos)
-          const [resNotas, resComp] = await Promise.all([
-            supabaseClient.from('eval_estudiantes_notas').select('zipgrade_id').eq('periodo', currentPeriodo),
-            supabaseClient.from('eval_estudiantes_completos').select('grado').eq('periodo', currentPeriodo)
-          ]);
+          const { data } = await supabaseClient.from('eval_estudiantes_notas').select('zipgrade_id').eq('periodo', currentPeriodo);
 
-          const groupsNotas = resNotas.data ? resNotas.data.map(d => extraerGrupo(d.zipgrade_id)) : [];
-          const groupsComp = resComp.data ? resComp.data.map(d => d.grado.toString()) : [];
-          let uniqueGroups = [...new Set([...groupsNotas, ...groupsComp])].filter(esGrupoValido);
+          let uniqueGroups = data ? [...new Set(data.map(d => extraerGrupo(d.zipgrade_id)))] : [];
 
+          // --- Filtro de Privacidad: Solo mostrar grupos permitidos ---
           if (currentRole !== 'superadmin') {
             const assignedLower = (window.assignedGrade || "").toString().toLowerCase();
             const gBaseAssigned = extraerGradoBase(window.assignedGrade);
             const esDePrimaria = assignedLower === "primaria" || (gBaseAssigned >= 1 && gBaseAssigned <= 5);
             const mySede = window.userSede || 'Central';
-            const direccion = window.assignedGroups || [];
-            const dictan = userPermissions.filter(p => p.tipo === 'ASIGNACION').map(p => p.grado.toString());
-            const allowedPool = [...new Set([...direccion, ...dictan])];
 
             if (currentRole === 'admin') {
-              uniqueGroups = uniqueGroups.filter(g => {
-                if (detectarSede(g) !== mySede) return false;
-                const hasPermission = allowedPool.some(ap => ap === g.toString() || extraerGradoBase(g).toString() === ap);
-                if (esDePrimaria && mySede === 'Central') {
-                  return ['301', '401', '501'].includes(g.toString()) || hasPermission;
-                }
-                return true;
-              });
+              uniqueGroups = uniqueGroups.filter(g => detectarSede(g) === mySede);
+              if (esDePrimaria && mySede === 'Central') {
+                uniqueGroups = uniqueGroups.filter(g => ['301', '401', '501'].includes(g.toString()));
+              }
             } else {
+              // Lectores (Directores de Grupo): Solo ven sus grupos asignados
+              const direccion = window.assignedGroups || [];
               uniqueGroups = uniqueGroups.filter(g => {
-                const hasPermission = allowedPool.some(ap => ap === g.toString() || extraerGradoBase(g).toString() === ap);
-                if (esDePrimaria && mySede === 'Central') {
-                  return ['301', '401', '501'].includes(g.toString()) || hasPermission;
-                }
-                return hasPermission;
+                const gBase = extraerGradoBase(g);
+                return direccion.some(d => d === g.toString() || d === gBase.toString());
               });
-            }
-          }
 
+              // RESTRICCIÓN ADICIONAL CENTRAL PRIMARIA
+              if (esDePrimaria && mySede === 'Central') {
+                uniqueGroups = uniqueGroups.filter(g => ['301', '401', '501'].includes(g.toString()));
+              }
+            }
+            console.log("🔒 [SEGURIDAD] Filtrando Informe Grupal:", uniqueGroups);
+          }
+          // -------------------------------------------
           uniqueGroups.sort((a, b) => a.localeCompare(b, undefined, { numeric: true }));
+
           const sel = $('gru-sel-grado');
           sel.innerHTML = '<option value="">Seleccione grupo...</option>' + uniqueGroups.map(g => `<option value="${g}">${g}</option>`).join('');
-        } catch (e) { console.error("Error en cargarGruposInformeGrupal:", e); }
+        } catch (e) {
+          console.error("Error cargando grupos grupal:", e);
+        }
         showLoading(false);
       }
 
       async function generarInformeGrupal() {
         const grupo = $('gru-sel-grado').value;
         if (!grupo) return;
+
         showLoading(true);
         try {
-          const [resNotas, resComp] = await Promise.all([
-            supabaseClient.from('eval_estudiantes_notas').select('*').eq('periodo', currentPeriodo),
-            supabaseClient.from('eval_estudiantes_completos').select('*').eq('periodo', currentPeriodo)
-          ]);
+          const { data: todosData, error } = await supabaseClient.from('eval_estudiantes_notas')
+            .select('*')
+            .eq('periodo', currentPeriodo);
 
-          const dataNotas = resNotas.data || [];
-          const dataComp = (resComp.data || []).map(d => {
-            const normResp = {};
-            if (d.respuestas) {
-              Object.keys(d.respuestas).forEach(q => { normResp[q] = d.respuestas[q].pts >= 1 ? 1 : 0; });
-            }
-            return {
-              zipgrade_id: d.student_id,
-              estudiante_nombre: d.estudiante_nombre,
-              respuestas: normResp,
-              porcentaje: d.percent_correct
-            };
-          });
-
-          const todosData = [...dataNotas, ...dataComp];
+          if (error) throw error;
 
           const alumnosGrupo = todosData.filter(t => extraerGrupo(t.zipgrade_id) === grupo)
             .sort((a, b) => a.estudiante_nombre.localeCompare(b.estudiante_nombre, 'es', { sensitivity: 'base' }));
 
           if (alumnosGrupo.length === 0) {
-            $('grupal-content').innerHTML = '<p style="text-align:center; padding:2rem;">No hay datos.</p>';
+            $('grupal-content').innerHTML = '<p style="text-align:center; padding:2rem;">No hay datos para este grupo.</p>';
             showLoading(false);
             return;
           }
 
           const gNum = extraerGradoBase(grupo);
           let mKey = '6-9';
-          if (gNum <= 4) mKey = '3-4'; else if (gNum === 5) mKey = '5'; else if (gNum >= 10) mKey = '10-11';
+          if (gNum <= 4) mKey = '3-4';
+          else if (gNum === 5) mKey = '5';
+          else if (gNum >= 10) mKey = '10-11';
           let config = MATRIZ_RANGOS[mKey];
 
-          let html = `<table style="width:100%; border-collapse:separate; border-spacing:0; font-size:0.85rem;">
-            <thead style="position:sticky; top:0; z-index:99; background:white;">
-              <tr><th style="padding:12px 8px; text-align:left; position:sticky; left:0; background:white; z-index:100; min-width:180px; border-bottom:2px solid #e2e8f0; box-shadow: 0 4px 6px -2px rgba(0,0,0,0.1);">ESTUDIANTE</th>
-              ${config.map(s => `<th style="padding:12px 4px; text-align:center; min-width:60px; font-size:0.75rem; color:#1e293b; border-bottom:2px solid #e2e8f0; position:sticky; top:0; background:white; z-index:99; box-shadow: 0 4px 6px -2px rgba(0,0,0,0.1);">${s.label}</th>`).join('')}
-              <th style="padding:12px 8px; text-align:center; min-width:70px; background:white; border-bottom:2px solid #e2e8f0; position:sticky; top:0; z-index:99; box-shadow: 0 4px 6px -2px rgba(0,0,0,0.1);">PROM.</th></tr>
-            </thead><tbody>`;
+          let html = `
+                <table style="width:100%; border-collapse:separate; border-spacing:0; font-size:0.85rem;">
+                        <thead style="position:sticky; top:0; z-index:99; background:white;">
+                            <tr>
+                                <th style="padding:12px 8px; text-align:left; position:sticky; top:0; left:0; background:white; z-index:100; min-width:180px; border-bottom:2px solid #e2e8f0; box-shadow: 0 4px 6px -2px rgba(0,0,0,0.1);">ESTUDIANTE</th>
+                                ${config.map(s => {
+            const labelsMap = {
+              'Matemáticas': 'Matemáticas',
+              'Competencias Ciudadanas': 'Competencias',
+              'Ciudadanas': 'Competencias',
+              'Ciencias Sociales': 'Sociales',
+              'Sociales': 'Sociales',
+              'Lenguaje': 'Lenguaje',
+              'Biología': 'Biología',
+              'Física': 'Física',
+              'Química': 'Química',
+              'Inglés': 'Inglés',
+              'Ciencias Naturales': 'Biología'
+            };
+            const displayLabel = labelsMap[s.label] || s.label;
+            return `
+                                    <th style="padding:12px 4px; text-align:center; min-width:60px; font-size:0.75rem; color:#1e293b; border-bottom:2px solid #e2e8f0; position:sticky; top:0; background:white; z-index:99; box-shadow: 0 4px 6px -2px rgba(0,0,0,0.1);">
+                                        ${displayLabel}
+                                    </th>
+                                `;
+          }).join('')}
+                                <th style="padding:12px 8px; text-align:center; min-width:70px; background:white; border-bottom:2px solid #e2e8f0; position:sticky; top:0; z-index:99; box-shadow: 0 4px 6px -2px rgba(0,0,0,0.1);">PROM.</th>
+                            </tr>
+                        </thead>
+                    <tbody style="z-index:1;">
+            `;
 
           alumnosGrupo.forEach(est => {
             let sumaPct = 0;
-            html += `<tr style="border-bottom:1px solid #f1f5f9;"><td style="padding:10px 12px; font-weight:700; position:sticky; left:0; background:white; border-right:1px solid #f1f5f9; white-space:nowrap; z-index:5;">${est.estudiante_nombre}</td>`;
+            html += `
+                    <tr style="border-bottom:1px solid #f1f5f9;">
+                        <td class="estudiante-col-base" style="padding:10px 12px; font-weight:700; position:sticky; left:0; background:white; border-right:1px solid #f1f5f9; white-space:nowrap; z-index:5;">${est.estudiante_nombre}</td>
+                `;
+
             config.forEach(subj => {
               let ok = 0, totalSub = 0;
-              for (let i = subj.start; i <= subj.end; i++) { totalSub++; if (est.respuestas && est.respuestas[i] === 1) ok++; }
-              const pct = Math.round((ok / totalSub) * 100); sumaPct += pct; const val = getValoration(pct);
-              html += `<td style="padding:4px; text-align:center;"><div class="val-box" style="background:${val.color}; color:${val.color === '#facc15' ? '#1e293b' : 'white'};">${val.initial}</div></td>`;
+              for (let i = subj.start; i <= subj.end; i++) {
+                totalSub++;
+                if (est.respuestas && est.respuestas[i] === 1) ok++;
+              }
+              const pct = Math.round((ok / totalSub) * 100);
+              sumaPct += pct;
+              const val = getValoration(pct);
+              html += `<td class="subject-col-base" style="padding:4px; text-align:center;">
+                        <div class="val-box" title="${pct}" style="background:${val.color}; color:${val.color === '#facc15' ? '#1e293b' : 'white'}; cursor:help;">
+                            ${val.initial}
+                        </div>
+                    </td>`;
             });
-            const prom = Math.round(sumaPct / config.length); const valGen = getValoration(prom);
-            html += `<td style="padding:8px; text-align:center; background:#f0f9ff; font-weight:900; color:${valGen.color};">${prom}</td></tr>`;
+
+            const prom = Math.round(sumaPct / config.length);
+            const valGen = getValoration(prom);
+            html += `
+                    <td style="padding:8px; text-align:center; background:#f0f9ff; font-weight:900; color:${valGen.color};">
+                        ${prom}
+                    </td>
+                </tr>`;
           });
-          html += `</tbody></table>`;
+
+          // Fila de Promedios del Grupo
+          html += `
+                <tr style="background:#f8fafc; font-weight:800; border-top:2px solid #e2e8f0;">
+                    <td style="padding:12px; position:sticky; left:0; background:#f8fafc; z-index:5;">PROMEDIO GRUPAL</td>
+            `;
+
+          let totalGrupo = 0;
+          config.forEach(subj => {
+            let sumaPctSub = 0;
+            alumnosGrupo.forEach(est => {
+              let ok = 0, totalSub = 0;
+              for (let i = subj.start; i <= subj.end; i++) {
+                totalSub++;
+                if (est.respuestas && est.respuestas[i] === 1) ok++;
+              }
+              sumaPctSub += Math.round((ok / totalSub) * 100);
+            });
+            const promSub = Math.round(sumaPctSub / alumnosGrupo.length);
+            totalGrupo += promSub;
+            html += `<td class="subject-col-base" style="padding:12px; text-align:center; color:#1e293b;">${promSub}</td>`;
+          });
+
+          html += `
+                    <td class="promedio-col-base" style="padding:12px; text-align:center; background:#e0f2fe; color:#0369a1; font-size:1.1rem;">${Math.round(totalGrupo / config.length)}</td>
+                </tr>
+                </tbody></table>
+            `;
+
           $('grupal-content').innerHTML = html;
-        } catch (e) { console.error(e); }
+
+        } catch (e) {
+          console.error("Error generando informe grupal:", e);
+          alert("Error: " + e.message);
+        }
         showLoading(false);
       }
 
@@ -5874,7 +5795,7 @@
                 <body>
                     <div class="header-print-info" style="background:rgba(255, 255, 255, 0.85); border: 1px solid #cbd5e1; border-radius: 12px; padding: 10px 15px; margin-bottom: 12px; width: 100%; max-width: 800px; box-sizing: border-box;">
                         
-                        <!-- Encabezado en 3 Columnas para Alineacion Perfecta -->
+                        <!-- Encabezado en 3 Columnas para Alineacin Perfecta -->
                         <div style="display:grid; grid-template-columns: 200px 1fr 200px; gap:10px; align-items: flex-end; margin-bottom: 10px;">
                             
                             <!-- Bloque Izquierdo: Logo Liceo + Informe de Grupo -->
@@ -5909,11 +5830,13 @@
                             </div>
                         </div>
                     </div>
-                    ${content.replace(/position:sticky; left:0; background:white; z-index:100;/g, 'border-right: 2px solid #cbd5e1;')
-            .replace(/class="val-box"/g, 'class="val-box"')
-            .replace(/box-shadow:[^;]+;/g, '')
-            .replace(/position:sticky;[^;]+;/g, '')
-            .replace(/z-index:[^;]+;/g, '')}
+                    ${content.replace(/position:sticky; left:0; background:#f8fafc; z-index:10;/g, '')
+            .replace(/class="estudiante-col-base"/g, 'class="estudiante-col"')
+            .replace(/class="subject-col-base"/g, 'class="subject-col"')
+            .replace(/class="promedio-col-base"/g, 'class="subject-col"')
+            .replace(/background:#f0f9ff;/g, '')
+            .replace(/background:#e0f2fe;/g, '')
+            .replace(/font-weight:900;/g, 'font-weight:800;')}
                 </body>
             </html>
         `);
@@ -5925,39 +5848,50 @@
       async function cargarGruposInformeAsignatura() {
         showLoading(true);
         try {
-          // Consultar ambas tablas para asegurar que aparezcan todos los grupos (Notas y Completos)
-          const [resNotas, resComp] = await Promise.all([
-            supabaseClient.from('eval_estudiantes_notas').select('zipgrade_id').eq('periodo', currentPeriodo),
-            supabaseClient.from('eval_estudiantes_completos').select('grado').eq('periodo', currentPeriodo)
-          ]);
+          const { data } = await supabaseClient.from('eval_estudiantes_notas').select('zipgrade_id').eq('periodo', currentPeriodo);
 
-          const groupsNotas = resNotas.data ? resNotas.data.map(d => extraerGrupo(d.zipgrade_id)) : [];
-          const groupsComp = resComp.data ? resComp.data.map(d => d.grado.toString()) : [];
-          let uniqueGroups = [...new Set([...groupsNotas, ...groupsComp])].filter(esGrupoValido);
+          let uniqueGroups = data ? [...new Set(data.map(d => extraerGrupo(d.zipgrade_id)))] : [];
+          uniqueGroups.sort((a, b) => a.localeCompare(b, undefined, { numeric: true }));
 
+          // --- Filtro de Privacidad: Solo mostrar grados permitidos ---
           if (currentRole !== 'superadmin') {
             const assignedLower = (window.assignedGrade || "").toString().toLowerCase();
             const gBaseAssigned = extraerGradoBase(window.assignedGrade);
             const esDePrimaria = assignedLower === "primaria" || (gBaseAssigned >= 1 && gBaseAssigned <= 5);
             const mySede = window.userSede || 'Central';
-            const direccion = window.assignedGroups || [];
-            const dictan = userPermissions.filter(p => p.tipo === 'ASIGNACION').map(p => p.grado.toString());
-            const allowedPool = [...new Set([...direccion, ...dictan])];
 
-            uniqueGroups = uniqueGroups.filter(g => {
-              if (currentRole === 'admin' && detectarSede(g) !== mySede) return false;
-              const hasPermission = allowedPool.some(ap => ap === g.toString() || extraerGradoBase(g).toString() === ap);
+            if (currentRole === 'admin') {
+              // Administradores de Sede: Solo ven grupos de su propia sede
+              uniqueGroups = uniqueGroups.filter(g => detectarSede(g) === mySede);
               if (esDePrimaria && mySede === 'Central') {
-                return ['301', '401', '501'].includes(g.toString()) || hasPermission;
+                uniqueGroups = uniqueGroups.filter(g => ['301', '401', '501'].includes(g.toString()));
               }
-              if (currentRole === 'admin') return true;
-              return hasPermission;
-            });
-          }
+            } else {
+              // Lectores (Docentes)
+              const direccion = window.assignedGroups || [];
+              const dictan = userPermissions
+                .filter(p => p.tipo === 'ASIGNACION' && isSubjectEvaluated(p.asignatura, p.grado))
+                .map(p => p.grado.toString());
 
-          uniqueGroups.sort((a, b) => a.localeCompare(b, undefined, { numeric: true }));
+              const allowedPool = [...new Set([...direccion, ...dictan])];
+              uniqueGroups = uniqueGroups.filter(g => {
+                const gBase = extraerGradoBase(g);
+                const hasPermission = allowedPool.some(ap => ap === g.toString() || ap === gBase.toString());
+                
+                // RESTRICCIÓN ADICIONAL CENTRAL PRIMARIA
+                if (esDePrimaria && mySede === 'Central') {
+                   return ['301', '401', '501'].includes(g.toString());
+                }
+                return hasPermission;
+              });
+            }
+          }
+          // ----------------------------------------------------------
+
           const sel = $('asig-sel-grado');
           sel.innerHTML = '<option value="">Seleccione grupo...</option>' + uniqueGroups.map(g => `<option value="${g}">${g}</option>`).join('');
+
+          // Resetear materias
           $('asig-sel-materia').innerHTML = '<option value="">Seleccione grupo primero...</option>';
         } catch (e) { console.error(e); }
         showLoading(false);
@@ -5966,22 +5900,43 @@
       async function cargarMateriasInformeAsignatura() {
         const grupo = $('asig-sel-grado').value;
         if (!grupo) return;
+
         const gNum = extraerGradoBase(grupo);
         let mKey = '6-9';
         if (gNum <= 4) mKey = '3-4'; else if (gNum === 5) mKey = '5'; else if (gNum >= 10) mKey = '10-11';
+
         const configFull = MATRIZ_RANGOS[mKey];
         let uniqueAsig = [...new Set(configFull.map(m => m.label))];
 
-        if (currentRole !== 'superadmin' && currentRole !== 'admin') {
+        // --- Filtro de Privacidad: Solo mostrar asignaturas permitidas ---
+        if (currentRole === 'lector' || (currentRole !== 'superadmin' && currentRole !== 'admin')) {
           const gBaseAssigned = extraerGradoBase(window.assignedGrade);
           const esDePrimaria = window.assignedGrade === "Primaria" || (gBaseAssigned >= 1 && gBaseAssigned <= 5);
-          if (!(esDePrimaria && gNum <= 5)) {
-            const myPermissions = userPermissions.filter(p => p.tipo === 'ASIGNACION' && (p.grado.toString() === grupo.toString() || extraerGradoBase(p.grado).toString() === gNum.toString())).map(p => p.asignatura);
+          const esNivelPrimaria = gNum >= 1 && gNum <= 5;
+
+          // Si es primaria y el grupo es de primaria, permitimos todas las asignaturas
+          if (!(esDePrimaria && esNivelPrimaria)) {
+            const myPermissions = userPermissions
+              .filter(p => {
+                if (p.tipo !== 'ASIGNACION') return false;
+                const pGrado = p.grado.toString().trim();
+                const targetGrado = grupo.toString().trim();
+                const targetBase = extraerGradoBase(targetGrado).toString();
+                return pGrado === targetGrado || pGrado === targetBase;
+              })
+              .map(p => p.asignatura);
+
+            console.log("🔍 [DEBUG] Permisos para el grupo", grupo, ":", myPermissions);
             uniqueAsig = uniqueAsig.filter(a => checkSubjectPermission(myPermissions, a, gNum));
+          } else {
+            console.log("🌟 Docente de primaria: Acceso total a asignaturas en informe por asignatura.");
           }
         }
+        // -----------------------------------------------------------------
+
         const sel = $('asig-sel-materia');
-        sel.innerHTML = '<option value="">Seleccione asignatura...</option>' + uniqueAsig.map(a => `<option value="${a}">${a}</option>`).join('');
+        sel.innerHTML = '<option value="">Seleccione asignatura...</option>' +
+          uniqueAsig.map(a => `<option value="${a}">${a}</option>`).join('');
       }
 
       async function generarInformeAsignatura() {
@@ -5994,26 +5949,8 @@
 
         showLoading(true);
         try {
-          const [resNotas, resComp] = await Promise.all([
-            supabaseClient.from('eval_estudiantes_notas').select('*').eq('periodo', currentPeriodo),
-            supabaseClient.from('eval_estudiantes_completos').select('*').eq('periodo', currentPeriodo)
-          ]);
-
-          const dataNotas = resNotas.data || [];
-          const dataComp = (resComp.data || []).map(d => {
-            const normResp = {};
-            if (d.respuestas) {
-              Object.keys(d.respuestas).forEach(q => { normResp[q] = d.respuestas[q].pts >= 1 ? 1 : 0; });
-            }
-            return {
-              zipgrade_id: d.student_id,
-              estudiante_nombre: d.estudiante_nombre,
-              respuestas: normResp,
-              porcentaje: d.percent_correct
-            };
-          });
-
-          const todosData = [...dataNotas, ...dataComp];
+          const { data: todosData, error } = await supabaseClient.from('eval_estudiantes_notas').select('*').eq('periodo', currentPeriodo);
+          if (error) throw error;
 
           const alumnosGrupo = todosData.filter(t => extraerGrupo(t.zipgrade_id) === grupo)
             .sort((a, b) => a.estudiante_nombre.localeCompare(b.estudiante_nombre, 'es', { sensitivity: 'base' }));
@@ -6301,6 +6238,7 @@
             <body>
               ${contentHTML}
               <script>
+      const CURRENT_APP_VERSION = 'v68';
                 const historicosData = JSON.parse(decodeURIComponent("${encodeURIComponent(JSON.stringify(historicosMap))}"));
                 const currentP = ${parseInt(currentPeriodo) || 1};
 
@@ -6481,6 +6419,7 @@
             <body>
               ${reportesHtml.join('')}
               <script>
+      const CURRENT_APP_VERSION = 'v68';
                 const historicosData = JSON.parse(decodeURIComponent("${encodeURIComponent(JSON.stringify(historicosMap))}"));
                 const currentP = ${parseInt(currentPeriodo) || 1};
                 function getValoration(p) {
@@ -6559,7 +6498,7 @@
 
           // 1. Poblar selectores del Dashboard
           let gruposUnicos = [...new Set(dataPeriodoActual.map(d => extraerGrupo(d.zipgrade_id)))]
-            .filter(g => esGrupoValido(g));
+            .filter(g => extraerGradoBase(g) > 0);
 
           // --- Filtro de Privacidad: Solo mostrar grupos permitidos ---
           if (currentRole !== 'superadmin') {
@@ -6574,23 +6513,18 @@
                 gruposUnicos = gruposUnicos.filter(g => ['301', '401', '501'].includes(g.toString()));
               }
             } else {
-              // Lectores (Docentes)
+              const dictan = userPermissions.filter(p => p.tipo === 'ASIGNACION').map(p => p.grado.toString());
               const direccion = window.assignedGroups || [];
-              const dictan = userPermissions
-                .filter(p => p.tipo === 'ASIGNACION')
-                .map(p => p.grado.toString());
-
               gruposUnicos = gruposUnicos.filter(g => {
                 const gBase = extraerGradoBase(g);
-                const hasPerm = dictan.some(d => d === g.toString() || d === gBase.toString()) ||
-                  direccion.some(d => d === g.toString() || d === gBase.toString());
-
-                // RESTRICCIÓN ADICIONAL CENTRAL PRIMARIA
-                if (esDePrimaria && mySede === 'Central') {
-                  return ['301', '401', '501'].includes(g.toString()) && hasPerm;
-                }
-                return hasPerm;
+                return dictan.some(d => d === g.toString() || d === gBase.toString()) || 
+                       direccion.some(d => d === g.toString() || d === gBase.toString());
               });
+
+              // RESTRICCIÓN ADICIONAL CENTRAL PRIMARIA
+              if (esDePrimaria && mySede === 'Central') {
+                gruposUnicos = gruposUnicos.filter(g => ['301', '401', '501'].includes(g.toString()));
+              }
             }
           }
           // ----------------------------------------------------------
@@ -6781,8 +6715,9 @@
     </script>
 
     <script>
+      const CURRENT_APP_VERSION = 'v68';
       window.addEventListener('load', () => {
-        if ('serviceWorker' in navigator && window.location.protocol !== 'file:') {
+        if ('serviceWorker' in navigator) {
           navigator.serviceWorker.register('sw.js')
             .then(reg => {
               reg.onupdatefound = () => {
@@ -6793,23 +6728,21 @@
                   }
                 };
               };
-            }).catch(err => console.log("PWA Service Worker inactivo en modo local (file://)."));
+            });
         }
       });
 
       if (localStorage.getItem('app_version') !== CURRENT_APP_VERSION) {
-        if ('serviceWorker' in navigator && window.location.protocol !== 'file:') {
+        if ('serviceWorker' in navigator) {
           navigator.serviceWorker.getRegistrations().then(registrations => {
             for (let registration of registrations) registration.unregister();
-          }).catch(e => console.log(e));
+          });
         }
-        if (typeof caches !== 'undefined') {
-          caches.keys().then(names => {
-            for (let name of names) caches.delete(name);
-          }).catch(e => console.log(e));
-        }
+        caches.keys().then(names => {
+          for (let name of names) caches.delete(name);
+        });
         localStorage.setItem('app_version', CURRENT_APP_VERSION);
-        setTimeout(() => window.location.reload(), 1000);
+        setTimeout(() => window.location.reload(true), 1000);
       }
 
       window.addEventListener('DOMContentLoaded', () => {
@@ -6823,5 +6756,4 @@
       });
     </script>
 </body>
-
 </html>
