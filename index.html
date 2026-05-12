@@ -2487,9 +2487,9 @@
     <script src="https://cdn.jsdelivr.net/npm/papaparse@5.3.2/papaparse.min.js"></script>
     <script>
       // --- CONFIGURACIÓN Y ESTADO GLOBAL ---
-      const CURRENT_APP_VERSION = 'v90';
-      const SB_URL = "https://txnecdeccianklqqyrav.supabase.co";
-      const SB_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InR4bmVjZGVjY2lhbmtscXF5cmF2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY0MDQzMDIsImV4cCI6MjA5MTk4MDMwMn0.e2ybyt2Y8yHsZwRC-MZqi_qK525-CWpk-huQcQy-icM";
+      var CURRENT_APP_VERSION = 'v90';
+      var SB_URL = "https://txnecdeccianklqqyrav.supabase.co";
+      var SB_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InR4bmVjZGVjY2lhbmtscXF5cmF2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY0MDQzMDIsImV4cCI6MjA5MTk4MDMwMn0.e2ybyt2Y8yHsZwRC-MZqi_qK525-CWpk-huQcQy-icM";
 
       let supabaseClient;
       if (typeof supabase !== 'undefined') {
@@ -2497,7 +2497,7 @@
       }
 
       // --- UTILIDADES GLOBALES ---
-      const $ = id => document.getElementById(id);
+      var $ = id => document.getElementById(id);
       let currentPeriodo = parseInt(localStorage.getItem('currentPeriodo')) || 2;
       let assignedGrade = null;
       let userPermissions = [];
@@ -6782,7 +6782,7 @@
 
     <script>
       window.addEventListener('load', () => {
-        if ('serviceWorker' in navigator) {
+        if ('serviceWorker' in navigator && window.location.protocol !== 'file:') {
           navigator.serviceWorker.register('sw.js')
             .then(reg => {
               reg.onupdatefound = () => {
@@ -6793,19 +6793,21 @@
                   }
                 };
               };
-            });
+            }).catch(err => console.log("PWA Service Worker inactivo en modo local (file://)."));
         }
       });
 
       if (localStorage.getItem('app_version') !== CURRENT_APP_VERSION) {
-        if ('serviceWorker' in navigator) {
+        if ('serviceWorker' in navigator && window.location.protocol !== 'file:') {
           navigator.serviceWorker.getRegistrations().then(registrations => {
             for (let registration of registrations) registration.unregister();
-          });
+          }).catch(e => console.log(e));
         }
-        caches.keys().then(names => {
-          for (let name of names) caches.delete(name);
-        });
+        if (typeof caches !== 'undefined') {
+          caches.keys().then(names => {
+            for (let name of names) caches.delete(name);
+          }).catch(e => console.log(e));
+        }
         localStorage.setItem('app_version', CURRENT_APP_VERSION);
         setTimeout(() => window.location.reload(), 1000);
       }
