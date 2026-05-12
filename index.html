@@ -2487,7 +2487,7 @@
     <script src="https://cdn.jsdelivr.net/npm/papaparse@5.3.2/papaparse.min.js"></script>
     <script>
       // --- CONFIGURACIÓN Y ESTADO GLOBAL ---
-      var CURRENT_APP_VERSION = 'v94';
+      var CURRENT_APP_VERSION = 'v95';
       var SB_URL = "https://txnecdeccianklqqyrav.supabase.co";
       var SB_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InR4bmVjZGVjY2lhbmtscXF5cmF2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY0MDQzMDIsImV4cCI6MjA5MTk4MDMwMn0.e2ybyt2Y8yHsZwRC-MZqi_qK525-CWpk-huQcQy-icM";
 
@@ -5996,28 +5996,10 @@
 
         showLoading(true);
         try {
-          const [resNotas, resComp] = await Promise.all([
-            supabaseClient.from('eval_estudiantes_notas').select('*').eq('periodo', currentPeriodo),
-            supabaseClient.from('eval_estudiantes_completos').select('*').eq('periodo', currentPeriodo)
-          ]);
+          const { data: todosData, error } = await supabaseClient.from('eval_estudiantes_notas').select('*').eq('periodo', currentPeriodo);
+          if (error) throw error;
 
-          const dataNotas = resNotas.data || [];
-          const dataComp = (resComp.data || []).map(d => {
-            const normResp = {};
-            if (d.respuestas) {
-              Object.keys(d.respuestas).forEach(q => { normResp[q] = d.respuestas[q].pts >= 1 ? 1 : 0; });
-            }
-            return {
-              zipgrade_id: d.student_id,
-              estudiante_nombre: d.estudiante_nombre,
-              respuestas: normResp,
-              porcentaje: d.percent_correct
-            };
-          });
-
-          const todosData = [...dataNotas, ...dataComp];
-
-          const alumnosGrupo = todosData.filter(t => extraerGrupo(t.zipgrade_id) === grupo)
+          const alumnosGrupo = (todosData || []).filter(t => extraerGrupo(t.zipgrade_id) === grupo)
             .sort((a, b) => a.estudiante_nombre.localeCompare(b.estudiante_nombre, 'es', { sensitivity: 'base' }));
 
           if (alumnosGrupo.length === 0) {
