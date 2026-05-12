@@ -1752,23 +1752,23 @@
 
       <div
         style="display:flex; background:#f1f5f9; border-radius:12px; padding:4px; margin-bottom:1.5rem; width:100%; box-sizing:border-box;">
-        <button id="mode-docente" onclick="switchLoginMode('docente')"
+        <button id="mode-docente" type="button" onclick="switchLoginMode('docente')"
           style="flex:1; border:none; padding:10px; border-radius:10px; font-weight:700; cursor:pointer; background:white; color:#4f46e5; box-shadow:0 2px 8px rgba(0,0,0,0.1); transition:0.3s;">Docentes</button>
-        <button id="mode-estudiante" onclick="switchLoginMode('estudiante')"
+        <button id="mode-estudiante" type="button" onclick="switchLoginMode('estudiante')"
           style="flex:1; border:none; padding:10px; border-radius:10px; font-weight:700; cursor:pointer; background:transparent; color:#64748b; transition:0.3s;">Estudiantes</button>
       </div>
 
       <div id="form-docente">
         <input type="text" id="li-user" placeholder="Usuario o Email">
         <input type="password" id="li-pass" placeholder="Contraseña">
-        <button onclick="intentarLogin()" id="btn-login" style="width:100%;">Ingresar como Docente</button>
+        <button type="button" onclick="intentarLogin()" id="btn-login" style="width:100%;">Ingresar como Docente</button>
       </div>
 
       <div id="form-estudiante" style="display:none;">
         <input type="text" id="li-est-id" placeholder="Número de Identificación">
         <p style="font-size:0.75rem; color:#64748b; margin-bottom:1.5rem; line-height:1.4;">Consulta tu informe
           individual ingresando el documento registrado.</p>
-        <button onclick="intentarLoginEstudiante()" id="btn-login-est" style="width:100%; background:#10b981;">Consultar
+        <button type="button" onclick="intentarLoginEstudiante()" id="btn-login-est" style="width:100%; background:#10b981;">Consultar
           Reporte</button>
       </div>
 
@@ -2406,7 +2406,7 @@
       </div>
       <p class="footer-copy"
         style="margin: 0; color: #64748b; font-weight: 800; font-size: 0.9rem; letter-spacing: 0.5px;">© 2026 AndréSán
-        - Evaluándonos System <span style="color:#4f46e5; margin-left:10px;">[ v89 ACTIVADA ]</span></p>
+        - Evaluándonos System <span style="color:#4f46e5; margin-left:10px;">[ v90 ACTIVADA ]</span></p>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -2415,7 +2415,7 @@
     <script src="https://cdn.jsdelivr.net/npm/papaparse@5.3.2/papaparse.min.js"></script>
     <script>
       // --- CONFIGURACIÓN Y ESTADO GLOBAL ---
-      const CURRENT_APP_VERSION = 'v89';
+      const CURRENT_APP_VERSION = 'v90';
       const SB_URL = "https://txnecdeccianklqqyrav.supabase.co";
       const SB_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InR4bmVjZGVjY2lhbmtscXF5cmF2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY0MDQzMDIsImV4cCI6MjA5MTk4MDMwMn0.e2ybyt2Y8yHsZwRC-MZqi_qK525-CWpk-huQcQy-icM";
 
@@ -2942,6 +2942,14 @@
         btn.disabled = true; btn.innerText = "Buscando...";
 
         try {
+          if (!supabaseClient && typeof supabase !== 'undefined') {
+            console.log("🔄 Inicializando supabaseClient bajo demanda en login estudiante...");
+            supabaseClient = supabase.createClient(SB_URL, SB_KEY);
+          }
+          if (!supabaseClient) {
+            throw new Error("El servicio de conexión no está listo. Por favor verifica tu red o recarga la página.");
+          }
+
           // 1. Validar contra la tabla maestra de estudiantes
           const { data, error } = await supabaseClient.from('maestro_estudiantes')
             .select('nombre, identificacion, zipgrade_id')
@@ -2974,7 +2982,7 @@
           }
         } catch (e) {
           console.error("Error login estudiante:", e);
-          err.innerText = "Error de conexión.";
+          err.innerText = e.message || "Error de conexión.";
           err.style.display = 'block';
           btn.disabled = false; btn.innerText = "Consultar Reporte";
         }
@@ -3101,21 +3109,29 @@
         btn.disabled = true; btn.innerText = "Verificando...";
 
         try {
+          if (!supabaseClient && typeof supabase !== 'undefined') {
+            console.log("🔄 Inicializando supabaseClient bajo demanda en login docente...");
+            supabaseClient = supabase.createClient(SB_URL, SB_KEY);
+          }
+          if (!supabaseClient) {
+            throw new Error("El servicio de conexión no está listo. Por favor verifica tu red o recarga la página.");
+          }
+
           const email = userVal.includes('@') ? userVal : `${userVal}@andresan.com`;
           const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password: pass });
 
           if (error) {
             err.innerText = "Usuario o contraseña incorrectos";
             err.style.display = 'block';
-            btn.disabled = false; btn.innerText = "Ingresar";
+            btn.disabled = false; btn.innerText = "Ingresar como Docente";
           } else {
             loguearExitoso(data.user);
           }
         } catch (e) {
           console.error("Error crítico de login:", e);
-          err.innerText = "Error de conexión. Intenta de nuevo.";
+          err.innerText = e.message || "Error de conexión. Intenta de nuevo.";
           err.style.display = 'block';
-          btn.disabled = false; btn.innerText = "Ingresar";
+          btn.disabled = false; btn.innerText = "Ingresar como Docente";
         }
       }
 
