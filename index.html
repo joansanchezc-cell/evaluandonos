@@ -1747,12 +1747,12 @@
     // --- PRE-INICIALIZACIÓN BLINDADA (STABLE SCOPE HOISTING) ---
     // Garantiza que los controladores de la interfaz existan en memoria antes de renderizar los botones, evitando ReferenceErrors.
     window.$ = id => document.getElementById(id);
-    window.switchLoginMode = function(mode) {
+    window.switchLoginMode = function (mode) {
       const isEst = mode === 'estudiante';
       const fDoc = document.getElementById('form-docente');
       const fEst = document.getElementById('form-estudiante');
-      if(fDoc) fDoc.style.display = isEst ? 'none' : 'block';
-      if(fEst) fEst.style.display = isEst ? 'block' : 'none';
+      if (fDoc) fDoc.style.display = isEst ? 'none' : 'block';
+      if (fEst) fEst.style.display = isEst ? 'block' : 'none';
 
       const btnDoc = document.getElementById('mode-docente');
       const btnEst = document.getElementById('mode-estudiante');
@@ -1767,20 +1767,20 @@
         }
       }
       const err = document.getElementById('login-err');
-      if(err) err.style.display = 'none';
+      if (err) err.style.display = 'none';
     };
 
     // Controladores de espera seguros para evitar que clics prematuros causen excepciones no capturadas
-    window.intentarLogin = function() {
+    window.intentarLogin = function () {
       const err = document.getElementById('login-err');
-      if(err) {
+      if (err) {
         err.innerText = "Estableciendo conexión segura con el servidor. Por favor espera un segundo...";
         err.style.display = 'block';
       }
     };
-    window.intentarLoginEstudiante = function() {
+    window.intentarLoginEstudiante = function () {
       const err = document.getElementById('login-err');
-      if(err) {
+      if (err) {
         err.innerText = "Conectando al sistema escolar. Por favor espera un segundo...";
         err.style.display = 'block';
       }
@@ -2478,7 +2478,7 @@
       </div>
       <p class="footer-copy"
         style="margin: 0; color: #64748b; font-weight: 800; font-size: 0.9rem; letter-spacing: 0.5px;">© 2026 AndréSán
-        - Evaluándonos System <span style="color:#4f46e5; margin-left:10px;">[ v91 ACTIVADA ]</span></p>
+        - Evaluándonos System <span style="color:#4f46e5; margin-left:10px;"></span></p>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -2487,7 +2487,7 @@
     <script src="https://cdn.jsdelivr.net/npm/papaparse@5.3.2/papaparse.min.js"></script>
     <script>
       // --- CONFIGURACIÓN Y ESTADO GLOBAL ---
-      var CURRENT_APP_VERSION = 'v91';
+      var CURRENT_APP_VERSION = 'v92';
       var SB_URL = "https://txnecdeccianklqqyrav.supabase.co";
       var SB_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InR4bmVjZGVjY2lhbmtscXF5cmF2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY0MDQzMDIsImV4cCI6MjA5MTk4MDMwMn0.e2ybyt2Y8yHsZwRC-MZqi_qK525-CWpk-huQcQy-icM";
 
@@ -3500,19 +3500,22 @@
             const esDePrimaria = assignedLower === "primaria" || (gBaseAssigned >= 1 && gBaseAssigned <= 5);
             const mySede = window.userSede || 'Central';
 
-            const dictan = userPermissions.filter(p => p.tipo === 'ASIGNACION').map(p => extraerGradoBase(p.grado));
-            const direccion = window.assignedGroups ? window.assignedGroups.map(g => extraerGradoBase(g)) : [];
-            const allowedLevels = [...new Set([...dictan, ...direccion])];
-
             if (currentRole === 'admin') {
-              if (esDePrimaria && mySede.toUpperCase() === 'CENTRAL') {
-                uniqueLevels = uniqueLevels.filter(l => [3, 4, 5].includes(l) || allowedLevels.includes(l));
+              if (esDePrimaria) {
+                if (mySede.toUpperCase() === 'CENTRAL') {
+                  uniqueLevels = uniqueLevels.filter(l => [3, 4, 5].includes(l));
+                } else {
+                  uniqueLevels = uniqueLevels.filter(l => l >= 1 && l <= 5);
+                }
               }
             } else {
+              const dictan = userPermissions.filter(p => p.tipo === 'ASIGNACION').map(p => extraerGradoBase(p.grado));
+              const direccion = window.assignedGroups ? window.assignedGroups.map(g => extraerGradoBase(g)) : [];
+              let allowedLevels = [...new Set([...dictan, ...direccion])];
               uniqueLevels = uniqueLevels.filter(l => allowedLevels.includes(l));
 
               if (esDePrimaria && mySede.toUpperCase() === 'CENTRAL') {
-                uniqueLevels = uniqueLevels.filter(l => [3, 4, 5].includes(l) || allowedLevels.includes(l));
+                uniqueLevels = uniqueLevels.filter(l => [3, 4, 5].includes(l));
               }
             }
           }
@@ -5249,14 +5252,16 @@
 
               allGroups = allGroups.filter(g => {
                 const gBase = extraerGradoBase(g);
-                const hasPermission = dictan.some(d => d === g.toString() || d === gBase.toString()) ||
-                  direccion.some(d => d === g.toString() || d === gBase.toString());
-
-                if (esDePrimaria && mySede.toUpperCase() === 'CENTRAL') {
-                  return ['301', '401', '501'].includes(g.toString()) || hasPermission;
-                }
-                return hasPermission;
+                const matchDictan = dictan.some(d => d === g.toString() || d === gBase.toString());
+                const matchDireccion = direccion.some(d => d === g.toString() || d === gBase.toString());
+                
+                return matchDictan || matchDireccion;
               });
+
+              // RESTRICCIÓN ADICIONAL CENTRAL PRIMARIA
+              if (esDePrimaria && mySede.toUpperCase() === 'CENTRAL') {
+                allGroups = allGroups.filter(g => ['301', '401', '501'].includes(g.toString()));
+              }
             }
 
             // --- FALLBACK PARA SEDES RURALES SIN ASIGNACIÓN EXPLÍCITA ---
@@ -5726,27 +5731,24 @@
             const gBaseAssigned = extraerGradoBase(window.assignedGrade);
             const esDePrimaria = assignedLower === "primaria" || (gBaseAssigned >= 1 && gBaseAssigned <= 5);
             const mySede = window.userSede || 'Central';
-            const direccion = window.assignedGroups || [];
-            const dictan = userPermissions.filter(p => p.tipo === 'ASIGNACION').map(p => p.grado.toString());
-            const allowedPool = [...new Set([...direccion, ...dictan])];
 
             if (currentRole === 'admin') {
-              uniqueGroups = uniqueGroups.filter(g => {
-                if (detectarSede(g).toUpperCase() !== mySede.toUpperCase()) return false;
-                const hasPermission = allowedPool.some(ap => ap === g.toString() || extraerGradoBase(g).toString() === ap);
-                if (esDePrimaria && mySede.toUpperCase() === 'CENTRAL') {
-                  return ['301', '401', '501'].includes(g.toString()) || hasPermission;
-                }
-                return true;
-              });
+              uniqueGroups = uniqueGroups.filter(g => detectarSede(g).toUpperCase() === mySede.toUpperCase());
+              if (esDePrimaria && mySede.toUpperCase() === 'CENTRAL') {
+                uniqueGroups = uniqueGroups.filter(g => ['301', '401', '501'].includes(g.toString()));
+              }
             } else {
+              // Lectores (Directores de Grupo): Solo ven sus grupos asignados
+              const direccion = window.assignedGroups || [];
               uniqueGroups = uniqueGroups.filter(g => {
-                const hasPermission = allowedPool.some(ap => ap === g.toString() || extraerGradoBase(g).toString() === ap);
-                if (esDePrimaria && mySede.toUpperCase() === 'CENTRAL') {
-                  return ['301', '401', '501'].includes(g.toString()) || hasPermission;
-                }
-                return hasPermission;
+                const gBase = extraerGradoBase(g);
+                return direccion.some(d => d === g.toString() || d === gBase.toString());
               });
+
+              // RESTRICCIÓN ADICIONAL CENTRAL PRIMARIA
+              if (esDePrimaria && mySede.toUpperCase() === 'CENTRAL') {
+                uniqueGroups = uniqueGroups.filter(g => ['301', '401', '501'].includes(g.toString()));
+              }
             }
           }
 
@@ -5938,19 +5940,32 @@
             const gBaseAssigned = extraerGradoBase(window.assignedGrade);
             const esDePrimaria = assignedLower === "primaria" || (gBaseAssigned >= 1 && gBaseAssigned <= 5);
             const mySede = window.userSede || 'Central';
-            const direccion = window.assignedGroups || [];
-            const dictan = userPermissions.filter(p => p.tipo === 'ASIGNACION').map(p => p.grado.toString());
-            const allowedPool = [...new Set([...direccion, ...dictan])];
 
-            uniqueGroups = uniqueGroups.filter(g => {
-              if (currentRole === 'admin' && detectarSede(g).toUpperCase() !== mySede.toUpperCase()) return false;
-              const hasPermission = allowedPool.some(ap => ap === g.toString() || extraerGradoBase(g).toString() === ap);
+            if (currentRole === 'admin') {
+              // Administradores de Sede: Solo ven grupos de su propia sede
+              uniqueGroups = uniqueGroups.filter(g => detectarSede(g).toUpperCase() === mySede.toUpperCase());
               if (esDePrimaria && mySede.toUpperCase() === 'CENTRAL') {
-                return ['301', '401', '501'].includes(g.toString()) || hasPermission;
+                uniqueGroups = uniqueGroups.filter(g => ['301', '401', '501'].includes(g.toString()));
               }
-              if (currentRole === 'admin') return true;
-              return hasPermission;
-            });
+            } else {
+              // Lectores (Docentes)
+              const direccion = window.assignedGroups || [];
+              const dictan = userPermissions
+                .filter(p => p.tipo === 'ASIGNACION' && isSubjectEvaluated(p.asignatura, p.grado))
+                .map(p => p.grado.toString());
+
+              const allowedPool = [...new Set([...direccion, ...dictan])];
+              uniqueGroups = uniqueGroups.filter(g => {
+                const gBase = extraerGradoBase(g);
+                const hasPermission = allowedPool.some(ap => ap === g.toString() || ap === gBase.toString());
+                
+                // RESTRICCIÓN ADICIONAL CENTRAL PRIMARIA
+                if (esDePrimaria && mySede.toUpperCase() === 'CENTRAL') {
+                   return ['301', '401', '501'].includes(g.toString());
+                }
+                return hasPermission;
+              });
+            }
           }
 
           uniqueGroups.sort((a, b) => a.localeCompare(b, undefined, { numeric: true }));
