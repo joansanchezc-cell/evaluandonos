@@ -1323,141 +1323,142 @@
           word-break: break-word;
         }
       }
-    @media (max-width: 768px) {
-      .mobile-nav {
-        display: flex !important;
-        visibility: visible !important;
-        opacity: 1 !important;
-        position: fixed !important;
-        bottom: 0 !important;
-        left: 0 !important;
-        right: 0 !important;
-        background: #ffffff !important;
-        border-top: 2px solid #4f46e5 !important;
-        justify-content: space-around !important;
-        padding: 10px 5px 25px !important;
-        z-index: 999999 !important;
-        box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.2) !important;
-        height: 80px !important;
+
+      @media (max-width: 768px) {
+        .mobile-nav {
+          display: flex !important;
+          visibility: visible !important;
+          opacity: 1 !important;
+          position: fixed !important;
+          bottom: 0 !important;
+          left: 0 !important;
+          right: 0 !important;
+          background: #ffffff !important;
+          border-top: 2px solid #4f46e5 !important;
+          justify-content: space-around !important;
+          padding: 10px 5px 25px !important;
+          z-index: 999999 !important;
+          box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.2) !important;
+          height: 80px !important;
+        }
+
+        .mobile-nav-item {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          gap: 4px;
+          color: #64748b;
+          cursor: pointer;
+          transition: all 0.2s ease;
+          flex: 1;
+          min-width: 0;
+        }
+
+        .mobile-nav-item span {
+          font-size: 24px;
+        }
+
+        .mobile-nav-item span:last-child {
+          font-size: 0.65rem;
+          font-weight: 700;
+          text-transform: uppercase;
+          white-space: nowrap;
+        }
+
+        .mobile-nav-item.active {
+          color: #4f46e5;
+          transform: translateY(-5px);
+        }
+
+        body {
+          padding-bottom: 100px;
+        }
+
+        footer,
+        .tabs {
+          display: none !important;
+        }
       }
 
-      .mobile-nav-item {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 4px;
-        color: #64748b;
-        cursor: pointer;
-        transition: all 0.2s ease;
-        flex: 1;
-        min-width: 0;
+      header {
+        display: block !important;
+        padding: 10px 0;
       }
 
-      .mobile-nav-item span {
-        font-size: 24px;
+      .header-banner {
+        padding: 6px 12px !important;
       }
 
-      .mobile-nav-item span:last-child {
-        font-size: 0.65rem;
-        font-weight: 700;
-        text-transform: uppercase;
-        white-space: nowrap;
+      .header-banner img.header-logo-img {
+        height: 40px !important;
+        /* Banner más pequeño en móvil */
+        margin-bottom: 0;
       }
 
-      .mobile-nav-item.active {
+
+      .est-det-list-item:hover {
+        background-color: #f8fafc;
         color: #4f46e5;
-        transform: translateY(-5px);
       }
 
-      body {
-        padding-bottom: 100px;
+      /* Stacking filter headers on mobile */
+      .card>div[style*="display: flex"] {
+        flex-direction: column !important;
+        align-items: stretch !important;
+        gap: 15px !important;
       }
 
-      footer,
-      .tabs {
-        display: none !important;
+      .card>div[style*="display: flex"]>div {
+        width: 100% !important;
+        justify-content: space-between !important;
       }
-    }
 
-    header {
-      display: block !important;
-      padding: 10px 0;
-    }
+      .top-nav-container {
+        padding: 0.5rem 0 !important;
+        margin-bottom: 0.5rem !important;
+      }
 
-    .header-banner {
-      padding: 6px 12px !important;
-    }
+      .top-nav-container .container>div:first-child {
+        justify-content: center !important;
+      }
 
-    .header-banner img.header-logo-img {
-      height: 40px !important;
-      /* Banner más pequeño en móvil */
-      margin-bottom: 0;
-    }
+      .top-nav-container img {
+        height: 50px !important;
+      }
 
+      .print-btn {
+        width: 100% !important;
+        margin-top: 10px;
+      }
 
-    .est-det-list-item:hover {
-      background-color: #f8fafc;
-      color: #4f46e5;
-    }
+      select,
+      button,
+      input {
+        font-size: 16px !important;
+      }
 
-    /* Stacking filter headers on mobile */
-    .card>div[style*="display: flex"] {
-      flex-direction: column !important;
-      align-items: stretch !important;
-      gap: 15px !important;
-    }
+      /* Aprovechar espacio lateral en móviles */
+      .container {
+        padding-left: 10px !important;
+        padding-right: 10px !important;
+        width: 100% !important;
+        max-width: 100% !important;
+      }
 
-    .card>div[style*="display: flex"]>div {
-      width: 100% !important;
-      justify-content: space-between !important;
-    }
+      .card {
+        padding: 1.25rem 0.75rem !important;
+      }
 
-    .top-nav-container {
-      padding: 0.5rem 0 !important;
-      margin-bottom: 0.5rem !important;
-    }
+      #reporte-content {
+        overflow-x: auto !important;
+        -webkit-overflow-scrolling: touch;
+      }
 
-    .top-nav-container .container>div:first-child {
-      justify-content: center !important;
-    }
-
-    .top-nav-container img {
-      height: 50px !important;
-    }
-
-    .print-btn {
-      width: 100% !important;
-      margin-top: 10px;
-    }
-
-    select,
-    button,
-    input {
-      font-size: 16px !important;
-    }
-
-    /* Aprovechar espacio lateral en móviles */
-    .container {
-      padding-left: 10px !important;
-      padding-right: 10px !important;
-      width: 100% !important;
-      max-width: 100% !important;
-    }
-
-    .card {
-      padding: 1.25rem 0.75rem !important;
-    }
-
-    #reporte-content {
-      overflow-x: auto !important;
-      -webkit-overflow-scrolling: touch;
-    }
-
-    .individual-report-wrapper {
-      width: 820px !important;
-      zoom: 0.42;
-      /* Reducir un poco más para asegurar que quepa en pantallas de 360px */
-    }
+      .individual-report-wrapper {
+        width: 820px !important;
+        zoom: 0.42;
+        /* Reducir un poco más para asegurar que quepa en pantallas de 360px */
+      }
     }
 
     /* ── Footer ── */
@@ -1747,8 +1748,8 @@
   <div id="login-mask">
     <div class="login-card">
       <img src="https://txnecdeccianklqqyrav.supabase.co/storage/v1/object/public/assets/evaluandonos.png"
-        style="width: 180px; margin-bottom: 1.5rem;">
-      <h2 style="margin-bottom:1.5rem; color:#1e293b; font-weight:900;">INICIO DE SESIÓN</h2>
+        style="width: 220px; margin-bottom: 1.5rem;">
+      <h2 style="margin-bottom:1.5rem; color:#1e293b; font-weight:900;"></h2>
 
       <div
         style="display:flex; background:#f1f5f9; border-radius:12px; padding:4px; margin-bottom:1.5rem; width:100%; box-sizing:border-box;">
@@ -1761,14 +1762,16 @@
       <div id="form-docente">
         <input type="text" id="li-user" placeholder="Usuario o Email">
         <input type="password" id="li-pass" placeholder="Contraseña">
-        <button type="button" onclick="intentarLogin()" id="btn-login" style="width:100%;">Ingresar como Docente</button>
+        <button type="button" onclick="intentarLogin()" id="btn-login" style="width:100%;">Ingresar como
+          Docente</button>
       </div>
 
       <div id="form-estudiante" style="display:none;">
         <input type="text" id="li-est-id" placeholder="Número de Identificación">
         <p style="font-size:0.75rem; color:#64748b; margin-bottom:1.5rem; line-height:1.4;">Consulta tu informe
           individual ingresando el documento registrado.</p>
-        <button type="button" onclick="intentarLoginEstudiante()" id="btn-login-est" style="width:100%; background:#10b981;">Consultar
+        <button type="button" onclick="intentarLoginEstudiante()" id="btn-login-est"
+          style="width:100%; background:#10b981;">Consultar
           Reporte</button>
       </div>
 
@@ -1831,7 +1834,8 @@
           </button>
           <div class="dropdown-content">
             <div class="dropdown-item" onclick="selectAnalisis('general')">📊 Análisis General</div>
-            <div class="dropdown-item" id="tab-estudiante-detalle-item" onclick="selectAnalisis('estudiante')">👤 Por Estudiante</div>
+            <div class="dropdown-item" id="tab-estudiante-detalle-item" onclick="selectAnalisis('estudiante')">👤 Por
+              Estudiante</div>
           </div>
         </div>
 
@@ -1851,9 +1855,11 @@
             </svg>
           </button>
           <div class="dropdown-content">
-            <div class="dropdown-item" id="tab-individual-item" onclick="switchMainTab('individual')">📄 Individual</div>
+            <div class="dropdown-item" id="tab-individual-item" onclick="switchMainTab('individual')">📄 Individual
+            </div>
             <div class="dropdown-item" id="tab-grupal-item" onclick="switchMainTab('grupal')">👥 Grupal</div>
-            <div class="dropdown-item" id="tab-asignatura-item" onclick="switchMainTab('asignatura')">📚 Por Asignatura</div>
+            <div class="dropdown-item" id="tab-asignatura-item" onclick="switchMainTab('asignatura')">📚 Por Asignatura
+            </div>
           </div>
         </div>
 
@@ -1959,23 +1965,29 @@
 
     <!-- Análisis Detallado por Estudiante -->
     <div id="estudiante-detalle-container" style="display:none; margin-top:20px;">
-      <div class="card" style="margin-bottom:20px; background:linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%); color:white;">
+      <div class="card"
+        style="margin-bottom:20px; background:linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%); color:white;">
         <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:15px;">
           <div>
             <h2 style="margin:0; font-size:1.5rem; font-weight:800;">👤 Análisis por Estudiante</h2>
-            <p style="margin:5px 0 0 0; opacity:0.9; font-size:0.9rem;">Consulta el desempeño detallado y respuestas de cada alumno.</p>
+            <p style="margin:5px 0 0 0; opacity:0.9; font-size:0.9rem;">Consulta el desempeño detallado y respuestas de
+              cada alumno.</p>
           </div>
           <div style="display:flex; gap:10px; flex-wrap:wrap;">
-            <select id="sel-est-det-grado" onchange="cargarEstudiantesDetalle()" style="padding:10px; border-radius:10px; border:none; font-weight:700; background:rgba(255,255,255,0.2); color:white; outline:none; cursor:pointer;">
+            <select id="sel-est-det-grado" onchange="cargarEstudiantesDetalle()"
+              style="padding:10px; border-radius:10px; border:none; font-weight:700; background:rgba(255,255,255,0.2); color:white; outline:none; cursor:pointer;">
               <option value="" style="color:#000;">Grado...</option>
             </select>
-            <select id="sel-est-det-nombre" onchange="cargarAsignaturasEstudiante()" style="padding:10px; border-radius:10px; border:none; font-weight:700; background:rgba(255,255,255,0.2); color:white; outline:none; cursor:pointer;">
+            <select id="sel-est-det-nombre" onchange="cargarAsignaturasEstudiante()"
+              style="padding:10px; border-radius:10px; border:none; font-weight:700; background:rgba(255,255,255,0.2); color:white; outline:none; cursor:pointer;">
               <option value="" style="color:#000;">Estudiante...</option>
             </select>
-            <select id="sel-est-det-asig" onchange="cargarPreguntasEstudiante()" style="padding:10px; border-radius:10px; border:none; font-weight:700; background:rgba(255,255,255,0.2); color:white; outline:none; cursor:pointer;">
+            <select id="sel-est-det-asig" onchange="cargarPreguntasEstudiante()"
+              style="padding:10px; border-radius:10px; border:none; font-weight:700; background:rgba(255,255,255,0.2); color:white; outline:none; cursor:pointer;">
               <option value="" style="color:#000;">Materia...</option>
             </select>
-            <select id="sel-est-det-preg" onchange="mostrarAnalisisEstudiante()" style="padding:10px; border-radius:10px; border:none; font-weight:700; background:rgba(255,255,255,0.2); color:white; outline:none; cursor:pointer;">
+            <select id="sel-est-det-preg" onchange="mostrarAnalisisEstudiante()"
+              style="padding:10px; border-radius:10px; border:none; font-weight:700; background:rgba(255,255,255,0.2); color:white; outline:none; cursor:pointer;">
               <option value="" style="color:#000;">#...</option>
             </select>
           </div>
@@ -1983,18 +1995,21 @@
       </div>
 
       <div id="est-det-content" style="display:none; margin-top:20px;">
-        <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap:20px; align-items: start;">
-          
+        <div
+          style="display:grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap:20px; align-items: start;">
+
           <!-- Columna 1: Detalle de la Pregunta -->
           <div id="est-det-main-card" class="card" style="margin:0;">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem;">
-               <h2 id="est-det-pregunta-num" class="question-title" style="margin:0;">Pregunta #</h2>
-               <div id="est-det-status-badge"></div>
+              <h2 id="est-det-pregunta-num" class="question-title" style="margin:0;">Pregunta #</h2>
+              <div id="est-det-status-badge"></div>
             </div>
-            
-            <div style="background: rgba(255, 255, 255, 0.3); border: 2px solid rgba(255, 255, 255, 0.2); border-radius: 16px; padding: 1.5rem; margin-bottom: 2rem; backdrop-filter: blur(5px);">
-               <div id="est-det-pregunta-media"></div>
-               <div id="est-det-pregunta-texto" class="question-text" style="font-size: 1.1rem; color: var(--text); font-weight: 500; margin: 0; line-height: 1.6;"></div>
+
+            <div
+              style="background: rgba(255, 255, 255, 0.3); border: 2px solid rgba(255, 255, 255, 0.2); border-radius: 16px; padding: 1.5rem; margin-bottom: 2rem; backdrop-filter: blur(5px);">
+              <div id="est-det-pregunta-media"></div>
+              <div id="est-det-pregunta-texto" class="question-text"
+                style="font-size: 1.1rem; color: var(--text); font-weight: 500; margin: 0; line-height: 1.6;"></div>
             </div>
 
             <div class="options-list" id="est-det-options-list">
@@ -2029,17 +2044,29 @@
           <div class="card" style="margin:0; position: sticky; top: 20px;">
             <h2 class="question-title" style="font-size:1.2rem; margin-bottom:1.5rem;">Resumen de Respuesta</h2>
             <div style="display: flex; flex-direction: column; gap: 15px;">
-              <div class="stat-box" style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 20px; padding: 25px; display: flex; flex-direction: column; align-items: center; justify-content: center;">
-                <span id="est-det-resp-est" class="stat-val" style="font-size: 2.5rem; font-weight: 900; color: #4f46e5;">-</span>
-                <span class="stat-label" style="font-size: 0.8rem; font-weight: 800; color: #64748b; text-transform: uppercase;">Tu Respuesta</span>
+              <div class="stat-box"
+                style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 20px; padding: 25px; display: flex; flex-direction: column; align-items: center; justify-content: center;">
+                <span id="est-det-resp-est" class="stat-val"
+                  style="font-size: 2.5rem; font-weight: 900; color: #4f46e5;">-</span>
+                <span class="stat-label"
+                  style="font-size: 0.8rem; font-weight: 800; color: #64748b; text-transform: uppercase;">Tu
+                  Respuesta</span>
               </div>
-              <div class="stat-box" style="background: #f0fdf4; border: 2px solid #bbf7d0; border-radius: 20px; padding: 25px; display: flex; flex-direction: column; align-items: center; justify-content: center;">
-                <span id="est-det-resp-key" class="stat-val" style="font-size: 2.5rem; font-weight: 900; color: #16a34a;">-</span>
-                <span class="stat-label" style="font-size: 0.8rem; font-weight: 800; color: #166534; text-transform: uppercase;">Clave Correcta</span>
+              <div class="stat-box"
+                style="background: #f0fdf4; border: 2px solid #bbf7d0; border-radius: 20px; padding: 25px; display: flex; flex-direction: column; align-items: center; justify-content: center;">
+                <span id="est-det-resp-key" class="stat-val"
+                  style="font-size: 2.5rem; font-weight: 900; color: #16a34a;">-</span>
+                <span class="stat-label"
+                  style="font-size: 0.8rem; font-weight: 800; color: #166534; text-transform: uppercase;">Clave
+                  Correcta</span>
               </div>
-              <div id="est-det-box-pts" class="stat-box" style="background: #eff6ff; border: 2px solid #bfdbfe; border-radius: 20px; padding: 25px; display: flex; flex-direction: column; align-items: center; justify-content: center;">
-                <span id="est-det-pts" class="stat-val" style="font-size: 2.5rem; font-weight: 900; color: #3b82f6;">0</span>
-                <span class="stat-label" style="font-size: 0.8rem; font-weight: 800; color: #1e40af; text-transform: uppercase;">Puntos Obtenidos</span>
+              <div id="est-det-box-pts" class="stat-box"
+                style="background: #eff6ff; border: 2px solid #bfdbfe; border-radius: 20px; padding: 25px; display: flex; flex-direction: column; align-items: center; justify-content: center;">
+                <span id="est-det-pts" class="stat-val"
+                  style="font-size: 2.5rem; font-weight: 900; color: #3b82f6;">0</span>
+                <span class="stat-label"
+                  style="font-size: 0.8rem; font-weight: 800; color: #1e40af; text-transform: uppercase;">Puntos
+                  Obtenidos</span>
               </div>
             </div>
           </div>
@@ -2369,7 +2396,8 @@
       <span class="material-symbols-outlined">analytics</span>
       <span>Análisis</span>
     </div>
-    <div class="mobile-nav-item" id="m-nav-estudiante_detalle" onclick="selectAnalisis('estudiante')" style="display:none;">
+    <div class="mobile-nav-item" id="m-nav-estudiante_detalle" onclick="selectAnalisis('estudiante')"
+      style="display:none;">
       <span class="material-symbols-outlined">person_search</span>
       <span>Detalle</span>
     </div>
@@ -2745,7 +2773,7 @@
             // Solo abrir general si AMBOS están ocultos (primera vez)
             const genVisible = $('analisis-general-view') && $('analisis-general-view').style.display !== 'none';
             const detVisible = $('estudiante-detalle-container') && $('estudiante-detalle-container').style.display !== 'none';
-            
+
             if (!genVisible && !detVisible) {
               await switchSubAnalisis('general');
             }
@@ -2780,7 +2808,7 @@
 
       async function switchSubAnalisis(view) {
         const isGen = view === 'general';
-        
+
         if ($('analisis-general-view')) $('analisis-general-view').style.display = isGen ? 'block' : 'none';
         if ($('estudiante-detalle-container')) $('estudiante-detalle-container').style.display = isGen ? 'none' : 'block';
 
@@ -2812,12 +2840,12 @@
         if (!zipId) return "";
         let s = zipId.toString().trim();
         if (s.includes("-")) return s.split("-")[0];
-        
+
         const len = s.length;
         // Para grados 10 y 11 (siempre deben ser 4 dígitos: 1001, 1101, etc.)
         if (s.startsWith("10") || s.startsWith("11")) {
-            if (len >= 4) return s.substring(0, 4);
-            return s; // Muy corto, retornar tal cual para validación posterior
+          if (len >= 4) return s.substring(0, 4);
+          return s; // Muy corto, retornar tal cual para validación posterior
         }
 
         // Para grados 3 a 9 (3 dígitos: 301, 401, etc.)
@@ -2825,7 +2853,7 @@
         if (len === 6) return s.substring(0, 3);
         if (len >= 3 && len <= 4) return s;
         if (s.toLowerCase() === "primaria") return s;
-        
+
         return s;
       }
 
@@ -2847,7 +2875,7 @@
         if (!grupo) return 0;
         const s = grupo.toString().trim();
         if (s.toLowerCase() === "primaria") return 1;
-        if (s.length === 2 && !["10", "11"].includes(s)) return 0; 
+        if (s.length === 2 && !["10", "11"].includes(s)) return 0;
         if (s.startsWith("10") || s.startsWith("11")) return parseInt(s.substring(0, 2));
         const firstDigit = parseInt(s.substring(0, 1));
         return isNaN(firstDigit) ? 0 : firstDigit;
@@ -2913,7 +2941,7 @@
 
       // Variables globales movidas al inicio del script.
 
-      function switchLoginMode(mode) {
+      window.switchLoginMode = function switchLoginMode(mode) {
         const isEst = mode === 'estudiante';
         $('form-docente').style.display = isEst ? 'none' : 'block';
         $('form-estudiante').style.display = isEst ? 'block' : 'none';
@@ -2929,7 +2957,7 @@
           btnDoc.style.background = 'white'; btnDoc.style.color = '#4f46e5'; btnDoc.style.boxShadow = '0 2px 8px rgba(0,0,0,0.1)';
         }
         $('login-err').style.display = 'none';
-      }
+      };
 
       async function intentarLoginEstudiante() {
         const idVal = $('li-est-id').value.trim();
@@ -3160,7 +3188,7 @@
 
           const { data: perfil, error: perError } = await supabaseClient.from('perfiles').select('rol, nombre, grado_asignado, sede').eq('email', user.email).maybeSingle();
           if (perError) console.error("Error al obtener perfil:", perError);
-          
+
           const userName = perfil?.nombre || user.user_metadata?.full_name || user.email.split('@')[0];
           const assignedGrade = perfil?.grado_asignado || "";
           const role = (perfil && perfil.rol) ? perfil.rol.toLowerCase() : 'lector';
@@ -3174,7 +3202,7 @@
             // Obtenemos todos los permisos y filtramos en JS para mayor flexibilidad con los nombres
             const { data: allPriv } = await supabaseClient.from('docentes_privacidad').select('*');
             const searchParts = normalizeText(userName).split(' ').filter(p => p.length >= 2);
-            
+
             userPermissions = (allPriv || []).filter(d => {
               const dbName = normalizeText(d.nombre || "");
               if (searchParts.length === 0) return dbName.includes(normalizeText(userName));
@@ -3440,7 +3468,7 @@
               }
             } else {
               uniqueLevels = uniqueLevels.filter(l => allowedLevels.includes(l));
-              
+
               if (esDePrimaria && mySede === 'Central') {
                 uniqueLevels = uniqueLevels.filter(l => [3, 4, 5].includes(l) || allowedLevels.includes(l));
               }
@@ -4612,14 +4640,14 @@
           // Obtener grupo del ZipGrade ID o de la columna Class
           let grupo = extraerGrupo(zipId);
           const classVal = (row[classIdx] || "").toString().trim();
-          
+
           // Si el ID no nos dio un grupo claro pero la columna Class sí, usamos Class
           if (!esGrupoValido(grupo)) {
             if (esGrupoValido(classVal)) grupo = classVal;
           }
-          
+
           if (!esGrupoValido(grupo)) continue; // Ignorar si el grupo no es válido después de extraerlo
-          
+
           const sede = detectarSede(grupo);
           const gradoNumBase = extraerGradoBase(grupo);
           let gradoLimpio = grupo || gradoNumBase.toString();
@@ -4808,7 +4836,7 @@
         try {
           const { data, error } = await supabaseClient.from('eval_estudiantes_completos').select('grado, sede').eq('periodo', currentPeriodo);
           if (error) console.error(error);
-          
+
           let uniqueGrados = [...new Set((data || []).map(d => d.grado))]
             .filter(esGrupoValido);
 
@@ -4828,7 +4856,7 @@
               const dictan = userPermissions
                 .filter(p => p.tipo === 'ASIGNACION')
                 .map(p => p.grado.toString());
-              
+
               const allowedPool = [...new Set([...direccion, ...dictan])];
               uniqueGrados = uniqueGrados.filter(g => {
                 const gb = extraerGradoBase(g);
@@ -4838,7 +4866,7 @@
 
             // Restricción Central Primaria
             if (esDePrimaria && mySede === 'Central') {
-               uniqueGrados = uniqueGrados.filter(g => ['301', '401', '501'].includes(g.toString()));
+              uniqueGrados = uniqueGrados.filter(g => ['301', '401', '501'].includes(g.toString()));
             }
           }
 
@@ -4972,7 +5000,7 @@
           // 2. Obtener la respuesta del estudiante
           let respEst = null;
           let registroFinal = null;
-          
+
           const dataToSearch = currentDetalleData || [];
           if (dataToSearch.length > 0) {
             for (const reg of dataToSearch) {
@@ -4994,7 +5022,7 @@
             if (resKeyData && resKeyData.length > 0) keyFound = resKeyData[0].key;
           }
           if (!keyFound && respEst) keyFound = respEst.key;
-          
+
           const respKey = keyFound ? keyFound.trim().toUpperCase() : null;
 
           // Renderizar Título e Información
@@ -5179,9 +5207,9 @@
 
               allGroups = allGroups.filter(g => {
                 const gBase = extraerGradoBase(g);
-                const hasPermission = dictan.some(d => d === g.toString() || d === gBase.toString()) || 
-                                    direccion.some(d => d === g.toString() || d === gBase.toString());
-                
+                const hasPermission = dictan.some(d => d === g.toString() || d === gBase.toString()) ||
+                  direccion.some(d => d === g.toString() || d === gBase.toString());
+
                 if (esDePrimaria && mySede === 'Central') {
                   return ['301', '401', '501'].includes(g.toString()) || hasPermission;
                 }
@@ -5249,7 +5277,7 @@
 
         const dataNotas = resNotas.data || [];
         const filtradosNotas = dataNotas.filter(e => (e.grado || extraerGrupo(e.zipgrade_id)) === grupo);
-        
+
         const dataComp = resComp.data || [];
         const filtradosComp = dataComp.filter(e => e.grado === grupo);
 
@@ -5284,18 +5312,18 @@
           ]);
 
           const normComp = (list) => (list || []).map(d => {
-             const nr = {};
-             if (d.respuestas) Object.keys(d.respuestas).forEach(q => { nr[q] = d.respuestas[q].pts >= 1 ? 1 : 0; });
-             return { zipgrade_id: d.student_id, estudiante_nombre: d.estudiante_nombre, respuestas: nr, porcentaje: d.percent_correct, periodo: d.periodo, grado: d.grado };
+            const nr = {};
+            if (d.respuestas) Object.keys(d.respuestas).forEach(q => { nr[q] = d.respuestas[q].pts >= 1 ? 1 : 0; });
+            return { zipgrade_id: d.student_id, estudiante_nombre: d.estudiante_nombre, respuestas: nr, porcentaje: d.percent_correct, periodo: d.periodo, grado: d.grado };
           });
 
-          const historico = [...(resHistNotas.data || []), ...normComp(resHistComp.data)].sort((a,b) => a.periodo - b.periodo);
+          const historico = [...(resHistNotas.data || []), ...normComp(resHistComp.data)].sort((a, b) => a.periodo - b.periodo);
           const todos = [...(resTodosNotas.data || []), ...normComp(resTodosComp.data)];
 
           // NO usar fallback por nombre para evitar confusiones entre estudiantes con apellidos iguales.
           // El sistema ahora es 100% basado en el Número de Identificación para garantizar privacidad.
           if (historico.length === 0 && isStudentMode) {
-             // Si llegamos aquí, el ID no está en la base de notas.
+            // Si llegamos aquí, el ID no está en la base de notas.
           }
 
           const est = historico.find(t => t.periodo === parseInt(currentPeriodo)) || historico[historico.length - 1];
@@ -5315,19 +5343,19 @@
           const actualPeriodoNum = parseInt(est.periodo);
           const grupoEst = extraerGrupo(actualZipId);
 
-          const alumnosGrupo = todos.filter(t => 
-            parseInt(t.periodo) === actualPeriodoNum && 
-            t.zipgrade_id && 
+          const alumnosGrupo = todos.filter(t =>
+            parseInt(t.periodo) === actualPeriodoNum &&
+            t.zipgrade_id &&
             extraerGrupo(t.zipgrade_id.toString().trim()) === grupoEst
           );
 
           const gradoBase = extraerGradoBase(grupoEst);
-          const alumnosNivel = todos.filter(t => 
-            parseInt(t.periodo) === actualPeriodoNum && 
-            t.zipgrade_id && 
+          const alumnosNivel = todos.filter(t =>
+            parseInt(t.periodo) === actualPeriodoNum &&
+            t.zipgrade_id &&
             extraerGradoBase(extraerGrupo(t.zipgrade_id.toString().trim())) === gradoBase
           );
-          
+
           const sortedGrupo = [...alumnosGrupo].sort((a, b) => (b.porcentaje || 0) - (a.porcentaje || 0));
           const idxG = sortedGrupo.findIndex(t => t.zipgrade_id.toString().trim() === actualZipId);
           const puestoGrupo = idxG >= 0 ? idxG + 1 : "-";
@@ -5699,16 +5727,16 @@
 
           const dataNotas = resNotas.data || [];
           const dataComp = (resComp.data || []).map(d => {
-             const normResp = {};
-             if (d.respuestas) {
-                Object.keys(d.respuestas).forEach(q => { normResp[q] = d.respuestas[q].pts >= 1 ? 1 : 0; });
-             }
-             return {
-                zipgrade_id: d.student_id,
-                estudiante_nombre: d.estudiante_nombre,
-                respuestas: normResp,
-                porcentaje: d.percent_correct
-             };
+            const normResp = {};
+            if (d.respuestas) {
+              Object.keys(d.respuestas).forEach(q => { normResp[q] = d.respuestas[q].pts >= 1 ? 1 : 0; });
+            }
+            return {
+              zipgrade_id: d.student_id,
+              estudiante_nombre: d.estudiante_nombre,
+              respuestas: normResp,
+              porcentaje: d.percent_correct
+            };
           });
 
           const todosData = [...dataNotas, ...dataComp];
@@ -5741,7 +5769,7 @@
               let ok = 0, totalSub = 0;
               for (let i = subj.start; i <= subj.end; i++) { totalSub++; if (est.respuestas && est.respuestas[i] === 1) ok++; }
               const pct = Math.round((ok / totalSub) * 100); sumaPct += pct; const val = getValoration(pct);
-              html += `<td style="padding:4px; text-align:center;"><div class="val-box" style="background:${val.color}; color:${val.color==='#facc15'?'#1e293b':'white'};">${val.initial}</div></td>`;
+              html += `<td style="padding:4px; text-align:center;"><div class="val-box" style="background:${val.color}; color:${val.color === '#facc15' ? '#1e293b' : 'white'};">${val.initial}</div></td>`;
             });
             const prom = Math.round(sumaPct / config.length); const valGen = getValoration(prom);
             html += `<td style="padding:8px; text-align:center; background:#f0f9ff; font-weight:900; color:${valGen.color};">${prom}</td></tr>`;
@@ -5929,16 +5957,16 @@
 
           const dataNotas = resNotas.data || [];
           const dataComp = (resComp.data || []).map(d => {
-             const normResp = {};
-             if (d.respuestas) {
-                Object.keys(d.respuestas).forEach(q => { normResp[q] = d.respuestas[q].pts >= 1 ? 1 : 0; });
-             }
-             return {
-                zipgrade_id: d.student_id,
-                estudiante_nombre: d.estudiante_nombre,
-                respuestas: normResp,
-                porcentaje: d.percent_correct
-             };
+            const normResp = {};
+            if (d.respuestas) {
+              Object.keys(d.respuestas).forEach(q => { normResp[q] = d.respuestas[q].pts >= 1 ? 1 : 0; });
+            }
+            return {
+              zipgrade_id: d.student_id,
+              estudiante_nombre: d.estudiante_nombre,
+              respuestas: normResp,
+              porcentaje: d.percent_correct
+            };
           });
 
           const todosData = [...dataNotas, ...dataComp];
@@ -6510,12 +6538,12 @@
 
               gruposUnicos = gruposUnicos.filter(g => {
                 const gBase = extraerGradoBase(g);
-                const hasPerm = dictan.some(d => d === g.toString() || d === gBase.toString()) || 
-                               direccion.some(d => d === g.toString() || d === gBase.toString());
-                
+                const hasPerm = dictan.some(d => d === g.toString() || d === gBase.toString()) ||
+                  direccion.some(d => d === g.toString() || d === gBase.toString());
+
                 // RESTRICCIÓN ADICIONAL CENTRAL PRIMARIA
                 if (esDePrimaria && mySede === 'Central') {
-                   return ['301', '401', '501'].includes(g.toString()) && hasPerm;
+                  return ['301', '401', '501'].includes(g.toString()) && hasPerm;
                 }
                 return hasPerm;
               });
@@ -6749,4 +6777,5 @@
       });
     </script>
 </body>
+
 </html>
