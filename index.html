@@ -2487,7 +2487,7 @@
     <script src="https://cdn.jsdelivr.net/npm/papaparse@5.3.2/papaparse.min.js"></script>
     <script>
       // --- CONFIGURACIÓN Y ESTADO GLOBAL ---
-      var CURRENT_APP_VERSION = 'v92';
+      var CURRENT_APP_VERSION = 'v93';
       var SB_URL = "https://txnecdeccianklqqyrav.supabase.co";
       var SB_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InR4bmVjZGVjY2lhbmtscXF5cmF2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY0MDQzMDIsImV4cCI6MjA5MTk4MDMwMn0.e2ybyt2Y8yHsZwRC-MZqi_qK525-CWpk-huQcQy-icM";
 
@@ -3230,56 +3230,63 @@
             if (!supabaseClient) throw new Error("Servicio de datos no disponible. Recarga la página.");
           }
 
-          const { data: perfil, error: perError } = await supabaseClient.from('perfiles').select('rol, nombre, grado_asignado, sede').eq('email', user.email).maybeSingle();
-          if (perError) console.error("Error al obtener perfil:", perError);
-
-          const userName = perfil?.nombre || user.user_metadata?.full_name || user.email.split('@')[0];
+          const { data: perfil } = await supabaseClient.from('perfiles').select('rol, nombre, grado_asignado').eq('email', user.email).maybeSingle();
+          let userName = perfil?.nombre || user.user_metadata?.full_name || user.email.split('@')[0];
           const assignedGrade = perfil?.grado_asignado || "";
           const role = (perfil && perfil.rol) ? perfil.rol.toLowerCase() : 'lector';
 
           // Gestión de permisos de impresión
-          document.body.classList.toggle('is-admin', (role === 'admin' || role === 'superadmin'));
+          if (role === 'admin' || role === 'superadmin') {
+            document.body.classList.add('is-admin');
+          } else {
+            document.body.classList.remove('is-admin');
+          }
+
+          const res = await supabaseClient.from('docentes_privacidad').select('*').eq('nombre', userName);
+
           currentRole = role;
 
-          // --- Nueva Lógica de Privacidad 2026: Búsqueda Robusta ---
+          // --- Nueva Lgica de Privacidad 2026 ---
           try {
-            // Obtenemos todos los permisos y filtramos en JS para mayor flexibilidad con los nombres
-            const { data: allPriv } = await supabaseClient.from('docentes_privacidad').select('*');
-            const searchParts = normalizeText(userName).split(' ').filter(p => p.length >= 2);
+            // Bsqueda flexible por nombre
+            const { data: privData } = await supabaseClient.from('docentes_privacidad')
+              .select('*')
+              .ilike('nombre', `%${userName.trim()}%`);
 
-            userPermissions = (allPriv || []).filter(d => {
-              const dbName = normalizeText(d.nombre || "");
-              if (searchParts.length === 0) return dbName.includes(normalizeText(userName));
-              return searchParts.every(part => dbName.includes(part));
-            });
+            userPermissions = privData || [];
+            console.log("🔒 Permisos cargados para", userName, ":", userPermissions);
 
-            console.log("🔒 Permisos cargados (Match Robusto) para", userName, ":", userPermissions);
+            if (userPermissions && userPermissions.length > 0 && userPermissions[0].nombre) {
+              userName = userPermissions[0].nombre;
+            }
 
             // Obtener la sede del docente de cualquiera de sus permisos (todos tienen la columna 'sede')
-            if (userPermissions && userPermissions.length > 0 && userPermissions[0].sede) {
+            if (userPermissions && userPermissions.length > 0) {
               userSede = userPermissions[0].sede;
             } else {
-              // Fallback: detectar sede del grado asignado si existe, o usar la del perfil
-              userSede = assignedGrade ? detectarSede(assignedGrade) : (perfil?.sede || 'Central');
+              // Fallback: detectar sede del grado asignado si existe
+              userSede = assignedGrade ? detectarSede(assignedGrade) : null;
             }
 
             const profileSede = (perfil && perfil.sede) ? perfil.sede.toUpperCase() : '';
             const userSedeClean = userSede ? userSede.toUpperCase() : '';
             const assignedLower = assignedGrade ? assignedGrade.toString().toLowerCase() : '';
 
-            // Normalización estricta de la sede del usuario para garantizar que coincida con detectarSede
-            const sedeBruta = userSede || profileSede || assignedGrade || 'Central';
-            window.userSede = detectarSede(sedeBruta);
-            userSede = window.userSede; // Sincronizar variable local
-
             // === ELEVACIÓN DE PERMISOS PARA SEDES RURALES ===
             const sedesRurales = ['PUEBLILLO', 'SENDERO', 'YANACONAS', 'PISOJE BAJO', 'PRIMARIA'];
             const isPrimariaDocente = assignedLower === "primaria";
 
             if (sedesRurales.includes(userSedeClean) || sedesRurales.includes(profileSede) || isPrimariaDocente) {
-              console.log(`🌟 Elevando permisos a ADMIN por pertenecer a sede rural o ser docente de Primaria: ${window.userSede}`);
+              console.log(`🌟 Elevando permisos a ADMIN por pertenecer a sede rural o ser docente de Primaria: ${userSedeClean || profileSede || 'Primaria'}`);
               currentRole = 'admin';
               document.body.classList.add('is-admin');
+
+              // Normalizar la sede para que coincida con la detección de grupos
+              const sedeBruta = userSede || profileSede || assignedGrade || 'Central';
+              window.userSede = detectarSede(sedeBruta);
+            } else {
+              // Asegurar que window.userSede esté definido para todos
+              window.userSede = userSede || detectarSede(assignedGrade) || 'Central';
             }
 
             // --- OCULTAR SELECTORES DE SEDE SI NO ES SUPERADMIN ---
