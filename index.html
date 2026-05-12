@@ -2959,7 +2959,7 @@
         $('login-err').style.display = 'none';
       };
 
-      async function intentarLoginEstudiante() {
+      window.intentarLoginEstudiante = async function intentarLoginEstudiante() {
         const idVal = $('li-est-id').value.trim();
         const btn = $('btn-login-est');
         const err = $('login-err');
@@ -3014,7 +3014,7 @@
           err.style.display = 'block';
           btn.disabled = false; btn.innerText = "Consultar Reporte";
         }
-      }
+      };
 
       async function importarBaseEstudiantes() {
         const fileInput = $('students-csv');
@@ -3125,7 +3125,7 @@
         }
       }
 
-      async function intentarLogin() {
+      window.intentarLogin = async function intentarLogin() {
         const userVal = $('li-user').value.trim();
         const pass = $('li-pass').value;
         const btn = $('btn-login');
@@ -3161,7 +3161,7 @@
           err.style.display = 'block';
           btn.disabled = false; btn.innerText = "Ingresar como Docente";
         }
-      }
+      };
 
       async function loguearExitoso(user) {
         if (!user) return;
