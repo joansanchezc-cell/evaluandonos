@@ -2485,11 +2485,10 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
     <script src="https://cdn.jsdelivr.net/npm/papaparse@5.3.2/papaparse.min.js"></script>
+    <script src="src/shared/constants.js"></script>
+    <script src="src/shared/helpers.js"></script>
     <script>
       // --- CONFIGURACIÓN Y ESTADO GLOBAL ---
-      var CURRENT_APP_VERSION = 'v96';
-      var SB_URL = "https://txnecdeccianklqqyrav.supabase.co";
-      var SB_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InR4bmVjZGVjY2lhbmtscXF5cmF2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY0MDQzMDIsImV4cCI6MjA5MTk4MDMwMn0.e2ybyt2Y8yHsZwRC-MZqi_qK525-CWpk-huQcQy-icM";
 
       let supabaseClient;
       if (typeof supabase !== 'undefined') {
@@ -2552,57 +2551,9 @@
         }
       }
 
-      function normalizeText(str) {
-        if (!str) return "";
-        return str.toString()
-          .normalize("NFD")
-          .replace(/[\u0300-\u036f]/g, "")
-          .toLowerCase()
-          .trim();
-      }
 
-      function getValoration(p) {
-        if (p >= 91) return { label: 'Superior', initial: 'S', color: '#a855f7', nivel: 'N4' };
-        if (p >= 71) return { label: 'Alto', initial: 'A', color: '#22c55e', nivel: 'N3' };
-        if (p >= 51) return { label: 'Básico', initial: 'Bs', color: '#facc15', nivel: 'N2' };
-        return { label: 'Bajo', initial: 'Bj', color: '#ef4444', nivel: 'N1' };
-      }
 
-      // --- MATRIZ DE RANGOS 2026 ---
-      const MATRIZ_RANGOS = {
-        '3-4': [
-          { start: 1, end: 10, label: 'Matemáticas' },
-          { start: 11, end: 20, label: 'Ciencias Sociales' },
-          { start: 21, end: 30, label: 'Lenguaje' },
-          { start: 31, end: 40, label: 'Biología' },
-          { start: 41, end: 45, label: 'Inglés' }
-        ],
-        '5': [
-          { start: 1, end: 20, label: 'Matemáticas' },
-          { start: 21, end: 40, label: 'Ciencias Sociales' },
-          { start: 41, end: 60, label: 'Lenguaje' },
-          { start: 61, end: 80, label: 'Biología' },
-          { start: 81, end: 90, label: 'Inglés' }
-        ],
-        '6-9': [
-          { start: 1, end: 20, label: 'Matemáticas' },
-          { start: 21, end: 40, label: 'Competencias Ciudadanas' },
-          { start: 41, end: 60, label: 'Ciencias Sociales' },
-          { start: 61, end: 80, label: 'Lenguaje' },
-          { start: 81, end: 100, label: 'Biología' },
-          { start: 101, end: 120, label: 'Inglés' }
-        ],
-        '10-11': [
-          { start: 1, end: 20, label: 'Matemáticas' },
-          { start: 21, end: 30, label: 'Competencias Ciudadanas' },
-          { start: 31, end: 50, label: 'Ciencias Sociales' },
-          { start: 51, end: 70, label: 'Lenguaje' },
-          { start: 71, end: 80, label: 'Biología' },
-          { start: 81, end: 90, label: 'Física' },
-          { start: 91, end: 100, label: 'Química' },
-          { start: 101, end: 120, label: 'Inglés' }
-        ]
-      };
+
 
       // --- LÓGICA DE INSTALACIÓN PWA ---
       let deferredPrompt;
@@ -2640,111 +2591,7 @@
 
       // El resto de la lógica se maneja en app.js
 
-      function isSubjectEvaluated(subject, grade) {
-        if (!subject) return false;
-        const gNum = extraerGradoBase(grade);
 
-        // Caso especial: Física/Química en secundaria se consideran parte de Naturales si no están explícitas
-        const normTarget = normalizeText(subject);
-        if (gNum >= 6 && (normTarget.includes("fisica") || normTarget.includes("quimica"))) {
-          return true;
-        }
-
-        let mKey = '6-9';
-        if (gNum <= 4) mKey = '3-4';
-        else if (gNum === 5) mKey = '5';
-        else if (gNum >= 10) mKey = '10-11';
-
-        const config = MATRIZ_RANGOS[mKey];
-        return config.some(c => {
-          const normLabel = normalizeText(c.label);
-          // Mapping Naturales/Biologia/Fisica/Quimica
-          if ((normTarget.includes("naturales") || normTarget.includes("biologia") || normTarget.includes("fisica") || normTarget.includes("quimica") || normTarget.includes("ciencia") || normTarget.includes("bio")) &&
-            (normLabel.includes("naturales") || normLabel.includes("biologia") || normLabel.includes("fisica") || normLabel.includes("quimica") || normLabel.includes("ciencia") || normLabel.includes("bio"))) return true;
-
-          return normLabel.includes(normTarget) || normTarget.includes(normLabel);
-        });
-      }
-
-      function checkSubjectPermission(allowedAsigs, targetAsig, gBase) {
-        if (!allowedAsigs || allowedAsigs.length === 0) return false;
-        const normTarget = normalizeText(targetAsig);
-        const isBio = normTarget.includes("biologia") || normTarget.includes("naturales") || (normTarget.includes("ciencia") && !normTarget.includes("social")) || normTarget.includes("bio");
-        const isPhys = normTarget.includes("fisica") || normTarget.includes("fis");
-        const isChem = normTarget.includes("quimica") || normTarget.includes("qui");
-
-        return allowedAsigs.some(perm => {
-          const p = normalizeText(perm);
-          if (!p) return false;
-
-          const hasBio = p.includes("biologia") || p.includes("naturales") || (p.includes("ciencia") && !p.includes("social")) || p.includes("bio");
-          const hasPhys = p.includes("fisica") || p.includes("fis");
-          const hasChem = p.includes("quimica") || p.includes("qui");
-
-          // Regla de Vinculación de Naturales (Generalizada para todas las sedes)
-          if (gBase >= 6 && gBase <= 9) {
-            // En 6-9: Biología y Física están vinculadas
-            if ((isBio || isPhys) && (hasBio || hasPhys)) return true;
-          } else if (gBase >= 10) {
-            // En 10-11: Biología, Física y Química están vinculadas
-            if ((isBio || isPhys || isChem) && (hasBio || hasPhys || hasChem)) return true;
-          }
-
-          // Primaria (1-5): Se agrupan bajo términos de Naturales/Biología
-          if (gBase < 6 && isBio && hasBio) return true;
-
-          // Regla 1: Coincidencia estándar
-          return normTarget.includes(p) || p.includes(normTarget);
-        });
-      }
-
-      function detectarSede(gradoStr) {
-        if (!gradoStr) return 'Central';
-        const clean = gradoStr.toString().trim().toUpperCase();
-
-        // 1. Detección por palabra completa (PRIORIDAD ALTA)
-        if (clean.includes('YANACONA') || clean.includes('YANACONS')) return 'Yanaconas';
-        if (clean.includes('PUEBLILLO')) return 'Pueblillo';
-        if (clean.includes('SENDERO')) return 'Sendero';
-        if (clean.includes('PISOJE')) return 'Pisoje Bajo';
-
-        // 2. Detección por códigos cortos (Sufijos)
-        if (clean.endsWith('PU')) return 'Pueblillo';
-        if (clean.endsWith('PJ')) return 'Pisoje Bajo';
-        if (clean.endsWith('YA') || clean.endsWith('Y')) return 'Yanaconas';
-        if (clean.endsWith('SE') || (clean.endsWith('S') && clean.length <= 3)) return 'Sendero';
-
-        // 3. Detección por el último dígito del grupo (ej. 305 -> 5 -> Yanaconas)
-        const match = clean.match(/\d+$/);
-        if (match) {
-          const lastDigit = match[0].slice(-1);
-          if (lastDigit === '4') return 'Pisoje Bajo';
-          if (lastDigit === '5') return 'Yanaconas';
-          if (lastDigit === '6') return 'Sendero';
-          if (lastDigit === '7') return 'Pueblillo';
-        }
-
-        return 'Central';
-      }
-
-      function detectarPeriodo(quizName) {
-        if (!quizName) return parseInt(currentPeriodo) || 1;
-        const name = quizName.toString().toUpperCase();
-
-        // Prioridad 1: Patrones claros como 1P, P1, Periodo 1
-        if (/(?:1P|P1|PERIODO\s*1|[ _\-]1(?!\d))/i.test(name)) return 1;
-        if (/(?:2P|P2|PERIODO\s*2|[ _\-]2(?!\d))/i.test(name)) return 2;
-        if (/(?:3P|P3|PERIODO\s*3|[ _\-]3(?!\d)|FINAL|FIN)/i.test(name)) return 3;
-
-        // Prioridad 2: Si tiene "Evaluandonos" y un número solo
-        if (name.includes("EVALUANDONOS")) {
-          if (/\b1\b/.test(name)) return 1;
-          if (/\b2\b/.test(name)) return 2;
-          if (/\b3\b/.test(name)) return 3;
-        }
-
-        return parseInt(currentPeriodo) || 1;
-      }
 
       function filtrarMateriasEstaticas() {
         const sel = $('asig-sel-materia');
@@ -2879,64 +2726,7 @@
         }
       }
 
-      // --- HELPERS PARA IDENTIFICACIÓN POR ZIPGRADE ID ---
-      function extraerGrupo(zipId) {
-        if (!zipId) return "";
-        let s = zipId.toString().trim();
-        if (s.includes("-")) return s.split("-")[0];
 
-        const len = s.length;
-        // Para grados 10 y 11 (siempre deben ser 4 dígitos: 1001, 1101, etc.)
-        if (s.startsWith("10") || s.startsWith("11")) {
-          if (len >= 4) return s.substring(0, 4);
-          return s; // Muy corto, retornar tal cual para validación posterior
-        }
-
-        // Para grados 3 a 9 (3 dígitos: 301, 401, etc.)
-        if (len === 5) return s.substring(0, 3);
-        if (len === 6) return s.substring(0, 3);
-        if (len >= 3 && len <= 4) return s;
-        if (s.toLowerCase() === "primaria") return s;
-
-        return s;
-      }
-
-      function esGrupoValido(g) {
-        if (!g) return false;
-        const s = g.toString().trim().toUpperCase();
-        if (s === "PRIMARIA") return true;
-
-        // Lista cerrada y estricta de grupos legítimos de la Sede Central
-        const centralPermitidos = [
-          "301", "401", "501",
-          "601", "602", "603",
-          "701", "702", "703",
-          "801", "802",
-          "901", "902", "903",
-          "1001", "1002", "1003",
-          "1101", "1102", "1103"
-        ];
-        if (centralPermitidos.includes(s)) return true;
-
-        // Para las sedes rurales (las que detectarSede clasifica como diferentes de 'Central')
-        const sede = detectarSede(s);
-        if (sede !== 'Central') {
-          // Validamos que el grado base extraído tenga sentido institucional (1 a 11)
-          const base = extraerGradoBase(s);
-          if (base >= 1 && base <= 11) return true;
-        }
-
-        return false;
-      }
-      function extraerGradoBase(grupo) {
-        if (!grupo) return 0;
-        const s = grupo.toString().trim();
-        if (s.toLowerCase() === "primaria") return 1;
-        if (s.length === 2 && !["10", "11"].includes(s)) return 0;
-        if (s.startsWith("10") || s.startsWith("11")) return parseInt(s.substring(0, 2));
-        const firstDigit = parseInt(s.substring(0, 1));
-        return isNaN(firstDigit) ? 0 : firstDigit;
-      }
 
 
       async function cargarGradosAdminSelects() {
@@ -5226,23 +5016,19 @@
         showLoading(true);
         try {
           const sedeManual = $('rep-sede').value;
-          const [resNotas, resComp] = await Promise.all([
-            supabaseClient.from('eval_estudiantes_notas').select('zipgrade_id').eq('periodo', currentPeriodo),
-            supabaseClient.from('eval_estudiantes_completos').select('grado').eq('periodo', currentPeriodo)
-          ]);
+          const { data: resNotas, error } = await supabaseClient.from('eval_estudiantes_notas').select('grado').eq('periodo', currentPeriodo);
 
-          let data = resNotas.data || [];
-          const dataCompGrados = resComp.data ? resComp.data.map(d => d.grado.toString()) : [];
+          let data = resNotas || [];
 
           // FALLBACK SI NO HAY DATOS EN EL PERIODO ACTUAL (Notas)
           if (data.length === 0 && currentPeriodo > 1) {
-            const { data: fb } = await supabaseClient.from('eval_estudiantes_notas').select('zipgrade_id').eq('periodo', 1);
+            const { data: fb } = await supabaseClient.from('eval_estudiantes_notas').select('grado').eq('periodo', 1);
             if (fb && fb.length > 0) data = fb;
           }
 
-          // Obtener todos los grupos únicos
-          const groupsNotas = data.map(d => extraerGrupo(d.zipgrade_id));
-          let allGroups = [...new Set([...groupsNotas, ...dataCompGrados])].filter(esGrupoValido);
+          // Obtener todos los grupos únicos directamente de la columna grado
+          const groupsNotas = data.map(d => d.grado.toString());
+          let allGroups = [...new Set(groupsNotas)].filter(esGrupoValido);
 
           // --- Filtro de Privacidad: Solo mostrar grupos permitidos ---
           if (currentRole !== 'superadmin') {
@@ -5384,8 +5170,18 @@
             return { zipgrade_id: d.student_id, estudiante_nombre: d.estudiante_nombre, respuestas: nr, porcentaje: d.percent_correct, periodo: d.periodo, grado: d.grado };
           });
 
-          const historico = [...(resHistNotas.data || []), ...normComp(resHistComp.data)].sort((a, b) => a.periodo - b.periodo);
-          const todos = [...(resTodosNotas.data || []), ...normComp(resTodosComp.data)];
+          const historicoData = [...(resHistNotas.data || []), ...normComp(resHistComp.data)].sort((a, b) => a.periodo - b.periodo);
+          const todosData = [...(resTodosNotas.data || []), ...normComp(resTodosComp.data)];
+
+          // Deduplicar historico por zipgrade_id + periodo
+          const histMap = new Map();
+          historicoData.forEach(t => histMap.set(`${t.zipgrade_id}_${t.periodo}`, t));
+          const historico = Array.from(histMap.values());
+
+          // Deduplicar todos por zipgrade_id
+          const todosMap = new Map();
+          todosData.forEach(t => todosMap.set(t.zipgrade_id.toString().trim(), t));
+          const todos = Array.from(todosMap.values());
 
           // NO usar fallback por nombre para evitar confusiones entre estudiantes con apellidos iguales.
           // El sistema ahora es 100% basado en el Número de Identificación para garantizar privacidad.
@@ -5408,20 +5204,20 @@
 
           const actualZipId = est.zipgrade_id.toString().trim();
           const actualPeriodoNum = parseInt(est.periodo);
-          const grupoEst = extraerGrupo(actualZipId);
+          const grupoEst = est.grado ? est.grado.toString().trim() : extraerGrupo(actualZipId);
 
-          const alumnosGrupo = todos.filter(t =>
-            parseInt(t.periodo) === actualPeriodoNum &&
-            t.zipgrade_id &&
-            extraerGrupo(t.zipgrade_id.toString().trim()) === grupoEst
-          );
+          const alumnosGrupo = todos.filter(t => {
+            if (parseInt(t.periodo) !== actualPeriodoNum) return false;
+            const g = t.grado ? t.grado.toString().trim() : extraerGrupo(t.zipgrade_id);
+            return g === grupoEst;
+          });
 
           const gradoBase = extraerGradoBase(grupoEst);
-          const alumnosNivel = todos.filter(t =>
-            parseInt(t.periodo) === actualPeriodoNum &&
-            t.zipgrade_id &&
-            extraerGradoBase(extraerGrupo(t.zipgrade_id.toString().trim())) === gradoBase
-          );
+          const alumnosNivel = todos.filter(t => {
+            if (parseInt(t.periodo) !== actualPeriodoNum) return false;
+            const g = t.grado ? t.grado.toString().trim() : extraerGrupo(t.zipgrade_id);
+            return extraerGradoBase(g) === gradoBase;
+          });
 
           const sortedGrupo = [...alumnosGrupo].sort((a, b) => (b.porcentaje || 0) - (a.porcentaje || 0));
           const idxG = sortedGrupo.findIndex(t => t.zipgrade_id.toString().trim() === actualZipId);
@@ -5736,15 +5532,11 @@
       async function cargarGruposInformeGrupal() {
         showLoading(true);
         try {
-          // Consultar ambas tablas para asegurar que aparezcan todos los grupos (Notas y Completos)
-          const [resNotas, resComp] = await Promise.all([
-            supabaseClient.from('eval_estudiantes_notas').select('zipgrade_id').eq('periodo', currentPeriodo),
-            supabaseClient.from('eval_estudiantes_completos').select('grado').eq('periodo', currentPeriodo)
-          ]);
+          // Consultar solo Notas para asegurar la consistencia sin duplicados
+          const { data: resNotas } = await supabaseClient.from('eval_estudiantes_notas').select('grado').eq('periodo', currentPeriodo);
 
-          const groupsNotas = resNotas.data ? resNotas.data.map(d => extraerGrupo(d.zipgrade_id)) : [];
-          const groupsComp = resComp.data ? resComp.data.map(d => d.grado.toString()) : [];
-          let uniqueGroups = [...new Set([...groupsNotas, ...groupsComp])].filter(esGrupoValido);
+          const groupsNotas = resNotas ? resNotas.map(d => d.grado.toString()) : [];
+          let uniqueGroups = [...new Set(groupsNotas)].filter(esGrupoValido);
 
           if (currentRole !== 'superadmin') {
             const assignedLower = (window.assignedGrade || "").toString().toLowerCase();
@@ -5787,8 +5579,10 @@
           const { data: todosData, error } = await supabaseClient.from('eval_estudiantes_notas').select('*').eq('periodo', currentPeriodo);
           if (error) throw error;
 
-          const alumnosGrupo = (todosData || []).filter(t => extraerGrupo(t.zipgrade_id) === grupo)
-            .sort((a, b) => a.estudiante_nombre.localeCompare(b.estudiante_nombre, 'es', { sensitivity: 'base' }));
+          const alumnosGrupo = (todosData || []).filter(t => {
+            const g = t.grado ? t.grado.toString().trim() : extraerGrupo(t.zipgrade_id);
+            return g === grupo;
+          }).sort((a, b) => a.estudiante_nombre.localeCompare(b.estudiante_nombre, 'es', { sensitivity: 'base' }));
 
           if (alumnosGrupo.length === 0) {
             $('grupal-content').innerHTML = '<p style="text-align:center; padding:2rem;">No hay datos.</p>';
@@ -5927,15 +5721,11 @@
       async function cargarGruposInformeAsignatura() {
         showLoading(true);
         try {
-          // Consultar ambas tablas para asegurar que aparezcan todos los grupos (Notas y Completos)
-          const [resNotas, resComp] = await Promise.all([
-            supabaseClient.from('eval_estudiantes_notas').select('zipgrade_id').eq('periodo', currentPeriodo),
-            supabaseClient.from('eval_estudiantes_completos').select('grado').eq('periodo', currentPeriodo)
-          ]);
+          // Consultar solo Notas para asegurar la consistencia sin duplicados
+          const { data: resNotas } = await supabaseClient.from('eval_estudiantes_notas').select('grado').eq('periodo', currentPeriodo);
 
-          const groupsNotas = resNotas.data ? resNotas.data.map(d => extraerGrupo(d.zipgrade_id)) : [];
-          const groupsComp = resComp.data ? resComp.data.map(d => d.grado.toString()) : [];
-          let uniqueGroups = [...new Set([...groupsNotas, ...groupsComp])].filter(esGrupoValido);
+          const groupsNotas = resNotas ? resNotas.map(d => d.grado.toString()) : [];
+          let uniqueGroups = [...new Set(groupsNotas)].filter(esGrupoValido);
 
           if (currentRole !== 'superadmin') {
             const assignedLower = (window.assignedGrade || "").toString().toLowerCase();
@@ -6012,8 +5802,10 @@
           const { data: todosData, error } = await supabaseClient.from('eval_estudiantes_notas').select('*').eq('periodo', currentPeriodo);
           if (error) throw error;
 
-          const alumnosGrupo = (todosData || []).filter(t => extraerGrupo(t.zipgrade_id) === grupo)
-            .sort((a, b) => a.estudiante_nombre.localeCompare(b.estudiante_nombre, 'es', { sensitivity: 'base' }));
+          const alumnosGrupo = (todosData || []).filter(t => {
+            const g = t.grado ? t.grado.toString().trim() : extraerGrupo(t.zipgrade_id);
+            return g === grupo;
+          }).sort((a, b) => a.estudiante_nombre.localeCompare(b.estudiante_nombre, 'es', { sensitivity: 'base' }));
 
           if (alumnosGrupo.length === 0) {
             $('asignatura-content').innerHTML = '<p style="text-align:center; padding:2rem;">No hay datos.</p>';
@@ -6555,7 +6347,7 @@
           }
 
           // 1. Poblar selectores del Dashboard
-          let gruposUnicos = [...new Set(dataPeriodoActual.map(d => extraerGrupo(d.zipgrade_id)))]
+          let gruposUnicos = [...new Set(dataPeriodoActual.map(d => d.grado ? d.grado.toString() : ""))]
             .filter(g => esGrupoValido(g));
 
           // --- Filtro de Privacidad: Solo mostrar grupos permitidos ---
@@ -6611,7 +6403,7 @@
           const promediosGrado = {};
           const conteoGrado = {};
           dataPeriodoActual.forEach(d => {
-            const g = extraerGradoBase(extraerGrupo(d.zipgrade_id));
+            const g = extraerGradoBase(d.grado ? d.grado.toString() : "");
             if (!promediosGrado[g]) { promediosGrado[g] = 0; conteoGrado[g] = 0; }
             promediosGrado[g] += (d.porcentaje || 0);
             conteoGrado[g]++;
@@ -6659,7 +6451,7 @@
         const grupo = $('est-sel-grado').value;
         if (!grupo) return;
 
-        const alumnos = dataPeriodoActual.filter(d => extraerGrupo(d.zipgrade_id) === grupo);
+        const alumnos = dataPeriodoActual.filter(d => (d.grado ? d.grado.toString() : "") === grupo);
         const gNum = extraerGradoBase(grupo);
         let mKey = '6-9';
         if (gNum <= 4) mKey = '3-4'; else if (gNum === 5) mKey = '5'; else if (gNum >= 10) mKey = '10-11';
@@ -6708,10 +6500,10 @@
         if (!gBase) return;
 
         // 1. Filtrar alumnos del nivel
-        const alumnosNivel = dataPeriodoActual.filter(d => extraerGradoBase(extraerGrupo(d.zipgrade_id)) === gBase);
+        const alumnosNivel = dataPeriodoActual.filter(d => extraerGradoBase(d.grado ? d.grado.toString() : "") === gBase);
 
         // 2. Identificar grupos únicos en este nivel
-        const gruposUnicos = [...new Set(alumnosNivel.map(d => extraerGrupo(d.zipgrade_id)))]
+        const gruposUnicos = [...new Set(alumnosNivel.map(d => d.grado ? d.grado.toString() : ""))]
           .sort((a, b) => a.localeCompare(b, undefined, { numeric: true }));
 
         // 3. Determinar configuración de materias
@@ -6722,7 +6514,7 @@
 
         // 4. Crear datasets: uno por cada GRUPO
         const datasets = gruposUnicos.map(grupo => {
-          const alumnosGrupo = alumnosNivel.filter(d => extraerGrupo(d.zipgrade_id) === grupo);
+          const alumnosGrupo = alumnosNivel.filter(d => (d.grado ? d.grado.toString() : "") === grupo);
           const data = config.map(subj => {
             let suma = 0;
             let count = 0;

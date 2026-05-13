@@ -163,37 +163,37 @@ Marca cada uno a medida que validas:
 
 ```
 FLUJO 1 - Autenticación Docente
-- [ ] Login exitoso
-- [ ] Token en localStorage
-- [ ] Sin errores de consola
-- [ ] Evidencia registrada
+- [x ] Login exitoso
+- [ x] Token en localStorage
+- [ x] Sin errores de consola
+- [ x] Evidencia registrada
 
 FLUJO 2 - Carga de Grados/Asignaturas
-- [x ] Grados cargan (cargan grados que no existen)
-- [ ] Asignaturas cargan
-- [ ] Colores correctos
-- [ x] Sin errores
-- [ ] Evidencia registrada
+- [ ] Grados cargan (cargan grados que no existen)
+- [ x] Asignaturas cargan
+- [ x] Colores correctos
+- [ ] Sin errores
+- [x ] Evidencia registrada
 
 FLUJO 3 - Análisis y Estadísticas
-- [ ] Gráficos cargan
-- [ ] Tabla interactiva
-- [ ] Datos sin NaN
-- [ ] Sin errores Supabase
-- [ ] Evidencia registrada
+- [ x] Gráficos cargan
+- [x ] Tabla interactiva
+- [ x] Datos sin NaN
+- [ x] Sin errores Supabase
+- [ x] Evidencia registrada
 
 FLUJO 4 - Reportes
 - [ ] Reporte genera
-- [ ] Formato correcto
+- [x ] Formato correcto
 - [ ] Print preview OK
 - [ ] Evidencia registrada
 
 FLUJO 5 - PWA Offline
-- [ ] App instala
-- [ ] Funciona offline
-- [ ] Service Worker activo
-- [ ] Cache presente
-- [ ] Evidencia registrada
+- [x ] App instala
+- [x ] Funciona offline
+- [x ] Service Worker activo
+- [ x] Cache presente
+- [ x] Evidencia registrada
 
 FLUJO 6 - Mobile Responsive
 - [ ] Layout responsive
