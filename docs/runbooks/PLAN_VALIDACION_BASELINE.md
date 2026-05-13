@@ -169,10 +169,10 @@ FLUJO 1 - Autenticación Docente
 - [ ] Evidencia registrada
 
 FLUJO 2 - Carga de Grados/Asignaturas
-- [ ] Grados cargan
+- [x ] Grados cargan (cargan grados que no existen)
 - [ ] Asignaturas cargan
 - [ ] Colores correctos
-- [ ] Sin errores
+- [ x] Sin errores
 - [ ] Evidencia registrada
 
 FLUJO 3 - Análisis y Estadísticas
