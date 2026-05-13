@@ -2779,7 +2779,7 @@
         if (normalizado.includes("COMPETENCIAS")) return ASIGNATURA_COLORES["COMPETENCIAS CIUDADANAS"];
         if (normalizado.includes("SOCIALES")) return ASIGNATURA_COLORES["CIENCIAS SOCIALES"];
         if (normalizado.includes("LECTURA")) return ASIGNATURA_COLORES["LECTURA CRITICA"];
-        if (normalizado.includes("MATEMATICA")) return ASIGNATURA_COLORES["MATEMATICAS"];
+        if (normalizado.includes("MATEMATICA") || normalizado.includes("CALCULO") || normalizado.includes("TRIGONOMETRIA")) return ASIGNATURA_COLORES["MATEMATICAS"];
         if (normalizado.includes("NATURALES")) return ASIGNATURA_COLORES["CIENCIAS NATURALES"];
         if (normalizado.includes("BIOLOGIA")) return ASIGNATURA_COLORES["BIOLOGIA"];
 
@@ -3237,6 +3237,8 @@
       const AUTO_IMG_BASE_URL = "https://txnecdeccianklqqyrav.supabase.co/storage/v1/object/public/assets/Preguntas/";
       const MATERIA_ADIVINAR = {
         "MATEMATICAS": "M",
+        "CALCULO": "M",
+        "TRIGONOMETRIA": "M",
         "COMPETENCIAS": "C",
         "COMPETENCIAS CIUDADANAS": "C",
         "CIUDADANAS": "C",
@@ -4400,9 +4402,13 @@
           periodosDetectados.add(periodoDetectado);
 
           // Detectar grado del nombre del quiz si no hay columna
-          let grado = 0;
+          let gradoRaw = "0";
           const matchG = quiz.match(/(\d+)/);
-          if (matchG) grado = parseInt(matchG[1]);
+          if (matchG) gradoRaw = matchG[1];
+          
+          // Crucial: eval_resultados debe usar el grado base (6, 7, 8... 11) para que el filtrado sea correcto
+          let gradoBase = extraerGradoBase(gradoRaw);
+          let sedeDetectada = detectarSede(gradoRaw);
 
           // Limpiar para cálculo
           const p_corr = parseFloat((row[porcIdx] || "0").toString().replace(',', '.')) || 0;
@@ -4428,9 +4434,9 @@
           });
 
           batchResultados.push({
-            grado,
+            grado: gradoBase,
             periodo: periodoDetectado,
-            sede: "GENERAL",
+            sede: sedeDetectada,
             quiz_name: quiz,
             pregunta_num: pNum,
             key: correctKey,
@@ -4453,7 +4459,7 @@
 
         // Borrado granular: por cada combinación única de (grado, periodo, quiz_name)
         const uniqueCombs = [...new Set(batchResultados.map(r => `${r.grado}|${r.periodo}|${r.quiz_name}`))];
-
+        console.log('🗑️ [procesarConsolidado] Combinaciones a borrar:', uniqueCombs);
         for (const comb of uniqueCombs) {
           const [g, p, q] = comb.split('|');
           await supabaseClient.from('eval_resultados')
@@ -4556,19 +4562,16 @@
 
           // Borrado quirúrgico global por archivo: eliminar todos los registros que coincidan con el quiz y periodo
           const uniqueCombs = [...new Set(resultadosEstudiantes.map(e => `${e.quiz_name}|${e.periodo}`))];
-          console.log('🗑️ Combinaciones a borrar (Quirúrgico Global):', uniqueCombs);
+          console.log('🗑️ [procesarEstudiantes] Combinaciones a borrar:', uniqueCombs);
           for (const comb of uniqueCombs) {
             const [q, p] = comb.split('|');
-            console.log(`🗑️ Borrando previos globales: quiz_name="${q}" periodo=${p}`);
+            console.log(`🗑️ Borrando previos: quiz_name="${q}" periodo=${p}`);
             const { error: delErr } = await supabaseClient.from('eval_estudiantes_notas')
               .delete()
               .eq('quiz_name', q)
               .eq('periodo', p);
-            if (delErr) {
-              console.warn('⚠️ Advertencia al borrar previos:', delErr);
-            } else {
-              console.log(`✅ Borrado OK para "${q}" (P${p})`);
-            }
+            if (delErr) console.warn('⚠️ Advertencia al borrar previos:', delErr);
+            else console.log(`✅ Borrado OK para "${q}" (P${p})`);
           }
 
           // Insertar en lotes de 200 para evitar límites de Supabase
@@ -4677,8 +4680,9 @@
         if (batchCompletos.length === 0) return;
         updateStatus(`⏳ Guardando ${batchCompletos.length} reportes completos...`);
 
-        // Borrado quirúrgico global por archivo para asegurar purga de grupos corruptos previos
+        // Borrado quirúrgico global por archivo para asegurar purga de registros previos
         const uniqueCombs = [...new Set(batchCompletos.map(e => `${e.quiz_name}|${e.periodo}`))];
+        console.log('🗑️ [procesarCompletos] Combinaciones a borrar:', uniqueCombs);
         for (const comb of uniqueCombs) {
           const [q, p] = comb.split('|');
           await supabaseClient.from('eval_estudiantes_completos').delete().eq('quiz_name', q).eq('periodo', p);
@@ -5629,6 +5633,7 @@
                 if (!doc && (normLabel === "BIOLOGIA" || normLabel.includes("NATURALES"))) doc = profesMap["CIENCIAS NATURALES"] || profesMap["BIOLOGIA"] || "";
                 if (!doc && (normLabel === "SOCIALES" || normLabel.includes("SOCIALES"))) doc = profesMap["CIENCIAS SOCIALES"] || profesMap["SOCIALES"] || "";
                 if (!doc && (normLabel.includes("COMPETENCIAS") || normLabel.includes("CIUDADANAS"))) doc = profesMap["COMPETENCIAS CIUDADANAS"] || profesMap["CIUDADANAS"] || "";
+                if (!doc && (normLabel.includes("MATEMATICA"))) doc = profesMap["MATEMATICAS"] || profesMap["CALCULO"] || profesMap["TRIGONOMETRIA"] || "";
                 if (!doc) doc = "Por asignar";
                 
                 const partes = doc.split(' ').filter(x => x.trim().length > 0);
@@ -5979,6 +5984,7 @@
             if (!doc && (normLabel === "BIOLOGIA" || normLabel.includes("NATURALES"))) doc = profesMap["CIENCIAS NATURALES"] || profesMap["BIOLOGIA"] || "";
             if (!doc && (normLabel === "SOCIALES" || normLabel.includes("SOCIALES"))) doc = profesMap["CIENCIAS SOCIALES"] || profesMap["SOCIALES"] || "";
             if (!doc && (normLabel.includes("COMPETENCIAS") || normLabel.includes("CIUDADANAS"))) doc = profesMap["COMPETENCIAS CIUDADANAS"] || profesMap["CIUDADANAS"] || "";
+            if (!doc && (normLabel.includes("MATEMATICA"))) doc = profesMap["MATEMATICAS"] || profesMap["CALCULO"] || profesMap["TRIGONOMETRIA"] || "";
             
             if (doc) docenteMateria = doc;
           }

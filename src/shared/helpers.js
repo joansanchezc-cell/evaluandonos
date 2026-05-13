@@ -20,49 +20,51 @@ function extraerGrupo(zipId) {
   if (!zipId) return "";
   let s = zipId.toString().trim();
 
-  // Si viene con guión, puede ser un formato como "11-01", "9-01" o de sede rural "5-YA", "5-PJ"
+  // 1. Manejo de formatos con guión (ej. "11-01", "5-YA")
   if (s.includes("-")) {
     const parts = s.split("-");
     const suffix = parts[1] ? parts[1].toUpperCase() : "";
-    // Si el sufijo es numérico (ej. "01", "02", "03"), lo convertimos al formato estándar central sin guión: ej. "11-01" -> "1101", "9-01" -> "901"
     if (/^\d+$/.test(suffix)) {
       return parts[0] + parseInt(suffix, 10).toString().padStart(2, '0');
     }
-    // Si el sufijo es de sede rural (YA, PJ, SE, PU), preservamos el formato completo "Grado-Sede"
     return s;
   }
 
-  // Quitar ceros a la izquierda para evitar problemas con grupos (ej. "04015" -> "4015")
+  // Quitar ceros a la izquierda accidentales
   if (s.startsWith("0") && s.length > 1) {
-      s = s.replace(/^0+/, '');
+    s = s.replace(/^0+/, '');
   }
 
   const len = s.length;
 
-  // Detección del estándar institucional ZipGrade/Quizizz de 5 dígitos
-  // Para grados 10 y 11: ej. 11103 -> grado 11, grupo 1 -> 1101
-  if (s.startsWith("10") || s.startsWith("11")) {
-    if (len === 5) {
-      return s.substring(0, 2) + "0" + s.substring(2, 3);
-    }
-    if (len >= 4) return s.substring(0, 4);
-    return s;
-  }
-
-  // Para grados 3 a 9 con ID institucional de 5 dígitos: ej. 90102 -> 901, 30514 -> 3-YA
+  // 2. Lógica Unificada para ID Institucional de 5 dígitos (ZipGrade/Quizizz)
+  // Estándar: G(G) + Selector + ...
+  // Selector (índice 2): 1/2/3=Central(Grupo), 4=PJ, 5=YA, 6=SE, 7=PU
   if (len === 5) {
-    const grado = s.substring(0, 1);
-    const sedeCode = s.substring(1, 2);
-    const grupoBase = s.substring(2, 3);
+    const isHighGrade = s.startsWith("10") || s.startsWith("11");
+    const grado = isHighGrade ? s.substring(0, 2) : s.substring(0, 1);
+    const selector = s.substring(2, 3);
 
-    if (sedeCode === "0") return grado + "0" + grupoBase; // Sede Central (ej. 901)
-    if (sedeCode === "4") return grado + "-PJ"; // Pisoje Bajo
-    if (sedeCode === "5") return grado + "-YA"; // Yanaconas
-    if (sedeCode === "6") return grado + "-SE"; // Sendero
-    if (sedeCode === "7") return grado + "-PU"; // Pueblillo
+    // 2.1 Mapeo por selector para SEDES (4=PJ, 5=YA, 6=SE, 7=PU)
+    if (selector === "4") return grado + "-PJ";
+    if (selector === "5") return grado + "-YA";
+    if (selector === "6") return grado + "-SE";
+    if (selector === "7") return grado + "-PU";
+
+    // 2.2 Mapeo para CENTRAL (1, 2, 3)
+    if (selector === "1" || selector === "2" || selector === "3") {
+      if (isHighGrade) {
+        // Formato 10121 -> 1001, 11334 -> 1103
+        return grado + "0" + selector;
+      } else {
+        // Formato 60212 -> 602, 40212 -> 402, 90315 -> 903
+        // Usamos los primeros 3 dígitos directamente para capturar el grupo Ggg
+        return s.substring(0, 3);
+      }
+    }
   }
 
-  // Para grados 3 a 9 (clásico)
+  // 3. Fallbacks para otros longitudes
   if (len === 6) return s.substring(0, 3);
   if (len === 4) return s.substring(0, 3);
   if (s.toLowerCase() === "primaria") return s;
@@ -79,7 +81,7 @@ function esGrupoValido(g) {
   const centralPermitidos = [
     "301", "401", "501",
     "601", "602", "603",
-    "701", "702", "703",
+    "701", "702",
     "801", "802",
     "901", "902", "903",
     "1001", "1002", "1003",
@@ -156,6 +158,9 @@ function isSubjectEvaluated(subject, grade) {
     return true;
   }
 
+  // Soporte para Matemáticas (Calculo/Trigonometria)
+  const isMath = normTarget.includes("matematica") || normTarget.includes("calculo") || normTarget.includes("trigono");
+
   let mKey = '6-9';
   if (gNum <= 4) mKey = '3-4';
   else if (gNum === 5) mKey = '5';
@@ -164,6 +169,10 @@ function isSubjectEvaluated(subject, grade) {
   const config = MATRIZ_RANGOS[mKey];
   return config.some(c => {
     const normLabel = normalizeText(c.label);
+    
+    // Mapping Matemáticas
+    if (isMath && (normLabel.includes("matematica") || normLabel.includes("calculo") || normLabel.includes("trigono"))) return true;
+
     // Mapping Naturales/Biologia/Fisica/Quimica
     if ((normTarget.includes("naturales") || normTarget.includes("biologia") || normTarget.includes("fisica") || normTarget.includes("quimica") || normTarget.includes("ciencia") || normTarget.includes("bio")) &&
       (normLabel.includes("naturales") || normLabel.includes("biologia") || normLabel.includes("fisica") || normLabel.includes("quimica") || normLabel.includes("ciencia") || normLabel.includes("bio"))) return true;
@@ -179,6 +188,8 @@ function checkSubjectPermission(allowedAsigs, targetAsig, gBase) {
   const isPhys = normTarget.includes("fisica") || normTarget.includes("fis");
   const isChem = normTarget.includes("quimica") || normTarget.includes("qui");
 
+  const isMath = normTarget.includes("matematica") || normTarget.includes("calculo") || normTarget.includes("trigono");
+
   return allowedAsigs.some(perm => {
     const p = normalizeText(perm);
     if (!p) return false;
@@ -186,6 +197,10 @@ function checkSubjectPermission(allowedAsigs, targetAsig, gBase) {
     const hasBio = p.includes("biologia") || p.includes("naturales") || (p.includes("ciencia") && !p.includes("social")) || p.includes("bio");
     const hasPhys = p.includes("fisica") || p.includes("fis");
     const hasChem = p.includes("quimica") || p.includes("qui");
+    const hasMath = p.includes("matematica") || p.includes("calculo") || p.includes("trigono");
+
+    // Regla de Vinculación de Matemáticas
+    if (isMath && hasMath) return true;
 
     // Regla de Vinculación de Naturales (Generalizada para todas las sedes)
     if (gBase >= 6 && gBase <= 9) {
