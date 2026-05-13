@@ -27,8 +27,9 @@ Esto incrementa riesgo de regresiones, dificulta el mantenimiento, retrasa nueva
 - acceso a datos (queries/cliente Supabase)
 - reglas de negocio (calculo/analitica)
 3. Estado global y funciones extensas con alto acoplamiento.
-4. Scripts de soporte y reparacion dispersos en varias carpetas.
-5. Backups y versiones historicas dentro del repo activo.
+4. Mapeo CSV y decodificación de IDs fortalecidos: Soporte completo para el estándar institucional de 5 dígitos en todos los grados (ej. 11103 -> 1101, 30514 -> 3-YA) y compatibilidad con formatos en guión.
+5. Scripts de soporte y reparacion dispersos en varias carpetas.
+6. Backups y versiones historicas dentro del repo activo.
 
 ### 3.2 Riesgos
 

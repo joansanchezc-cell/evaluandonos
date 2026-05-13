@@ -19,7 +19,18 @@ function getValoration(p) {
 function extraerGrupo(zipId) {
   if (!zipId) return "";
   let s = zipId.toString().trim();
-  if (s.includes("-")) return s.split("-")[0];
+
+  // Si viene con guión, puede ser un formato como "11-01", "9-01" o de sede rural "5-YA", "5-PJ"
+  if (s.includes("-")) {
+    const parts = s.split("-");
+    const suffix = parts[1] ? parts[1].toUpperCase() : "";
+    // Si el sufijo es numérico (ej. "01", "02", "03"), lo convertimos al formato estándar central sin guión: ej. "11-01" -> "1101", "9-01" -> "901"
+    if (/^\d+$/.test(suffix)) {
+      return parts[0] + parseInt(suffix, 10).toString().padStart(2, '0');
+    }
+    // Si el sufijo es de sede rural (YA, PJ, SE, PU), preservamos el formato completo "Grado-Sede"
+    return s;
+  }
 
   // Quitar ceros a la izquierda para evitar problemas con grupos (ej. "04015" -> "4015")
   if (s.startsWith("0") && s.length > 1) {
@@ -27,15 +38,33 @@ function extraerGrupo(zipId) {
   }
 
   const len = s.length;
-  // Para grados 10 y 11 (siempre deben ser 4 dígitos: 1001, 1101, etc.)
+
+  // Detección del estándar institucional ZipGrade/Quizizz de 5 dígitos
+  // Para grados 10 y 11: ej. 11103 -> grado 11, grupo 1 -> 1101
   if (s.startsWith("10") || s.startsWith("11")) {
+    if (len === 5) {
+      return s.substring(0, 2) + "0" + s.substring(2, 3);
+    }
     if (len >= 4) return s.substring(0, 4);
-    return s; // Muy corto, retornar tal cual para validación posterior
+    return s;
   }
 
-  // Para grados 3 a 9 (3 dígitos: 301, 401, etc.)
-  if (len === 5 || len === 6) return s.substring(0, 3);
-  if (len === 4) return s.substring(0, 3); // Si es de 4 dígitos y no empieza por 10/11, el grupo son los 3 primeros.
+  // Para grados 3 a 9 con ID institucional de 5 dígitos: ej. 90102 -> 901, 30514 -> 3-YA
+  if (len === 5) {
+    const grado = s.substring(0, 1);
+    const sedeCode = s.substring(1, 2);
+    const grupoBase = s.substring(2, 3);
+
+    if (sedeCode === "0") return grado + "0" + grupoBase; // Sede Central (ej. 901)
+    if (sedeCode === "4") return grado + "-PJ"; // Pisoje Bajo
+    if (sedeCode === "5") return grado + "-YA"; // Yanaconas
+    if (sedeCode === "6") return grado + "-SE"; // Sendero
+    if (sedeCode === "7") return grado + "-PU"; // Pueblillo
+  }
+
+  // Para grados 3 a 9 (clásico)
+  if (len === 6) return s.substring(0, 3);
+  if (len === 4) return s.substring(0, 3);
   if (s.toLowerCase() === "primaria") return s;
 
   return s;

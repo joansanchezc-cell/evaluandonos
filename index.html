@@ -4598,6 +4598,7 @@
 
       async function procesarCompletos(rows, header, silent = false, fileName = "") {
         const quizIdx = getColIdx(header, ["QuizName", "Quiz Name", "Quiz_Name"]);
+        const classIdx = getColIdx(header, ["Class", "Grupo", "Grado", "Grade"]);
         const fNameIdx = getColIdx(header, ["FirstName", "First Name", "First_Name"]);
         const lNameIdx = getColIdx(header, ["LastName", "Last Name", "Last_Name"]);
         const stdIdIdx = getColIdx(header, ["StudentID", "Student ID", "Student_ID"]);
@@ -4613,11 +4614,22 @@
           const name = ((row[lNameIdx] || "").trim() + " " + (row[fNameIdx] || "").trim()).trim();
           const studentId = (row[stdIdIdx] || "").trim();
 
-          const grupo = extraerGrupo(studentId);
+          let grupo = extraerGrupo(studentId);
+          const classVal = classIdx !== -1 ? (row[classIdx] || "").toString().trim() : "";
+
+          // Si el ID no nos dio un grupo claro pero la columna Class sí, usamos Class
+          if (!esGrupoValido(grupo)) {
+            if (esGrupoValido(classVal)) {
+              grupo = classVal;
+            } else if (classVal) {
+              grupo = classVal;
+            }
+          }
+
           const sede = detectarSede(grupo);
           const gradoNumBase = extraerGradoBase(grupo);
           let gradoLimpio = grupo || gradoNumBase.toString();
-          if (!gradoLimpio) {
+          if (!gradoLimpio || gradoLimpio === "0") {
             const matchG = quizName.match(/(\d+)/);
             if (matchG) gradoLimpio = matchG[1];
           }
