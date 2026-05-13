@@ -4554,21 +4554,20 @@
           console.log('💾 Muestra del primer registro:', JSON.stringify(resultadosEstudiantes[0], null, 2));
           console.log('💾 Muestra del último registro:', JSON.stringify(resultadosEstudiantes[resultadosEstudiantes.length - 1], null, 2));
 
-          // Borrado quirúrgico: solo eliminar los registros que coincidan con el quiz, periodo Y GRADO
-          const uniqueCombs = [...new Set(resultadosEstudiantes.map(e => `${e.quiz_name}|${e.grado}|${e.periodo}`))];
-          console.log('🗑️ Combinaciones a borrar (Quirúrgico):', uniqueCombs);
+          // Borrado quirúrgico global por archivo: eliminar todos los registros que coincidan con el quiz y periodo
+          const uniqueCombs = [...new Set(resultadosEstudiantes.map(e => `${e.quiz_name}|${e.periodo}`))];
+          console.log('🗑️ Combinaciones a borrar (Quirúrgico Global):', uniqueCombs);
           for (const comb of uniqueCombs) {
-            const [q, g, p] = comb.split('|');
-            console.log(`🗑️ Borrando previos: quiz_name="${q}" grado="${g}" periodo=${p}`);
+            const [q, p] = comb.split('|');
+            console.log(`🗑️ Borrando previos globales: quiz_name="${q}" periodo=${p}`);
             const { error: delErr } = await supabaseClient.from('eval_estudiantes_notas')
               .delete()
               .eq('quiz_name', q)
-              .eq('grado', g)
               .eq('periodo', p);
             if (delErr) {
               console.warn('⚠️ Advertencia al borrar previos:', delErr);
             } else {
-              console.log(`✅ Borrado OK para "${q}" (Grado ${g}, P${p})`);
+              console.log(`✅ Borrado OK para "${q}" (P${p})`);
             }
           }
 
@@ -4678,11 +4677,11 @@
         if (batchCompletos.length === 0) return;
         updateStatus(`⏳ Guardando ${batchCompletos.length} reportes completos...`);
 
-        // Borrado quirúrgico
-        const uniqueCombs = [...new Set(batchCompletos.map(e => `${e.quiz_name}|${e.grado}|${e.periodo}`))];
+        // Borrado quirúrgico global por archivo para asegurar purga de grupos corruptos previos
+        const uniqueCombs = [...new Set(batchCompletos.map(e => `${e.quiz_name}|${e.periodo}`))];
         for (const comb of uniqueCombs) {
-          const [q, g, p] = comb.split('|');
-          await supabaseClient.from('eval_estudiantes_completos').delete().eq('quiz_name', q).eq('grado', g).eq('periodo', p);
+          const [q, p] = comb.split('|');
+          await supabaseClient.from('eval_estudiantes_completos').delete().eq('quiz_name', q).eq('periodo', p);
         }
 
         const BATCH = 100;
