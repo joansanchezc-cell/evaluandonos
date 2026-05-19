@@ -6522,6 +6522,109 @@
               });
 
               // RESTRICCIÓN ADICIONAL CENTRAL PRIMARIA
+      const CURRENT_APP_VERSION = 'v68';
+                const historicosData = JSON.parse(decodeURIComponent("${encodeURIComponent(JSON.stringify(historicosMap))}"));
+                const currentP = ${parseInt(currentPeriodo) || 1};
+                function getValoration(p) {
+                  if (p >= 91) return { label: 'Superior', nivel: 'N4', color: '#7e22ce' };
+                  if (p >= 71) return { label: 'Alto', nivel: 'N3', color: '#15803d' };
+                  if (p >= 51) return { label: 'Básico', nivel: 'N2', color: '#b45309' };
+                  return { label: 'Bajo', nivel: 'N1', color: '#b91c1c' };
+                }
+                function initCharts() {
+                  try {
+                    Object.keys(historicosData).forEach(zipId => {
+                      const histAll = historicosData[zipId];
+                      const hist = histAll.filter(h => h.periodo <= currentP).sort((a,b) => a.periodo - b.periodo);
+                      if (!hist || hist.length < 1) return;
+                      const canvas = document.getElementById('chart-tendencia-' + zipId);
+                      if (!canvas) return;
+                      new Chart(canvas, {
+                        type: 'line', plugins: [ChartDataLabels],
+                        data: {
+                          labels: hist.map(h => h.periodo === 3 ? 'EF' : 'E' + h.periodo),
+                          datasets: [{
+                            data: hist.map(h => Math.round(h.porcentaje)),
+                            borderColor: '#4f46e5', backgroundColor: 'rgba(79, 70, 229, 0.1)',
+                            pointBackgroundColor: hist.map(h => getValoration(Math.round(h.porcentaje)).color),
+                            pointRadius: 5, borderWidth: 2, tension: 0.3, fill: true
+                          }]
+                        },
+                        options: {
+                          responsive: true, maintainAspectRatio: false, animation: false,
+                          plugins: { legend: { display: false }, datalabels: { align: 'top', font: { weight: 'bold', size: 9 } } },
+                          scales: { y: { display: false, min: 0, max: 115 }, x: { grid: { display: false }, ticks: { font: { size: 9 } } } }
+                        }
+                      });
+                    });
+                  } catch(e) { console.error(e); }
+                }
+                window.onload = () => {
+                  initCharts();
+                  setTimeout(() => window.print(), 1000);
+                };
+              ${sEnd}
+            </body>
+          </html>
+        `);
+          printWindow.document.close();
+        } catch (e) {
+          console.error("Error en impresión masiva de sede:", e);
+          alert("Ocurrió un error: " + e.message);
+        }
+        showLoading(false);
+      }
+
+      // --- LÓGICA DE ESTADÍSTICAS ---
+      async function cargarEstadisticas() {
+        showLoading(true);
+        try {
+          const { data, error } = await supabaseClient.from('eval_estudiantes_notas')
+            .select('*')
+            .eq('periodo', currentPeriodo);
+
+          if (error) throw error;
+          let dataTemp = data || [];
+
+          if (dataTemp.length === 0 && currentPeriodo === 2) {
+            const { data: fallbackData } = await supabaseClient.from('eval_estudiantes_notas').select('*').eq('periodo', 1);
+            if (fallbackData && fallbackData.length > 0) dataTemp = fallbackData;
+          }
+
+          dataPeriodoActual = dataTemp;
+
+          if (dataPeriodoActual.length === 0) {
+            alert("No hay datos suficientes para generar estadísticas en este periodo.");
+            showLoading(false);
+            return;
+          }
+
+          // 1. Poblar selectores del Dashboard
+          let gruposUnicos = [...new Set(dataPeriodoActual.map(d => extraerGrupo(d.zipgrade_id)))]
+            .filter(g => extraerGradoBase(g) > 0);
+
+          // --- Filtro de Privacidad: Solo mostrar grupos permitidos ---
+          if (currentRole !== 'superadmin') {
+            const assignedLower = (window.assignedGrade || "").toString().toLowerCase();
+            const gBaseAssigned = extraerGradoBase(window.assignedGrade);
+            const esDePrimaria = assignedLower === "primaria" || (gBaseAssigned >= 1 && gBaseAssigned <= 5);
+            const mySede = window.userSede || 'Central';
+
+            if (currentRole === 'admin') {
+              gruposUnicos = gruposUnicos.filter(g => detectarSede(g) === mySede);
+              if (esDePrimaria && mySede === 'Central') {
+                gruposUnicos = gruposUnicos.filter(g => ['301', '401', '501'].includes(g.toString()));
+              }
+            } else {
+              const dictan = userPermissions.filter(p => p.tipo === 'ASIGNACION').map(p => p.grado.toString());
+              const direccion = window.assignedGroups || [];
+              gruposUnicos = gruposUnicos.filter(g => {
+                const gBase = extraerGradoBase(g);
+                return dictan.some(d => d === g.toString() || d === gBase.toString()) || 
+                       direccion.some(d => d === g.toString() || d === gBase.toString());
+              });
+
+              // RESTRICCIÓN ADICIONAL CENTRAL PRIMARIA
               if (esDePrimaria && mySede === 'Central') {
                 gruposUnicos = gruposUnicos.filter(g => ['301', '401', '501'].includes(g.toString()));
               }
@@ -6529,23 +6632,7 @@
           }
           // ----------------------------------------------------------
 
-          gruposUnicos.sort((a, b) => a.localeCompare(b, undefined, { numeric: true }));
-
-          const gradosUnicos = [...new Set(gruposUnicos.map(g => extraerGradoBase(g)))]
-            .sort((a, b) => a - b);
-
-          const selAsig = $('est-sel-grado');
-          if (selAsig) {
-            selAsig.innerHTML = gruposUnicos.map(g => `<option value="${g}">${g}</option>`).join('');
-          }
-
-          const selComp = $('comp-sel-grado');
-          if (selComp) {
-            selComp.innerHTML = gradosUnicos.map(g => `<option value="${g}">${g}°</option>`).join('');
-          }
-
-          // 2. Gráfico: Promedio Detallado por Grupo (Grados)
-          const promediosGrado = {};
+           const promediosGrado = {};
           const conteoGrado = {};
           dataPeriodoActual.forEach(d => {
             const g = extraerGradoBase(extraerGrupo(d.zipgrade_id));
@@ -6612,6 +6699,68 @@
             suma += Math.round((ok / (subj.end - subj.start + 1)) * 100);
             validos++;
           });
+          return validos > 0 ? Math.round(suma / validos) : 0;
+        });
+
+        if (chartMaterias) chartMaterias.destroy();
+        const ctxM = $('chart-materias').getContext('2d');
+        chartMaterias = new Chart(ctxM, {
+          type: 'bar',
+          plugins: [ChartDataLabels],
+          data: {
+            labels: labels,
+            datasets: [{
+              data: data,
+              backgroundColor: labels.map(l => obtenerColorAsignatura(l)),
+              borderRadius: 8
+            }]
+          },
+          options: {
+            indexAxis: 'y',
+            responsive: true, maintainAspectRatio: false,
+            plugins: {
+              legend: { display: false },
+              datalabels: { color: '#1e293b', font: { weight: 'bold', size: 11 }, anchor: 'end', align: 'right', formatter: v => v + '%' }
+            },
+            scales: { x: { min: 0, max: 100 } }
+          }
+        });
+      }
+
+      function actualizarGraficoNivelAsignaturas() {
+        const gBase = parseInt($('comp-sel-grado').value);
+        if (!gBase) return;
+
+        // 1. Filtrar alumnos del nivel
+        const alumnosNivel = dataPeriodoActual.filter(d => extraerGradoBase(extraerGrupo(d.zipgrade_id)) === gBase);
+
+        // 2. Identificar sedes únicas en este nivel
+        const sedesUnicas = [...new Set(alumnosNivel.map(d => detectarSede(extraerGrupo(d.zipgrade_id))))]
+          .sort((a, b) => a.localeCompare(b));
+
+        // 3. Determinar configuración de materias
+        let mKey = '6-9';
+        if (gBase <= 4) mKey = '3-4'; else if (gBase === 5) mKey = '5'; else if (gBase >= 10) mKey = '10-11';
+        const config = MATRIZ_RANGOS[mKey];
+        const labels = config.map(c => c.label);
+
+        // 4. Crear datasets: uno por cada SEDE
+        const datasets = sedesUnicas.map(sede => {
+          const alumnosSede = alumnosNivel.filter(d => detectarSede(extraerGrupo(d.zipgrade_id)) === sede);
+          const data = config.map(subj => {
+            let suma = 0;
+            let count = 0;
+            alumnosSede.forEach(est => {
+              let ok = 0;
+              for (let i = subj.start; i <= subj.end; i++) {
+                if (est.respuestas && est.respuestas[i] === 1) ok++;
+              }
+              suma += Math.round((ok / (subj.end - subj.start + 1)) * 100);
+              count++;
+            });
+            return count > 0 ? Math.round(suma / count) : 0;
+          });
+
           let color = '#6366f1';
           if (sede === 'Central') color = '#4f46e5';
           else if (sede === 'Yanaconas') color = '#10b981';
@@ -6620,7 +6769,7 @@
           else if (sede === 'Pueblillo') color = '#06b6d4';
 
           return {
-            label: grupo,
+            label: sede,
             data: data,
             backgroundColor: color,
             borderRadius: 5,
@@ -6651,32 +6800,6 @@
     </script>
 
     <script>
-      const CURRENT_APP_VERSION = 'v68';
-      window.addEventListener('load', () => {
-        if ('serviceWorker' in navigator) {
-          navigator.serviceWorker.register('sw.js')
-            .then(reg => {
-              reg.onupdatefound = () => {
-                const installingWorker = reg.installing;
-                installingWorker.onstatechange = () => {
-                  if (installingWorker.state === 'installed' && navigator.serviceWorker.controller) {
-                    window.location.reload();
-                  }
-                };
-              };
-            });
-        }
-      });
-
-      if (localStorage.getItem('app_version') !== CURRENT_APP_VERSION) {
-        if ('serviceWorker' in navigator) {
-          navigator.serviceWorker.getRegistrations().then(registrations => {
-            for (let registration of registrations) registration.unregister();
-          });
-        }
-        caches.keys().then(names => {
-          for (let name of names) caches.delete(name);
-        });
         localStorage.setItem('app_version', CURRENT_APP_VERSION);
         setTimeout(() => window.location.reload(true), 1000);
       }
