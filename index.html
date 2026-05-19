@@ -6418,8 +6418,8 @@
           }
 
           // 1. Poblar selectores del Dashboard
-          let gruposUnicos = [...new Set(dataPeriodoActual.map(d => d.grado ? d.grado.toString() : ""))]
-            .filter(g => esGrupoValido(g));
+          let gruposUnicos = [...new Set(dataPeriodoActual.map(d => extraerGrupo(d.zipgrade_id)))]
+            .filter(g => extraerGradoBase(g) > 0);
 
           // --- Filtro de Privacidad: Solo mostrar grupos permitidos ---
           if (currentRole !== 'superadmin') {
@@ -6474,7 +6474,7 @@
           const promediosGrado = {};
           const conteoGrado = {};
           dataPeriodoActual.forEach(d => {
-            const g = extraerGradoBase(d.grado ? d.grado.toString() : "");
+            const g = extraerGradoBase(extraerGrupo(d.zipgrade_id));
             if (!promediosGrado[g]) { promediosGrado[g] = 0; conteoGrado[g] = 0; }
             promediosGrado[g] += (d.porcentaje || 0);
             conteoGrado[g]++;
@@ -6522,7 +6522,7 @@
         const grupo = $('est-sel-grado').value;
         if (!grupo) return;
 
-        const alumnos = dataPeriodoActual.filter(d => (d.grado ? d.grado.toString() : "") === grupo);
+        const alumnos = dataPeriodoActual.filter(d => extraerGrupo(d.zipgrade_id) === grupo);
         const gNum = extraerGradoBase(grupo);
         let mKey = '6-9';
         if (gNum <= 4) mKey = '3-4'; else if (gNum === 5) mKey = '5'; else if (gNum >= 10) mKey = '10-11';
@@ -6571,10 +6571,10 @@
         if (!gBase) return;
 
         // 1. Filtrar alumnos del nivel
-        const alumnosNivel = dataPeriodoActual.filter(d => extraerGradoBase(d.grado ? d.grado.toString() : "") === gBase);
+        const alumnosNivel = dataPeriodoActual.filter(d => extraerGradoBase(extraerGrupo(d.zipgrade_id)) === gBase);
 
         // 2. Identificar sedes únicas en este nivel
-        const sedesUnicas = [...new Set(alumnosNivel.map(d => detectarSede(d.grado ? d.grado.toString() : "")))]
+        const sedesUnicas = [...new Set(alumnosNivel.map(d => detectarSede(extraerGrupo(d.zipgrade_id))))]
           .sort((a, b) => a.localeCompare(b));
 
         // 3. Determinar configuración de materias
@@ -6585,7 +6585,7 @@
 
         // 4. Crear datasets: uno por cada SEDE
         const datasets = sedesUnicas.map(sede => {
-          const alumnosSede = alumnosNivel.filter(d => detectarSede(d.grado ? d.grado.toString() : "") === sede);
+          const alumnosSede = alumnosNivel.filter(d => detectarSede(extraerGrupo(d.zipgrade_id)) === sede);
           const data = config.map(subj => {
             let suma = 0;
             let count = 0;
