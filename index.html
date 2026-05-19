@@ -2505,6 +2505,7 @@
       let currentRole = 'lector';
       let isEnPestañaGrupal = false;
       let dataPeriodoActual = [];
+      let dataTodoPeriodo = []; // Copia SIN filtro de permisos, usada por el gráfico comparativo de sedes
       let totalGradoMap = {};
       let myChart = null;
       let chartGrados = null, chartMaterias = null, chartSedes = null, chartComparativo = null;
@@ -6410,6 +6411,7 @@
           }
 
           dataPeriodoActual = dataTemp;
+          dataTodoPeriodo = dataTemp; // Guardar copia completa antes de cualquier filtro
 
           if (dataPeriodoActual.length === 0) {
             alert("No hay datos suficientes para generar estadísticas en este periodo.");
@@ -6570,12 +6572,18 @@
         const gBase = parseInt($('comp-sel-grado').value);
         if (!gBase) return;
 
-        // 1. Filtrar alumnos del nivel
-        const alumnosNivel = dataPeriodoActual.filter(d => extraerGradoBase(extraerGrupo(d.zipgrade_id)) === gBase);
+        // 1. Filtrar alumnos del nivel usando TODOS los datos del periodo (sin filtro de permisos)
+        //    para garantizar que aparezcan todas las sedes que tienen ese grado.
+        const alumnosNivel = dataTodoPeriodo
+          ? dataTodoPeriodo.filter(d => extraerGradoBase(extraerGrupo(d.zipgrade_id)) === gBase)
+          : dataPeriodoActual.filter(d => extraerGradoBase(extraerGrupo(d.zipgrade_id)) === gBase);
 
         // 2. Identificar sedes únicas en este nivel
         const sedesUnicas = [...new Set(alumnosNivel.map(d => detectarSede(extraerGrupo(d.zipgrade_id))))]
+          .filter(s => s)
           .sort((a, b) => a.localeCompare(b));
+
+        if (sedesUnicas.length === 0) return;
 
         // 3. Determinar configuración de materias
         let mKey = '6-9';
@@ -6583,7 +6591,16 @@
         const config = MATRIZ_RANGOS[mKey];
         const labels = config.map(c => c.label);
 
-        // 4. Crear datasets: uno por cada SEDE
+        // 4. Colores institucionales por sede
+        const COLORES_SEDE = {
+          'Central':    '#4f46e5',
+          'Yanaconas':  '#10b981',
+          'Sendero':    '#f59e0b',
+          'Pisoje Bajo':'#ef4444',
+          'Pueblillo':  '#06b6d4'
+        };
+
+        // 5. Crear datasets: uno por cada SEDE
         const datasets = sedesUnicas.map(sede => {
           const alumnosSede = alumnosNivel.filter(d => detectarSede(extraerGrupo(d.zipgrade_id)) === sede);
           const data = config.map(subj => {
@@ -6600,17 +6617,10 @@
             return count > 0 ? Math.round(suma / count) : 0;
           });
 
-          let color = '#6366f1';
-          if (sede === 'Central') color = '#4f46e5';
-          else if (sede === 'Yanaconas') color = '#10b981';
-          else if (sede === 'Sendero') color = '#f59e0b';
-          else if (sede === 'Pisoje Bajo') color = '#ef4444';
-          else if (sede === 'Pueblillo') color = '#06b6d4';
-
           return {
             label: sede,
             data: data,
-            backgroundColor: color,
+            backgroundColor: COLORES_SEDE[sede] || '#6366f1',
             borderRadius: 5,
             borderWidth: 1,
             borderColor: 'white'
@@ -6621,16 +6631,31 @@
         const ctxC = $('chart-comparativo-grupos').getContext('2d');
         chartComparativo = new Chart(ctxC, {
           type: 'bar',
+          plugins: [ChartDataLabels],
           data: { labels: labels, datasets: datasets },
           options: {
             responsive: true, maintainAspectRatio: false,
             plugins: {
               legend: { display: true, position: 'top', labels: { font: { size: 10, weight: 'bold' }, usePointStyle: true } },
-              datalabels: { display: false },
-              tooltip: { mode: 'index', intersect: false }
+              datalabels: {
+                color: '#fff',
+                font: { weight: 'bold', size: 10 },
+                anchor: 'center',
+                align: 'center',
+                formatter: v => v > 0 ? v : ''
+              },
+              tooltip: {
+                mode: 'index',
+                intersect: false,
+                callbacks: { label: ctx => ctx.dataset.label + ': ' + ctx.parsed.y }
+              }
             },
             scales: {
-              y: { min: 0, max: 100, ticks: { font: { size: 10 } }, title: { display: true, text: 'Promedio (%)', font: { weight: 'bold' } } },
+              y: {
+                min: 0, max: 100,
+                ticks: { font: { size: 10 }, callback: v => v },
+                title: { display: true, text: 'Promedio', font: { weight: 'bold' } }
+              },
               x: { ticks: { font: { size: 9 }, autoSkip: false, maxRotation: 45, minRotation: 0 } }
             }
           }
