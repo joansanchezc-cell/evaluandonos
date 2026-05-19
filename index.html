@@ -6573,9 +6573,9 @@
         // 1. Filtrar alumnos del nivel
         const alumnosNivel = dataPeriodoActual.filter(d => extraerGradoBase(d.grado ? d.grado.toString() : "") === gBase);
 
-        // 2. Identificar grupos únicos en este nivel
-        const gruposUnicos = [...new Set(alumnosNivel.map(d => d.grado ? d.grado.toString() : ""))]
-          .sort((a, b) => a.localeCompare(b, undefined, { numeric: true }));
+        // 2. Identificar sedes únicas en este nivel
+        const sedesUnicas = [...new Set(alumnosNivel.map(d => detectarSede(d.grado ? d.grado.toString() : "")))]
+          .sort((a, b) => a.localeCompare(b));
 
         // 3. Determinar configuración de materias
         let mKey = '6-9';
@@ -6583,13 +6583,13 @@
         const config = MATRIZ_RANGOS[mKey];
         const labels = config.map(c => c.label);
 
-        // 4. Crear datasets: uno por cada GRUPO
-        const datasets = gruposUnicos.map(grupo => {
-          const alumnosGrupo = alumnosNivel.filter(d => (d.grado ? d.grado.toString() : "") === grupo);
+        // 4. Crear datasets: uno por cada SEDE
+        const datasets = sedesUnicas.map(sede => {
+          const alumnosSede = alumnosNivel.filter(d => detectarSede(d.grado ? d.grado.toString() : "") === sede);
           const data = config.map(subj => {
             let suma = 0;
             let count = 0;
-            alumnosGrupo.forEach(est => {
+            alumnosSede.forEach(est => {
               let ok = 0;
               for (let i = subj.start; i <= subj.end; i++) {
                 if (est.respuestas && est.respuestas[i] === 1) ok++;
@@ -6600,8 +6600,6 @@
             return count > 0 ? Math.round(suma / count) : 0;
           });
 
-          // Color según sede
-          const sede = detectarSede(grupo);
           let color = '#6366f1';
           if (sede === 'Central') color = '#4f46e5';
           else if (sede === 'Yanaconas') color = '#10b981';
@@ -6610,7 +6608,7 @@
           else if (sede === 'Pueblillo') color = '#06b6d4';
 
           return {
-            label: grupo,
+            label: sede,
             data: data,
             backgroundColor: color,
             borderRadius: 5,
