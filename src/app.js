@@ -2,13 +2,17 @@
  * Aplicación Principal
  * Punto de entrada que inicializa toda la arquitectura
  * 
- * Este archivo se importaría en el footer de index.html:
+ * Este archivo se importa en el footer de index.html:
  * <script type="module" src="./src/app.js"></script>
  */
 
 import { supabaseDatasource } from './data/index.js';
-import { authController } from './presentation/controllers/index.js';
-import { analisisController } from './presentation/controllers/index.js';
+import { 
+  authController, 
+  analisisController, 
+  adminController, 
+  reportController 
+} from './presentation/controllers/index.js';
 
 /**
  * Inicializa la aplicación
@@ -32,13 +36,30 @@ async function initApp() {
     console.log('🎮 Inicializando Controllers...');
     authController.init();
     await analisisController.init();
+    adminController.init();
+    reportController.init();
     console.log('✅ Controllers inicializados');
 
-    // 3. App lista
-    console.log('✨ Aplicación lista');
+    // 3. Exposición global para garantizar 100% de compatibilidad con botones onclick legado
+    window.authController = authController;
+    window.analisisController = analisisController;
+    window.adminController = adminController;
+    window.reportController = reportController;
+    
+    // Callbacks globales compatibles
+    window.logout = async () => {
+      if (typeof window.logoutLegacy === 'function') {
+        await window.logoutLegacy();
+      } else {
+        await authController.bindLogout();
+      }
+    };
+
+    console.log('✨ Aplicación lista para producción');
   } catch (err) {
     console.error('❌ Error inicializando aplicación:', err);
-    document.body.innerHTML = `<p style="color:red;">Error: ${err.message}</p>`;
+    // Para no romper la experiencia si falla la inicialización modular en paralelo
+    console.warn('⚠️ Se mantiene la ejecución fallback del script inline.');
   }
 }
 
@@ -48,3 +69,4 @@ if (document.readyState === 'loading') {
 } else {
   initApp();
 }
+
