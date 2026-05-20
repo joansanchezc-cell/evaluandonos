@@ -1168,34 +1168,40 @@
       .header-banner {
         justify-content: center !important;
         /* Centrado horizontal */
-        padding: 25px !important;
-        height: 160px !important;
-        /* Más altura para el logo grande */
+        padding: 5px 0 !important;
+        height: auto !important;
         position: relative !important;
       }
 
 
       /* Selector de alta especificidad para forzar el tamaño */
       header .header-banner img.header-logo-img {
-        height: 180px !important;
-        width: auto !important;
+        width: 100% !important;
+        max-width: 1200px !important;
+        height: auto !important;
         max-height: none !important;
         display: block !important;
       }
 
       #user-badge {
-        position: absolute !important;
-        right: 40px !important;
-        top: 50% !important;
-        transform: translateY(-50%) !important;
-        background: #f1f5f9 !important;
+        position: relative !important;
+        top: auto !important;
+        right: auto !important;
+        transform: none !important;
+        background: #f8fafc !important;
+        border: 1px solid #cbd5e1 !important;
+        border-radius: 10px !important;
+        padding: 6px 12px !important;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.05) !important;
       }
     }
 
     /* --- RESPONSIVE DESIGN (Celulares y Tablets) --- */
     @media (max-width: 768px) {
       .header-banner img {
-        height: 140px;
+        height: auto !important;
+        width: 100% !important;
+        max-width: 100% !important;
       }
 
       .header-sub {
@@ -1274,11 +1280,11 @@
         position: relative !important;
         top: 0 !important;
         right: 0 !important;
-        background: rgba(255, 255, 255, 0.8) !important;
-        padding: 4px 10px !important;
-        border-radius: 12px !important;
-        box-shadow: none !important;
-        border: 1px solid #e2e8f0 !important;
+        background: #f8fafc !important;
+        padding: 6px 12px !important;
+        border-radius: 10px !important;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.05) !important;
+        border: 1px solid #cbd5e1 !important;
         display: flex !important;
       }
 
