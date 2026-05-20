@@ -6572,11 +6572,20 @@
         const gBase = parseInt($('comp-sel-grado').value);
         if (!gBase) return;
 
+        // === DEBUG TEMPORAL ===
+        console.log('[COMP] dataTodoPeriodo.length:', dataTodoPeriodo ? dataTodoPeriodo.length : 'null/undefined');
+        console.log('[COMP] dataPeriodoActual.length:', dataPeriodoActual.length);
+        console.log('[COMP] grado seleccionado:', gBase);
+        const muestraIds = (dataTodoPeriodo || dataPeriodoActual).slice(0, 10).map(d => d.zipgrade_id);
+        console.log('[COMP] muestra zipgrade_ids:', muestraIds);
+        const muestraGrupos = muestraIds.map(id => ({ id, grupo: extraerGrupo(id), sede: detectarSede(extraerGrupo(id)) }));
+        console.log('[COMP] grupos y sedes detectados:', muestraGrupos);
+        // === FIN DEBUG ===
+
         // 1. Filtrar alumnos del nivel usando TODOS los datos del periodo (sin filtro de permisos)
-        //    para garantizar que aparezcan todas las sedes que tienen ese grado.
-        const alumnosNivel = dataTodoPeriodo
-          ? dataTodoPeriodo.filter(d => extraerGradoBase(extraerGrupo(d.zipgrade_id)) === gBase)
-          : dataPeriodoActual.filter(d => extraerGradoBase(extraerGrupo(d.zipgrade_id)) === gBase);
+        const fuente = (dataTodoPeriodo && dataTodoPeriodo.length > 0) ? dataTodoPeriodo : dataPeriodoActual;
+        const alumnosNivel = fuente.filter(d => extraerGradoBase(extraerGrupo(d.zipgrade_id)) === gBase);
+        console.log('[COMP] alumnosNivel.length para grado', gBase, ':', alumnosNivel.length);
 
         // 2. Identificar sedes únicas en este nivel
         const sedesUnicas = [...new Set(alumnosNivel.map(d => detectarSede(extraerGrupo(d.zipgrade_id))))]
