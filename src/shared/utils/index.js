@@ -9,5 +9,6 @@ export {
   detectarSede,
   detectarPeriodo,
   calcularPorcentaje,
-  isValidEmail
+  isValidEmail,
+  extraerGradoBase
 } from './normalization.js';

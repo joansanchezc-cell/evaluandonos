@@ -110,3 +110,19 @@ export function isValidEmail(email) {
   const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   return re.test(email);
 }
+
+/**
+ * Extrae el grado base a partir del grupo o curso
+ * @param {string|number} grupo - Grupo o curso (ej: "1101", "305", "primaria")
+ * @returns {number} Grado base
+ */
+export function extraerGradoBase(grupo) {
+  if (!grupo) return 0;
+  const s = grupo.toString().trim();
+  if (s.toLowerCase() === "primaria") return 1;
+  if (s.length === 2 && !["10", "11"].includes(s)) return 0;
+  if (s.startsWith("10") || s.startsWith("11")) return parseInt(s.substring(0, 2), 10);
+  const firstDigit = parseInt(s.substring(0, 1), 10);
+  return isNaN(firstDigit) ? 0 : firstDigit;
+}
+

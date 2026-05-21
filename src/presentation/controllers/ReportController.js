@@ -1,6 +1,12 @@
 /**
- * Controlador de Reportes
- * Gestiona eventos de interfaz, renderizado de tablas e integración con Chart.js para los reportes
+ * ReportController - Modo de Integración Dual
+ *
+ * Opera en modo "observador pasivo" sobre el HTML legacy de index.html.
+ * Los IDs reales del HTML son:
+ *   - rep-sede, rep-grado, rep-estudiante  → selectores del tab Individual
+ *   - individual-container, individual-content → contenedores
+ *   - btn-buscar-individual / input-search-individual → nueva arch. (opcional)
+ *   - grupal-content, asignatura-content   → contenedores de nuevos reportes
  */
 
 import { ReportService } from '../../domain/services/index.js';
@@ -23,11 +29,18 @@ export class ReportController {
   }
 
   /**
-   * Vincula la lógica de búsqueda para el reporte individual
+   * Vincula la lógica de búsqueda para el reporte individual.
+   * Soporta el botón de búsqueda de nueva arch. (btn-buscar-individual / input-search-individual)
+   * El sistema legacy carga via cargarGradosReporte() / cargarEstudiantesReporte() directamente.
    */
   bindReporteIndividual() {
-    const btnBuscar = document.getElementById('btn-buscar-individual');
-    const inputSearch = document.getElementById('input-search-individual');
+    // --- Nueva arquitectura: botón de búsqueda directa ---
+    const btnBuscar =
+      document.getElementById('btn-buscar-individual') ||
+      document.getElementById('btn-search-individual');
+    const inputSearch =
+      document.getElementById('input-search-individual') ||
+      document.getElementById('search-individual');
 
     if (btnBuscar && inputSearch) {
       btnBuscar.addEventListener('click', async () => {
@@ -39,10 +52,24 @@ export class ReportController {
         await this.cargarReporteIndividual(query);
       });
     }
+
+    // --- Legacy: Observar cuando el select rep-estudiante cambia ---
+    // (El reporte se genera automáticamente con generarReporteIndividual() del monolito)
+    // No interferimos con el flujo legacy; solo registramos si hay contenedor modular.
+    const repEstudiante = document.getElementById('rep-estudiante');
+    const individualContent = document.getElementById('individual-content');
+    if (repEstudiante && individualContent) {
+      repEstudiante.addEventListener('change', async (e) => {
+        const zipId = e.target.value;
+        if (zipId) {
+          await this.cargarReporteIndividualPorZipId(zipId);
+        }
+      });
+    }
   }
 
   /**
-   * Carga y renderiza el reporte individual de un estudiante
+   * Carga y renderiza el reporte individual por identificación (búsqueda directa)
    */
   async cargarReporteIndividual(query) {
     try {
@@ -51,32 +78,42 @@ export class ReportController {
         alert('Estudiante no encontrado');
         return;
       }
-
-      // Buscar resultados del estudiante
-      const client = window.supabaseClient || null;
-      if (!client) return;
-
-      const { data: resData, error } = await client
-        .from('eval_resultados')
-        .select('*')
-        .eq('zipgrade_id', student.zipgrade_id);
-
-      if (error || !resData || resData.length === 0) {
-        alert('No se encontraron respuestas registradas para este estudiante');
-        return;
-      }
-
-      const gBase = extraerGradoBase(student.grupo || '');
-      const dataProcesada = ReportService.procesarReporteIndividual(resData[0], gBase);
-
-      this.renderReporteIndividual(dataProcesada);
+      await this.cargarReporteIndividualPorZipId(student.zipgrade_id, student);
     } catch (err) {
       console.error('Error al cargar reporte individual:', err);
     }
   }
 
   /**
-   * Renderiza el reporte individual en el contenedor DOM correspondiente
+   * Carga y renderiza el reporte individual por zipgrade_id
+   */
+  async cargarReporteIndividualPorZipId(zipId, studentData = null) {
+    try {
+      const client = window.supabaseClient || null;
+      if (!client) return;
+
+      const { data: resData, error } = await client
+        .from('eval_resultados')
+        .select('*')
+        .eq('zipgrade_id', zipId);
+
+      if (error || !resData || resData.length === 0) {
+        console.warn('[ReportController] Sin respuestas para zipId:', zipId);
+        return;
+      }
+
+      const grupo = resData[0].grado || resData[0].zipgrade_id || '';
+      const gBase = extraerGradoBase(grupo);
+      const dataProcesada = ReportService.procesarReporteIndividual(resData[0], gBase);
+      this.renderReporteIndividual(dataProcesada);
+    } catch (err) {
+      console.error('Error al cargar reporte individual por zipId:', err);
+    }
+  }
+
+  /**
+   * Renderiza el reporte individual en el contenedor DOM.
+   * Soporta: <div id="individual-content"> (nueva arch.)
    */
   renderReporteIndividual(data) {
     const container = document.getElementById('individual-content');
@@ -92,7 +129,6 @@ export class ReportController {
           <strong>Grupo:</strong> ${data.grupo} | <strong>Sede:</strong> ${data.sede}
         </p>
         <hr style="border: 0; border-top: 1px solid #f1f5f9; margin: 15px 0;" />
-        
         <table style="width:100%; border-collapse:collapse; font-size:0.85rem;">
           <thead>
             <tr style="border-bottom:2px solid #e2e8f0; text-align:left;">
@@ -115,7 +151,6 @@ export class ReportController {
             `).join('')}
           </tbody>
         </table>
-        
         <div style="margin-top:20px; background:#f8fafc; padding:12px 20px; border-radius:8px; display:flex; justify-content:space-between; align-items:center;">
           <span style="font-weight:800; color:#1e293b;">PROMEDIO GENERAL:</span>
           <span style="font-size:1.1rem; font-weight:900; color:${data.valoracionGeneral.color};">${data.porcentajeGeneral}% (${data.valoracionGeneral.label})</span>
@@ -128,10 +163,15 @@ export class ReportController {
    * Vincula la lógica de generación del reporte grupal
    */
   bindReporteGrupal() {
-    const btnCargar = document.getElementById('btn-cargar-grupal');
+    const btnCargar =
+      document.getElementById('btn-cargar-grupal') ||
+      document.getElementById('btn-grupal');
+
     if (btnCargar) {
       btnCargar.addEventListener('click', async () => {
-        const selectGrupo = document.getElementById('select-grupo-reporte');
+        const selectGrupo =
+          document.getElementById('select-grupo-reporte') ||
+          document.getElementById('rep-grado');
         const grupo = selectGrupo ? selectGrupo.value : '';
         if (!grupo) {
           alert('Selecciona un grupo primero');
@@ -150,28 +190,25 @@ export class ReportController {
       const client = window.supabaseClient || null;
       if (!client) return;
 
+      const periodo = (typeof window.currentPeriodo !== 'undefined') ? window.currentPeriodo : 1;
       const { data, error } = await client
-        .from('eval_resultados')
-        .select('*');
+        .from('eval_estudiantes_notas')
+        .select('*')
+        .eq('periodo', periodo);
 
       if (error || !data || data.length === 0) {
         alert('No se encontraron registros de resultados en el sistema.');
         return;
       }
 
-      // Filtrar alumnos que pertenezcan al grupo de acuerdo a su zipgrade_id o mapeo
-      const baseGrade = extraerGradoBase(grupo);
-      const filtered = data.filter(d => {
-        const dSede = detectarSede(d.zipgrade_id || '');
-        const targetSede = detectarSede(grupo);
-        return d.grado === baseGrade && dSede === targetSede;
-      });
+      const filtered = data.filter(d => (d.grado || '').toString() === grupo.toString());
 
       if (filtered.length === 0) {
         alert('No se encontraron resultados para el grupo seleccionado');
         return;
       }
 
+      const baseGrade = extraerGradoBase(grupo);
       const resGrupal = ReportService.procesarReporteGrupal(filtered, baseGrade);
       this.renderReporteGrupal(grupo, resGrupal);
     } catch (err) {
@@ -196,7 +233,6 @@ export class ReportController {
           <strong>Promedio General del Grupo:</strong> ${data.promedioGeneral}%
         </p>
         <hr style="border: 0; border-top: 1px solid #f1f5f9; margin: 15px 0;" />
-
         <table style="width:100%; border-collapse:collapse; font-size:0.85rem;">
           <thead>
             <tr style="border-bottom:2px solid #e2e8f0; text-align:left;">
@@ -223,10 +259,15 @@ export class ReportController {
    * Vincula la lógica de visualización del reporte comparativo por asignatura
    */
   bindReporteAsignatura() {
-    const btnCargar = document.getElementById('btn-cargar-asignatura');
+    const btnCargar =
+      document.getElementById('btn-cargar-asignatura') ||
+      document.getElementById('btn-asignatura');
+
     if (btnCargar) {
       btnCargar.addEventListener('click', async () => {
-        const selectGrado = document.getElementById('select-grado-asignatura');
+        const selectGrado =
+          document.getElementById('select-grado-asignatura') ||
+          document.getElementById('sel-grado');
         const grado = selectGrado ? selectGrado.value : '';
         if (!grado) {
           alert('Selecciona un grado base primero');
@@ -245,6 +286,7 @@ export class ReportController {
       const client = window.supabaseClient || null;
       if (!client) return;
 
+      const periodo = (typeof window.currentPeriodo !== 'undefined') ? window.currentPeriodo : 1;
       const { data, error } = await client
         .from('eval_resultados')
         .select('*')
@@ -279,7 +321,6 @@ export class ReportController {
       </div>
     `;
 
-    // Renderizar gráfico
     const COLORES_SEDE = {
       'Central':    '#4f46e5',
       'Yanaconas':  '#10b981',
@@ -304,30 +345,15 @@ export class ReportController {
     const ctx = canvas.getContext('2d');
     this.chartComparativo = new Chart(ctx, {
       type: 'bar',
-      data: {
-        labels: data.labels,
-        datasets: datasets
-      },
+      data: { labels: data.labels, datasets },
       options: {
         responsive: true,
         maintainAspectRatio: false,
         plugins: {
-          legend: {
-            display: true,
-            position: 'top',
-            labels: {
-              usePointStyle: true
-            }
-          }
+          legend: { display: true, position: 'top', labels: { usePointStyle: true } }
         },
         scales: {
-          y: {
-            min: 0,
-            max: 100,
-            ticks: {
-              callback: v => v + '%'
-            }
-          }
+          y: { min: 0, max: 100, ticks: { callback: v => v + '%' } }
         }
       }
     });

@@ -1,12 +1,13 @@
 /**
- * Controlador de Análisis
- * Vincula eventos HTML con AnalisisService
- * 
- * Responsabilidades:
- * - Capturar selección de grado/período
- * - Obtener datos de análisis
- * - Renderizar resultados
- * - Actualizar gráficos
+ * AnalisisController - Modo de Integración Dual
+ *
+ * Este controlador opera en modo "observador pasivo" sobre el HTML legacy:
+ *   - Escucha cambios en los selectores reales: sel-grado, sel-asig, sel-pregunta
+ *   - Escucha los tabs de período: tab-1, tab-2, tab-3
+ *   - Sincroniza el estado interno con el del monolito vía window.currentPeriodo
+ *
+ * Si se agregan IDs nuevos (select-grado, select-periodo, btn-cargar-analisis)
+ * también los bindeará para soportar la nueva arquitectura HTML.
  */
 
 import { AnalisisService } from '../../domain/services/index.js';
@@ -24,64 +25,80 @@ export class AnalisisController {
    */
   async init() {
     console.log('📊 AnalisisController inicializado');
-    
+
     this.bindSelectGrado();
     this.bindSelectPeriodo();
     this.bindBtnCargarAnalisis();
-    
-    // Cargar períodos disponibles
-    await this.cargarPeriodosDisponibles();
-    // Cargar grados disponibles
-    await this.cargarGradosDisponibles();
   }
 
   /**
-   * Vincula evento de selección de grado
-   * HTML esperado: <select id="select-grado">
+   * Vincula selección de grado.
+   * Soporta: <select id="select-grado"> (nueva arch.) o <select id="sel-grado"> (legacy)
    */
   bindSelectGrado() {
-    const selectGrado = document.getElementById('select-grado');
+    const selectGrado =
+      document.getElementById('select-grado') ||
+      document.getElementById('sel-grado');
 
     if (!selectGrado) {
-      console.warn('⚠️ Select de grado no encontrado');
+      console.warn('⚠️ Select de grado no encontrado (select-grado / sel-grado)');
       return;
     }
 
     selectGrado.addEventListener('change', (e) => {
-      this.gradoSeleccionado = parseInt(e.target.value, 10);
-      console.log(`📌 Grado seleccionado: ${this.gradoSeleccionado}`);
+      this.gradoSeleccionado = e.target.value ? parseInt(e.target.value, 10) : null;
+      console.log(`📌 [AnalisisController] Grado: ${this.gradoSeleccionado}`);
     });
   }
 
   /**
-   * Vincula evento de selección de período
-   * HTML esperado: <select id="select-periodo">
+   * Vincula selección de período.
+   * Soporta: <select id="select-periodo"> (nueva arch.)
+   * y los tabs legacy <div id="tab-1|tab-2|tab-3">.
    */
   bindSelectPeriodo() {
+    // Nueva arquitectura
     const selectPeriodo = document.getElementById('select-periodo');
-
-    if (!selectPeriodo) {
-      console.warn('⚠️ Select de período no encontrado');
-      return;
+    if (selectPeriodo) {
+      selectPeriodo.addEventListener('change', (e) => {
+        this.periodoSeleccionado = e.target.value ? parseInt(e.target.value, 10) : null;
+        console.log(`📌 [AnalisisController] Período (select): ${this.periodoSeleccionado}`);
+      });
     }
 
-    selectPeriodo.addEventListener('change', (e) => {
-      this.periodoSeleccionado = parseInt(e.target.value, 10);
-      console.log(`📌 Período seleccionado: ${this.periodoSeleccionado}`);
+    // Tabs legacy (tab-1, tab-2, tab-3)
+    [1, 2, 3].forEach(p => {
+      const tab = document.getElementById(`tab-${p}`);
+      if (tab) {
+        tab.addEventListener('click', () => {
+          this.periodoSeleccionado = p;
+          console.log(`📌 [AnalisisController] Período (tab): ${this.periodoSeleccionado}`);
+        });
+      }
     });
+
+    // Inicializar con período activo actual desde el monolito
+    const periodoActivo = [1, 2, 3].find(p => {
+      const tab = document.getElementById(`tab-${p}`);
+      return tab && tab.classList.contains('active');
+    });
+    if (periodoActivo) {
+      this.periodoSeleccionado = periodoActivo;
+    } else {
+      // Fallback: usar la variable global del monolito si existe
+      this.periodoSeleccionado = (typeof window.currentPeriodo !== 'undefined')
+        ? parseInt(window.currentPeriodo, 10)
+        : 1;
+    }
   }
 
   /**
-   * Vincula botón de cargar análisis
-   * HTML esperado: <button id="btn-cargar-analisis">
+   * Vincula botón de cargar análisis (solo nueva arquitectura).
+   * El legacy carga automáticamente con onchange en los selects.
    */
   bindBtnCargarAnalisis() {
     const btn = document.getElementById('btn-cargar-analisis');
-
-    if (!btn) {
-      console.warn('⚠️ Botón de cargar análisis no encontrado');
-      return;
-    }
+    if (!btn) return; // Silencioso: en legacy no existe
 
     btn.addEventListener('click', () => {
       this.cargarAnalisis();
@@ -89,7 +106,7 @@ export class AnalisisController {
   }
 
   /**
-   * Carga análisis del grado y período seleccionado
+   * Carga análisis del grado y período seleccionado (solo nueva arquitectura).
    */
   async cargarAnalisis() {
     if (!this.gradoSeleccionado || !this.periodoSeleccionado) {
@@ -99,10 +116,7 @@ export class AnalisisController {
 
     try {
       const btn = document.getElementById('btn-cargar-analisis');
-      if (btn) {
-        btn.disabled = true;
-        btn.textContent = 'Cargando...';
-      }
+      if (btn) { btn.disabled = true; btn.textContent = 'Cargando...'; }
 
       console.log(`🔄 Cargando análisis grado ${this.gradoSeleccionado}, período ${this.periodoSeleccionado}`);
 
@@ -111,29 +125,22 @@ export class AnalisisController {
         this.periodoSeleccionado
       );
 
-      if (error) {
-        this.mostrarError(error);
-        return;
-      }
+      if (error) { this.mostrarError(error); return; }
 
       this.analisisActual = { resultados, estadisticas };
       this.renderizarEstadisticas(estadisticas);
       this.renderizarTablaResultados(resultados);
-      
       this.mostrarExito(`✅ ${resultados.length} resultados cargados`);
     } catch (err) {
       this.mostrarError(err.message);
     } finally {
       const btn = document.getElementById('btn-cargar-analisis');
-      if (btn) {
-        btn.disabled = false;
-        btn.textContent = 'Cargar Análisis';
-      }
+      if (btn) { btn.disabled = false; btn.textContent = 'Cargar Análisis'; }
     }
   }
 
   /**
-   * Carga períodos disponibles en select
+   * Carga períodos disponibles (solo nueva arquitectura con select-periodo).
    */
   async cargarPeriodosDisponibles() {
     try {
@@ -141,18 +148,12 @@ export class AnalisisController {
       if (!selectPeriodo) return;
 
       const periodoMasReciente = await ResultadosRepository.obtenerPeriodoMasReciente();
-
       if (periodoMasReciente) {
-        const periodos = [1, 2, 3]; // Configurar según necesidad
-
-        periodos.forEach(p => {
+        [1, 2, 3].forEach(p => {
           const option = document.createElement('option');
           option.value = p;
-          option.textContent = `Período ${p}`;
-          if (p === periodoMasReciente) {
-            option.selected = true;
-            this.periodoSeleccionado = p;
-          }
+          option.textContent = p === 3 ? 'Final' : `Período ${p}`;
+          if (p === periodoMasReciente) { option.selected = true; this.periodoSeleccionado = p; }
           selectPeriodo.appendChild(option);
         });
       }
@@ -162,19 +163,16 @@ export class AnalisisController {
   }
 
   /**
-   * Carga grados disponibles en select
+   * Carga grados disponibles (solo nueva arquitectura con select-grado).
    */
   async cargarGradosDisponibles() {
     try {
       if (!this.periodoSeleccionado) return;
-
       const selectGrado = document.getElementById('select-grado');
       if (!selectGrado) return;
 
       const grados = await ResultadosRepository.obtenerGradosConResultados(this.periodoSeleccionado);
-
       selectGrado.innerHTML = '<option value="">-- Selecciona grado --</option>';
-
       grados.forEach(grado => {
         const option = document.createElement('option');
         option.value = grado;
@@ -186,15 +184,10 @@ export class AnalisisController {
     }
   }
 
-  /**
-   * Renderiza estadísticas en tarjetas
-   * HTML esperado: <div id="stats-container">
-   */
   renderizarEstadisticas(estadisticas) {
     const container = document.getElementById('stats-container');
     if (!container) return;
-
-    const html = `
+    container.innerHTML = `
       <div class="stats-grid">
         <div class="stat-card">
           <h3>Total Estudiantes</h3>
@@ -214,26 +207,17 @@ export class AnalisisController {
         </div>
       </div>
     `;
-
-    container.innerHTML = html;
   }
 
-  /**
-   * Renderiza tabla de resultados
-   * HTML esperado: <div id="resultados-container">
-   */
   renderizarTablaResultados(resultados) {
     const container = document.getElementById('resultados-container');
     if (!container) return;
-
     if (!resultados || resultados.length === 0) {
       container.innerHTML = '<p>Sin resultados</p>';
       return;
     }
-
     const ranking = AnalisisService.calcularRanking(resultados, 'porcentaje');
-
-    const html = `
+    container.innerHTML = `
       <table class="resultados-table">
         <thead>
           <tr>
@@ -255,13 +239,7 @@ export class AnalisisController {
         </tbody>
       </table>
     `;
-
-    container.innerHTML = html;
   }
-
-  /**
-   * Utilidades
-   */
 
   getNivelLabel(porcentaje) {
     if (porcentaje >= 91) return 'Superior';
@@ -282,6 +260,7 @@ export class AnalisisController {
     if (errorDiv) {
       errorDiv.textContent = `❌ ${mensaje}`;
       errorDiv.style.display = 'block';
+      setTimeout(() => { errorDiv.style.display = 'none'; }, 5000);
     }
   }
 

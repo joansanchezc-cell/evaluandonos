@@ -1911,6 +1911,11 @@
           ⚙️ ADMIN
         </button>
 
+        <button id="clean-arch-trigger" onclick="toggleCleanArchitecture()"
+          style="display:none; background:#6366f1; color:white; border:none; padding:8px 15px; border-radius:10px; font-weight:800; cursor:pointer; font-size:0.75rem; align-items:center; gap:5px; box-shadow:0 4px 6px rgba(99,102,241,0.2);">
+          ✨ MODULAR
+        </button>
+
         <div id="user-badge" style="display: none;">
           <div id="user-avatar"
             style="width:30px; height:30px; background:#4f46e5; color:white; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:800; font-size:0.8rem;">
@@ -2439,6 +2444,229 @@
     </div>
   </div>
 
+  <!-- SECCIÓN MAIN DE ARQUITECTURA LIMPIA (DEMO / PARALELO) -->
+  <section id="section-main" style="display: none; background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(20px); border-radius: 24px; border: 1px solid rgba(255, 255, 255, 0.5); padding: 2rem; margin-top: 1rem; box-shadow: 0 8px 32px rgba(0,0,0,0.08);">
+    
+    <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #f1f5f9; padding-bottom: 15px; margin-bottom: 20px;">
+      <h2 style="margin: 0; color: #1e293b; font-weight: 900; font-size: 1.5rem; display: flex; align-items: center; gap: 10px;">
+        <span style="background: #4f46e5; color: white; padding: 6px 12px; border-radius: 12px; font-size: 0.9rem;">Clean Arch</span>
+        Panel de Control Modular
+      </h2>
+      <button id="btn-logout-clean" onclick="logout()" style="background: #fee2e2; color: #ef4444; border: none; padding: 8px 16px; border-radius: 10px; font-weight: 800; cursor: pointer; font-size: 0.8rem; transition: 0.2s;">
+        Cerrar Sesión (Clean Arch)
+      </button>
+    </div>
+
+    <!-- Navegación de Sub-módulos dentro de Arquitectura Limpia -->
+    <div style="display: flex; gap: 10px; margin-bottom: 20px; background: #f1f5f9; padding: 5px; border-radius: 12px; width: fit-content;">
+      <button type="button" onclick="switchCleanArchSubTab('analisis')" class="clean-arch-tab-btn active" style="border: none; padding: 8px 16px; border-radius: 8px; font-weight: 700; font-size: 0.8rem; cursor: pointer; background: white; color: #4f46e5; transition: 0.2s;">📊 Análisis</button>
+      <button type="button" onclick="switchCleanArchSubTab('reportes')" class="clean-arch-tab-btn" style="border: none; padding: 8px 16px; border-radius: 8px; font-weight: 700; font-size: 0.8rem; cursor: pointer; background: transparent; color: #64748b; transition: 0.2s;">📄 Reportes</button>
+      <button type="button" onclick="switchCleanArchSubTab('admin')" class="clean-arch-tab-btn" style="border: none; padding: 8px 16px; border-radius: 8px; font-weight: 700; font-size: 0.8rem; cursor: pointer; background: transparent; color: #64748b; transition: 0.2s;">⚙️ Administración</button>
+    </div>
+
+    <!-- SUB-TAB 1: ANÁLISIS -->
+    <div id="clean-arch-subtab-analisis" class="clean-arch-subtab-content">
+      <div style="display: grid; grid-template-columns: 1fr 1fr auto; gap: 1rem; align-items: end; margin-bottom: 20px;">
+        <div class="control-group">
+          <label style="display: block; font-size: 0.75rem; font-weight: 800; color: #64748b; margin-bottom: 6px;">PERÍODO</label>
+          <select id="select-periodo" style="width: 100%; padding: 10px; border-radius: 10px; border: 1px solid #cbd5e1; background: white; font-weight: 600;"></select>
+        </div>
+        <div class="control-group">
+          <label style="display: block; font-size: 0.75rem; font-weight: 800; color: #64748b; margin-bottom: 6px;">GRADO</label>
+          <select id="select-grado" style="width: 100%; padding: 10px; border-radius: 10px; border: 1px solid #cbd5e1; background: white; font-weight: 600;">
+            <option value="">-- Selecciona grado --</option>
+          </select>
+        </div>
+        <button id="btn-cargar-analisis" class="btn-primary" style="padding: 10px 20px; border-radius: 10px; font-weight: 700; background: #4f46e5; color: white; border: none; cursor: pointer; height: 40px;">Cargar Análisis</button>
+      </div>
+
+      <!-- Contenedor para Estadísticas de Análisis -->
+      <div id="stats-container" style="margin-bottom: 20px;"></div>
+
+      <!-- Contenedor para Tabla de Resultados -->
+      <div id="resultados-container" style="background: white; border-radius: 12px; border: 1px solid #e2e8f0; padding: 15px;"></div>
+    </div>
+
+    <!-- SUB-TAB 2: REPORTES -->
+    <div id="clean-arch-subtab-reportes" class="clean-arch-subtab-content" style="display: none;">
+      <!-- Navegación de Reportes -->
+      <div style="display: flex; gap: 10px; margin-bottom: 15px; border-bottom: 1px solid #e2e8f0; padding-bottom: 10px;">
+        <span onclick="switchCleanArchReportSubTab('individual')" class="clean-arch-rep-tab-btn active" style="font-weight: 700; font-size: 0.8rem; cursor: pointer; color: #4f46e5; border-bottom: 2px solid #4f46e5; padding-bottom: 5px;">👤 Individual</span>
+        <span onclick="switchCleanArchReportSubTab('grupal')" class="clean-arch-rep-tab-btn" style="font-weight: 700; font-size: 0.8rem; cursor: pointer; color: #64748b; padding-bottom: 5px;">👥 Grupal</span>
+        <span onclick="switchCleanArchReportSubTab('materia')" class="clean-arch-rep-tab-btn" style="font-weight: 700; font-size: 0.8rem; cursor: pointer; color: #64748b; padding-bottom: 5px;">📚 Por Sede</span>
+      </div>
+
+      <!-- Reporte Individual -->
+      <div id="clean-arch-rep-individual" class="clean-arch-rep-content">
+        <div style="display: flex; gap: 10px; margin-bottom: 15px;">
+          <input id="input-search-individual" type="text" placeholder="Identificación o ZipGrade ID..." style="flex: 1; padding: 10px; border-radius: 10px; border: 1px solid #cbd5e1;">
+          <button id="btn-buscar-individual" style="background: #10b981; color: white; border: none; padding: 10px 20px; border-radius: 10px; font-weight: 700; cursor: pointer;">Buscar</button>
+        </div>
+        <div id="individual-content"></div>
+      </div>
+
+      <!-- Reporte Grupal -->
+      <div id="clean-arch-rep-grupal" class="clean-arch-rep-content" style="display: none;">
+        <div style="display: flex; gap: 10px; margin-bottom: 15px;">
+          <select id="select-grupo-reporte" style="flex: 1; padding: 10px; border-radius: 10px; border: 1px solid #cbd5e1; background: white;">
+            <option value="">Selecciona grupo...</option>
+            <option value="601">601</option>
+            <option value="602">602</option>
+            <option value="701">701</option>
+            <option value="801">801</option>
+            <option value="901">901</option>
+            <option value="1001">1001</option>
+            <option value="1101">1101</option>
+            <option value="11-YA">11-YA (Yanaconas)</option>
+          </select>
+          <button id="btn-cargar-grupal" style="background: #4f46e5; color: white; border: none; padding: 10px 20px; border-radius: 10px; font-weight: 700; cursor: pointer;">Cargar</button>
+        </div>
+        <div id="grupal-content"></div>
+      </div>
+
+      <!-- Reporte Por Asignatura / Sede -->
+      <div id="clean-arch-rep-materia" class="clean-arch-rep-content" style="display: none;">
+        <div style="display: flex; gap: 10px; margin-bottom: 15px;">
+          <select id="select-grado-asignatura" style="flex: 1; padding: 10px; border-radius: 10px; border: 1px solid #cbd5e1; background: white;">
+            <option value="">Selecciona Grado Base...</option>
+            <option value="6">6° Grado</option>
+            <option value="7">7° Grado</option>
+            <option value="8">8° Grado</option>
+            <option value="9">9° Grado</option>
+            <option value="10">10° Grado</option>
+            <option value="11">11° Grado</option>
+          </select>
+          <button id="btn-cargar-asignatura" style="background: #e2e8f0; color: #1e293b; border: none; padding: 10px 20px; border-radius: 10px; font-weight: 700; cursor: pointer;">Comparar Sedes</button>
+        </div>
+        <div id="asignatura-content"></div>
+        <div style="height: 300px; margin-top: 15px; position: relative;">
+          <canvas id="chart-comparativo-sedes-canvas"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <!-- SUB-TAB 3: ADMINISTRACIÓN -->
+    <div id="clean-arch-subtab-admin" class="clean-arch-subtab-content" style="display: none;">
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+        
+        <!-- Gestión de Docentes -->
+        <div style="background: white; border-radius: 16px; border: 1px solid #e2e8f0; padding: 20px;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+            <h4 style="margin: 0; color: #1e293b; font-weight: 800;">🔐 Permisos de Docentes</h4>
+            <button id="btn-cargar-docentes" style="background: #4f46e5; color: white; border: none; padding: 6px 12px; border-radius: 8px; font-size: 0.75rem; font-weight: 700; cursor: pointer;">Cargar Lista</button>
+          </div>
+          <table style="width: 100%; border-collapse: collapse; font-size: 0.8rem;">
+            <thead>
+              <tr style="border-bottom: 2px solid #cbd5e1; text-align: left;">
+                <th style="padding: 6px;">Docente</th>
+                <th style="padding: 6px;">Sede</th>
+                <th style="padding: 6px;">Asignaturas</th>
+                <th style="padding: 6px;">Acción</th>
+              </tr>
+            </thead>
+            <tbody id="table-body-docentes">
+              <tr>
+                <td colspan="4" style="text-align: center; color: #64748b; padding: 15px;">Haz clic en Cargar Lista</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Carga de CSV -->
+        <div style="background: white; border-radius: 16px; border: 1px solid #e2e8f0; padding: 20px; display: flex; flex-direction: column; gap: 15px;">
+          <h4 style="margin: 0; color: #1e293b; font-weight: 800;">📤 Carga de CSV (Clean Arch)</h4>
+          
+          <div>
+            <label style="display: block; font-size: 0.75rem; font-weight: 700; color: #64748b; margin-bottom: 5px;">1. CSV Estudiantes y Notas:</label>
+            <div style="display: flex; gap: 5px;">
+              <input type="file" id="file-upload-estudiantes" accept=".csv" style="font-size: 0.75rem; flex: 1;">
+              <button id="btn-upload-estudiantes" style="background: #8b5cf6; color: white; border: none; padding: 6px 12px; border-radius: 8px; font-size: 0.75rem; font-weight: 700; cursor: pointer;">Subir</button>
+            </div>
+          </div>
+
+          <hr style="border: 0; border-top: 1px solid #e2e8f0; margin: 5px 0;">
+
+          <div>
+            <label style="display: block; font-size: 0.75rem; font-weight: 700; color: #64748b; margin-bottom: 5px;">2. CSV Respuestas y Resultados:</label>
+            <div style="display: flex; gap: 5px;">
+              <input type="file" id="file-upload-resultados" accept=".csv" style="font-size: 0.75rem; flex: 1;">
+              <button id="btn-upload-resultados" style="background: #10b981; color: white; border: none; padding: 6px 12px; border-radius: 8px; font-size: 0.75rem; font-weight: 700; cursor: pointer;">Subir</button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Mensajes generales -->
+    <div id="error-message" class="message error" style="display: none; margin-top: 15px; border-radius: 12px; padding: 12px; font-size: 0.85rem; font-weight: 700; text-align: center; background: #fee2e2; color: #ef4444; border: 1px solid #fca5a5;"></div>
+    <div id="success-message" class="message success" style="display: none; margin-top: 15px; border-radius: 12px; padding: 12px; font-size: 0.85rem; font-weight: 700; text-align: center; background: #dcfce7; color: #15803d; border: 1px solid #86efac;"></div>
+
+  </section>
+
+  <script>
+    function toggleCleanArchitecture() {
+      // Ocultar todas las vistas legacy
+      const containerIds = ['resultado-container', 'individual-container', 'estadisticas-container', 'grupal-container', 'asignatura-container', 'estudiante-detalle-container', 'admin-modal'];
+      containerIds.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.style.display = 'none';
+      });
+
+      // Quitar clases activas de la navegación legacy
+      document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.classList.remove('active');
+      });
+
+      // Alternar visualización del panel de Clean Architecture
+      const cleanArchSec = document.getElementById('section-main');
+      if (cleanArchSec) {
+        if (cleanArchSec.style.display === 'none') {
+          cleanArchSec.style.display = 'block';
+          document.getElementById('clean-arch-trigger').style.background = '#4f46e5';
+        } else {
+          cleanArchSec.style.display = 'none';
+          document.getElementById('clean-arch-trigger').style.background = '#6366f1';
+        }
+      }
+    }
+
+    function switchCleanArchSubTab(tab) {
+      document.querySelectorAll('.clean-arch-subtab-content').forEach(el => el.style.display = 'none');
+      document.querySelectorAll('.clean-arch-tab-btn').forEach(btn => {
+        btn.classList.remove('active');
+        btn.style.background = 'transparent';
+        btn.style.color = '#64748b';
+      });
+      
+      const targetSubtab = document.getElementById('clean-arch-subtab-' + tab);
+      if (targetSubtab) targetSubtab.style.display = 'block';
+      
+      const activeBtn = event.currentTarget;
+      activeBtn.classList.add('active');
+      activeBtn.style.background = 'white';
+      activeBtn.style.color = '#4f46e5';
+    }
+
+    function switchCleanArchReportSubTab(sub) {
+      document.querySelectorAll('.clean-arch-rep-content').forEach(el => el.style.display = 'none');
+      document.querySelectorAll('.clean-arch-rep-tab-btn').forEach(btn => {
+        btn.classList.remove('active');
+        btn.style.color = '#64748b';
+        btn.style.borderBottom = 'none';
+        btn.style.paddingBottom = '5px';
+      });
+      
+      const targetRep = document.getElementById('clean-arch-rep-' + sub);
+      if (targetRep) targetRep.style.display = 'block';
+      
+      const activeTab = event.currentTarget;
+      activeTab.classList.add('active');
+      activeTab.style.color = '#4f46e5';
+      activeTab.style.borderBottom = '2px solid #4f46e5';
+    }
+  </script>
+
   </main>
 
   <!-- Mobile Nav: Barra de navegación inferior fija para móviles -->
@@ -2637,8 +2865,11 @@
           }
 
           // Visibility Toggle
-          const containerIds = ['resultado-container', 'individual-container', 'estadisticas-container', 'grupal-container', 'asignatura-container', 'estudiante-detalle-container'];
+          const containerIds = ['resultado-container', 'individual-container', 'estadisticas-container', 'grupal-container', 'asignatura-container', 'estudiante-detalle-container', 'section-main'];
           containerIds.forEach(id => { if ($(id)) $(id).style.display = 'none'; });
+
+          const catTrigger = document.getElementById('clean-arch-trigger');
+          if (catTrigger) catTrigger.style.background = '#6366f1';
 
           const tabMap = {
             'analisis': ['resultado-container'],
@@ -2935,6 +3166,7 @@
         studentId = id;
 
         if ($('user-badge')) $('user-badge').style.display = 'flex';
+        if ($('clean-arch-trigger')) $('clean-arch-trigger').style.display = 'flex';
         if ($('user-nombre')) $('user-nombre').innerText = nombre;
         if ($('user-avatar')) $('user-avatar').innerText = "ST";
         if ($('st-display-name')) $('st-display-name').innerText = nombre;
@@ -3139,6 +3371,7 @@
           if ($('rep-filters')) $('rep-filters').style.setProperty('display', 'grid', 'important');
 
           if ($('user-badge')) $('user-badge').style.display = 'flex';
+          if ($('clean-arch-trigger')) $('clean-arch-trigger').style.display = 'flex';
           if ($('user-nombre')) $('user-nombre').innerText = userName;
           if ($('user-email')) $('user-email').innerText = user.email;
           if ($('user-avatar')) $('user-avatar').innerText = userName.charAt(0).toUpperCase();
@@ -3318,11 +3551,55 @@
             const assignedLower = (window.assignedGrade || "").toString().toLowerCase();
             const gBaseAssigned = extraerGradoBase(window.assignedGrade);
             const esDePrimaria = assignedLower === "primaria" || (gBaseAssigned >= 1 && gBaseAssigned <= 5);
-            const mySede = window.userSede || 'Central';
+            const mySede = (window.userSede || 'Central').toUpperCase();
 
             if (currentRole === 'admin') {
+              // --- NUEVO: Filtro por sede para admins de sedes rurales ---
+              // Los admins no son superadmin, así que solo deben ver su sede
+              const sedesRuralesUpper = ['PUEBLILLO', 'SENDERO', 'YANACONAS', 'PISOJE BAJO'];
+              if (sedesRuralesUpper.includes(mySede)) {
+                // Sede rural: filtrar levels que tengan datos en esa sede.
+                // Usamos los resultados completos para detectar qué grades pertenecen a la sede.
+                const { data: sedeCheck } = await supabaseClient
+                  .from('eval_resultados')
+                  .select('grado')
+                  .eq('periodo', currentPeriodo);
+                if (sedeCheck && sedeCheck.length > 0) {
+                  // Obtener todos los grupos de esa sede y extraer sus niveles base
+                  const { data: gruposData } = await supabaseClient
+                    .from('eval_estudiantes_notas')
+                    .select('grado')
+                    .eq('periodo', currentPeriodo);
+                  
+                  let dataForSede = gruposData || [];
+                  if (dataForSede.length === 0) {
+                    const { data: fbData } = await supabaseClient
+                      .from('eval_estudiantes_notas')
+                      .select('grado')
+                      .eq('periodo', 1);
+                    if (fbData) dataForSede = fbData;
+                  }
+                  if (dataForSede.length === 0) {
+                    const { data: resSedeData } = await supabaseClient
+                      .from('eval_resultados')
+                      .select('grado')
+                      .eq('periodo', currentPeriodo);
+                    if (resSedeData) dataForSede = resSedeData;
+                  }
+                  
+                  const levelsEnSede = [...new Set(
+                    dataForSede
+                      .map(d => d.grado ? d.grado.toString() : '')
+                      .filter(g => detectarSede(g).toUpperCase() === mySede)
+                      .map(g => extraerGradoBase(g))
+                      .filter(l => l > 0)
+                  )];
+                  uniqueLevels = uniqueLevels.filter(l => levelsEnSede.includes(l));
+                }
+              }
+
               if (esDePrimaria) {
-                if (mySede.toUpperCase() === 'CENTRAL') {
+                if (mySede === 'CENTRAL') {
                   uniqueLevels = uniqueLevels.filter(l => [3, 4, 5].includes(l));
                 } else {
                   uniqueLevels = uniqueLevels.filter(l => l >= 1 && l <= 5);
@@ -3334,7 +3611,7 @@
               let allowedLevels = [...new Set([...dictan, ...direccion])];
               uniqueLevels = uniqueLevels.filter(l => allowedLevels.includes(l));
 
-              if (esDePrimaria && mySede.toUpperCase() === 'CENTRAL') {
+              if (esDePrimaria && mySede === 'CENTRAL') {
                 uniqueLevels = uniqueLevels.filter(l => [3, 4, 5].includes(l));
               }
             }
@@ -5094,12 +5371,32 @@
             }
 
             // --- FALLBACK PARA SEDES RURALES SIN ASIGNACIÓN EXPLÍCITA ---
+            // NOTA: eval_estudiantes_notas guarda el grupo directamente en la columna 'grado',
+            // NO en zipgrade_id. El fallback anterior intentaba parsear zipgrade_id y fallaba.
             if (allGroups.length === 0 && currentRole === 'admin') {
-              const mySede = window.userSede || 'Central';
-              // Intentar recuperar TODOS los grupos de la sede si no hay asignación específica pero es admin
-              const { data: sedeData } = await supabaseClient.from('eval_estudiantes_notas').select('zipgrade_id').eq('periodo', currentPeriodo);
+              const mySede = (window.userSede || 'Central').toUpperCase();
+              const { data: sedeData } = await supabaseClient
+                .from('eval_estudiantes_notas')
+                .select('grado')
+                .eq('periodo', currentPeriodo);
               if (sedeData) {
-                allGroups = [...new Set(sedeData.map(d => extraerGrupo(d.zipgrade_id)))].filter(g => detectarSede(g).toUpperCase() === mySede.toUpperCase());
+                const gruposDeNotas = [...new Set(sedeData.map(d => (d.grado || '').toString()))]
+                  .filter(g => g && detectarSede(g).toUpperCase() === mySede && esGrupoValido(g));
+                if (gruposDeNotas.length > 0) {
+                  allGroups = gruposDeNotas;
+                  console.log(`✅ Fallback sede ${mySede}: ${gruposDeNotas.length} grupos recuperados desde columna 'grado'`);
+                } else {
+                  // Segundo fallback: buscar en eval_resultados
+                  const { data: resData } = await supabaseClient
+                    .from('eval_resultados')
+                    .select('grado')
+                    .eq('periodo', currentPeriodo);
+                  if (resData) {
+                    allGroups = [...new Set(resData.map(d => (d.grado || '').toString()))]
+                      .filter(g => g && detectarSede(g).toUpperCase() === mySede && esGrupoValido(g));
+                    console.log(`✅ Fallback2 sede ${mySede}: ${allGroups.length} grupos desde eval_resultados`);
+                  }
+                }
               }
             }
 

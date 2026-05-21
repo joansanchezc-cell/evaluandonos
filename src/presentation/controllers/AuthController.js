@@ -39,8 +39,8 @@ export class AuthController {
    *                <input id="input-id-estudiante">
    */
   bindLoginEstudiante() {
-    const btnLogin = document.getElementById('btn-login-estudiante');
-    const inputId = document.getElementById('input-id-estudiante');
+    const btnLogin = document.getElementById('btn-login-estudiante') || document.getElementById('btn-login-est');
+    const inputId = document.getElementById('input-id-estudiante') || document.getElementById('li-est-id');
 
     if (!btnLogin || !inputId) {
       console.warn('⚠️ Elementos de login estudiante no encontrados');
@@ -73,31 +73,34 @@ export class AuthController {
         this.mostrarError(err.message);
       } finally {
         btnLogin.disabled = false;
-        btnLogin.textContent = 'Ingresar';
+        btnLogin.textContent = btnLogin.id === 'btn-login-est' ? 'Consultar Reporte' : 'Ingresar';
       }
     });
   }
 
   /**
    * Vincula evento de login de docente
-   * HTML esperado: <form id="form-login-docente">
-   *                <input id="input-email-docente">
-   *                <input id="input-password-docente">
-   *                <button type="submit">
+   * HTML esperado: <form id="form-login-docente"> o <div id="form-docente">
+   *                <input id="input-email-docente"> o <input id="li-user">
+   *                <input id="input-password-docente"> o <input id="li-pass">
+   *                <button type="submit"> o <button id="btn-login">
    */
   bindLoginDocente() {
-    const form = document.getElementById('form-login-docente');
+    const form = document.getElementById('form-login-docente') || document.getElementById('form-docente');
+    const btnLogin = document.getElementById('btn-login-docente') || document.getElementById('btn-login');
 
-    if (!form) {
-      console.warn('⚠️ Formulario de login docente no encontrado');
+    if (!form && !btnLogin) {
+      console.warn('⚠️ Elementos de login docente no encontrados');
       return;
     }
 
-    form.addEventListener('submit', async (e) => {
-      e.preventDefault();
+    const emailInput = document.getElementById('input-email-docente') || document.getElementById('li-user');
+    const passwordInput = document.getElementById('input-password-docente') || document.getElementById('li-pass');
 
-      const email = document.getElementById('input-email-docente')?.value.trim();
-      const password = document.getElementById('input-password-docente')?.value;
+    const handleLogin = async (e) => {
+      if (e) e.preventDefault();
+      const email = emailInput?.value.trim();
+      const password = passwordInput?.value;
 
       if (!email || !password) {
         this.mostrarError('Email y contraseña son requeridos');
@@ -105,9 +108,11 @@ export class AuthController {
       }
 
       try {
-        const submitBtn = form.querySelector('button[type="submit"]');
-        submitBtn.disabled = true;
-        submitBtn.textContent = 'Autenticando...';
+        const submitBtn = btnLogin || form?.querySelector('button[type="submit"]');
+        if (submitBtn) {
+          submitBtn.disabled = true;
+          submitBtn.textContent = 'Autenticando...';
+        }
 
         const { success, user, error } = await AuthService.loginDocente(email, password);
 
@@ -122,10 +127,19 @@ export class AuthController {
       } catch (err) {
         this.mostrarError(err.message);
       } finally {
-        form.querySelector('button[type="submit"]').disabled = false;
-        form.querySelector('button[type="submit"]').textContent = 'Ingresar';
+        const submitBtn = btnLogin || form?.querySelector('button[type="submit"]');
+        if (submitBtn) {
+          submitBtn.disabled = false;
+          submitBtn.textContent = 'Ingresar como Docente';
+        }
       }
-    });
+    };
+
+    if (form && form.tagName === 'FORM') {
+      form.addEventListener('submit', handleLogin);
+    } else if (btnLogin) {
+      btnLogin.addEventListener('click', handleLogin);
+    }
   }
 
   /**
@@ -133,14 +147,25 @@ export class AuthController {
    * HTML esperado: <button id="btn-logout">
    */
   bindLogout() {
+    const logoutButtons = [];
     const btnLogout = document.getElementById('btn-logout');
+    if (btnLogout) {
+      logoutButtons.push(btnLogout);
+    } else {
+      const onclickButtons = document.querySelectorAll('button[onclick="logout()"]');
+      onclickButtons.forEach(btn => logoutButtons.push(btn));
+    }
 
-    if (!btnLogout) {
+    if (logoutButtons.length === 0) {
       console.warn('⚠️ Botón de logout no encontrado');
       return;
     }
 
-    btnLogout.addEventListener('click', async () => {
+    const handleLogout = async (e) => {
+      if (e) {
+        e.preventDefault();
+        e.stopPropagation();
+      }
       try {
         await AuthService.logout();
         this.currentUser = null;
@@ -150,6 +175,11 @@ export class AuthController {
       } catch (err) {
         this.mostrarError('Error al cerrar sesión');
       }
+    };
+
+    logoutButtons.forEach(btn => {
+      btn.removeAttribute('onclick');
+      btn.addEventListener('click', handleLogout);
     });
   }
 
@@ -177,7 +207,7 @@ export class AuthController {
    */
 
   mostrarError(mensaje) {
-    const errorDiv = document.getElementById('error-message');
+    const errorDiv = document.getElementById('error-message') || document.getElementById('login-err');
     if (errorDiv) {
       errorDiv.textContent = `❌ ${mensaje}`;
       errorDiv.style.display = 'block';
@@ -201,15 +231,17 @@ export class AuthController {
   }
 
   mostrarVistaLogin() {
-    const loginSection = document.getElementById('section-login');
+    const loginSection = document.getElementById('section-login') || document.getElementById('login-mask');
     const mainSection = document.getElementById('section-main');
 
-    if (loginSection) loginSection.style.display = 'block';
+    if (loginSection) {
+      loginSection.style.display = loginSection.id === 'login-mask' ? 'flex' : 'block';
+    }
     if (mainSection) mainSection.style.display = 'none';
   }
 
   mostrarVistaPrincipal() {
-    const loginSection = document.getElementById('section-login');
+    const loginSection = document.getElementById('section-login') || document.getElementById('login-mask');
     const mainSection = document.getElementById('section-main');
 
     if (loginSection) loginSection.style.display = 'none';
