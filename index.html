@@ -298,9 +298,9 @@
     }
 
     .container {
-      max-width: 1400px;
-      margin: 0 auto;
-      padding: 0 2rem;
+      max-width: 100%;
+      margin: 0;
+      padding: 0;
     }
 
     @media (max-width: 1100px) {
@@ -314,12 +314,12 @@
     .controls {
       display: grid !important;
       grid-template-columns: 1fr 1.5fr 0.8fr !important;
-      gap: 1.5rem;
+      gap: 0.8rem;
       background: rgba(255, 255, 255, 0.7) !important;
       backdrop-filter: blur(20px) saturate(160%) !important;
       -webkit-backdrop-filter: blur(20px) saturate(160%) !important;
-      padding: 1.5rem;
-      border-radius: 24px;
+      padding: 1rem;
+      border-radius: 16px;
       box-shadow: 0 15px 35px -5px rgba(0, 0, 0, 0.05);
       border: 1px solid rgba(255, 255, 255, 0.4);
       position: relative;
@@ -391,8 +391,8 @@
     .dashboard-grid {
       display: grid;
       grid-template-columns: 1.6fr 1fr;
-      gap: 2rem;
-      margin-top: 2rem;
+      gap: 1rem;
+      margin-top: 1rem;
     }
 
     @media (max-width: 900px) {
@@ -476,7 +476,7 @@
       backdrop-filter: blur(16px) saturate(180%);
       -webkit-backdrop-filter: blur(16px) saturate(180%);
       border-radius: 24px;
-      padding: 2.5rem;
+      padding: 1.2rem;
       box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.05);
       border: 1px solid rgba(255, 255, 255, 0.3);
       transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
@@ -512,10 +512,10 @@
     .option {
       display: flex;
       align-items: center;
-      padding: 1rem 1.2rem;
+      padding: 0.5rem 1rem;
       border: 2px solid #f1f5f9;
       background: #ffffff;
-      border-radius: 16px;
+      border-radius: 12px;
       transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
@@ -525,23 +525,9 @@
       box-shadow: 0 4px 12px -2px rgba(79, 70, 229, 0.1);
     }
 
-    .option.correct {
-      border-color: #22c55e;
-      background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
-      color: white !important;
-      font-weight: 600;
-      box-shadow: 0 10px 25px -5px rgba(34, 197, 94, 0.4);
-      transform: scale(1.02);
-    }
+    .option.correct { border-color: #10b981; background: #ecfdf5; color: #065f46 !important; font-weight: 700; box-shadow: 0 4px 12px rgba(16, 185, 129, 0.15); transform: scale(1.02); }
 
-    .option.incorrect {
-      border-color: #ef4444;
-      background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
-      color: white !important;
-      font-weight: 600;
-      box-shadow: 0 10px 25px -5px rgba(239, 68, 68, 0.4);
-      transform: scale(1.02);
-    }
+    .option.incorrect { border-color: #f43f5e; background: #fff1f2; color: #9f1239 !important; font-weight: 700; box-shadow: 0 4px 12px rgba(244, 63, 94, 0.15); transform: scale(1.02); }
 
     .option-letter {
       width: 32px;
@@ -557,10 +543,7 @@
       flex-shrink: 0;
     }
 
-    .option.correct .option-letter {
-      background: white;
-      color: #16a34a;
-    }
+    .option.correct .option-letter { background: #10b981; color: white; }
 
     .option-content {
       font-size: 1rem;
@@ -698,17 +681,9 @@
       background: #7c3aed !important;
     }
 
-    .option.correct {
-      background: #22c55e !important;
-      color: white !important;
-      border-color: #16a34a !important;
-    }
+    
 
-    .option.incorrect {
-      background: #ef4444 !important;
-      color: white !important;
-      border-color: #dc2626 !important;
-    }
+    
 
     @keyframes gradientMove {
       0% {
@@ -895,38 +870,17 @@
     }
 
     /* Colores Específicos por Periodo */
-    #tab-1 {
-      color: #3b82f6;
-    }
+    
 
-    #tab-1.active {
-      background: linear-gradient(135deg, #3b82f6, #2563eb);
-      color: white;
-      border: none;
-      box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
-    }
+    #tab-1.active { background: #4f46e5; color: white; border: none; box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3); }
 
-    #tab-2 {
-      color: #10b981;
-    }
+    
 
-    #tab-2.active {
-      background: linear-gradient(135deg, #10b981, #059669);
-      color: white;
-      border: none;
-      box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
-    }
+    #tab-2.active { background: #4f46e5; color: white; border: none; box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3); }
 
-    #tab-3 {
-      color: #ef4444;
-    }
+    
 
-    #tab-3.active {
-      background: linear-gradient(135deg, #ef4444, #dc2626);
-      color: white;
-      border: none;
-      box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
-    }
+    #tab-3.active { background: #4f46e5; color: white; border: none; box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3); }
 
     /* Botones de Asignatura */
     .asig-btns {
@@ -993,7 +947,7 @@
     .admin-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 1.5rem;
+      gap: 0.8rem;
       padding: 2rem;
       overflow-y: auto;
     }
@@ -1002,7 +956,7 @@
       background: white;
       border: 1px solid #e2e8f0;
       border-radius: 16px;
-      padding: 1.5rem;
+      padding: 1rem;
       display: flex;
       flex-direction: column;
       gap: 1rem;
@@ -1531,7 +1485,7 @@
       -webkit-backdrop-filter: blur(20px);
       border: 1px solid var(--glass-border);
       box-shadow: 0 12px 40px rgba(0, 0, 0, 0.05);
-      border-radius: 24px;
+      border-radius: 16px;
       transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     }
 
@@ -1704,10 +1658,7 @@
       color: white !important;
     }
 
-    #est-det-main-card .option.incorrect .option-letter {
-      background: #ef4444 !important;
-      color: white !important;
-    }
+    #est-det-main-card .option.incorrect .option-letter { background: #f43f5e; color: white; }
 
     /* Estilos Dropdown */
     .dropdown {
@@ -1842,111 +1793,118 @@
     </div>
   </div>
 
-  <header style="background: white; border-bottom: 2px solid #f1f5f9;">
-    <!-- Fila 1: Logo Banner Ocupando todo el ancho -->
-    <div class="header-banner"
-      style="width: 100%; padding: 5px 0; border-bottom: 1px solid #f1f5f9; display: flex; justify-content: center; background: white;">
-      <img src="https://txnecdeccianklqqyrav.supabase.co/storage/v1/object/public/assets/evaluandonos.png"
-        alt="Evaluándonos Banner" style="width: 100%; max-width: 1200px; height: auto; display: block;"
-        class="header-logo-img">
-    </div>
+  <!-- CUERPO DE LA APP V4 -->
+  <div id="app-body" style="display: flex; height: 100vh; overflow: hidden; background: #f8fafc;">
+    
+    <!-- SIDEBAR SIN LOGO -->
+    <aside id="sidebar" style="width: 250px; min-width: 250px; background: #1e293b; color: white; display: flex; flex-direction: column; overflow-y: auto; box-sizing: border-box; transition: all 0.3s ease; box-shadow: 2px 0 10px rgba(0,0,0,0.1); z-index: 900;">
+       
+      <div style="padding: 25px 20px 10px 20px;">
+         <h2 style="margin: 0; color: white; font-size: 1.2rem; font-weight: 900; letter-spacing: 1px;">MENU</h2>
+      </div>
 
-    <div style="background: white; padding: 12px 0;">
-      <div class="container"
-        style="display: flex; justify-content: center; gap: 15px; flex-wrap: wrap; align-items: center; margin:0; max-width:100%;">
+      <nav style="display: flex; flex-direction: column; gap: 8px; padding: 10px 15px;">
+        <p style="font-size: 0.7rem; font-weight: 800; color: #94a3b8; margin: 0 0 5px 5px; text-transform: uppercase; letter-spacing: 1px;">Principal</p>
 
         <!-- Dropdown ANÁLISIS -->
-        <div class="dropdown" id="drop-analisis">
-          <button onclick="toggleDropdown('drop-analisis')" class="tab-btn tab-btn-analisis"
-            style="padding: 10px 20px; border: none; border-radius: 10px; cursor: pointer; font-weight: 800; font-size: 0.85rem; display: flex; align-items: center; gap: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
-            📊 ANÁLISIS <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-              stroke-width="4">
-              <path d="M6 9l6 6 6-6" />
-            </svg>
+        <div style="position: relative;">
+          <button onclick="toggleSidebarMenu('menu-analisis')" style="width: 100%; text-align: left; padding: 12px 15px; border: none; border-radius: 8px; background: transparent; color: white; cursor: pointer; font-weight: 700; font-size: 0.9rem; display: flex; align-items: center; justify-content: space-between;">
+            <span style="display: flex; align-items: center; gap: 8px;">📊 ANÁLISIS</span>
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M6 9l6 6 6-6" /></svg>
           </button>
-          <div class="dropdown-content">
-            <div class="dropdown-item" onclick="selectAnalisis('general')">📊 Análisis General</div>
-            <div class="dropdown-item" id="tab-estudiante-detalle-item" onclick="selectAnalisis('estudiante')">👤 Por
-              Estudiante</div>
+          <div id="menu-analisis" style="display: none; flex-direction: column; background: rgba(0,0,0,0.2); border-radius: 8px; margin-top: 4px; overflow: hidden;">
+             <button onclick="selectAnalisis('general')" style="padding: 10px 15px 10px 35px; border: none; background: transparent; color: #cbd5e1; text-align: left; cursor: pointer; font-size: 0.85rem;">📊 Análisis General</button>
+             <button id="tab-estudiante-detalle-item" onclick="selectAnalisis('estudiante')" style="padding: 10px 15px 10px 35px; border: none; background: transparent; color: #cbd5e1; text-align: left; cursor: pointer; font-size: 0.85rem;">👤 Por Estudiante</button>
           </div>
         </div>
 
-        <!-- Botón ESTADÍSTICAS -->
-        <button onclick="switchMainTab('estadisticas')" id="tab-estadisticas" class="tab-btn tab-btn-estadisticas"
-          style="padding: 10px 20px; border: none; border-radius: 10px; cursor: pointer; font-weight: 800; font-size: 0.85rem; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+        <button onclick="switchMainTab('estadisticas')" id="tab-estadisticas" style="width: 100%; text-align: left; padding: 12px 15px; border: none; border-radius: 8px; background: transparent; color: white; cursor: pointer; font-weight: 700; font-size: 0.9rem; display: flex; align-items: center; gap: 8px;">
           📈 ESTADÍSTICAS
         </button>
 
         <!-- Dropdown INFORMES -->
-        <div class="dropdown" id="drop-informes">
-          <button onclick="toggleDropdown('drop-informes')" class="tab-btn tab-btn-informes"
-            style="padding: 10px 20px; border: none; border-radius: 10px; cursor: pointer; font-weight: 800; font-size: 0.85rem; display: flex; align-items: center; gap: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
-            📄 INFORMES <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-              stroke-width="4">
-              <path d="M6 9l6 6 6-6" />
-            </svg>
+        <div style="position: relative;">
+          <button onclick="toggleSidebarMenu('menu-informes')" style="width: 100%; text-align: left; padding: 12px 15px; border: none; border-radius: 8px; background: transparent; color: white; cursor: pointer; font-weight: 700; font-size: 0.9rem; display: flex; align-items: center; justify-content: space-between;">
+            <span style="display: flex; align-items: center; gap: 8px;">📄 INFORMES</span>
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M6 9l6 6 6-6" /></svg>
           </button>
-          <div class="dropdown-content">
-            <div class="dropdown-item" id="tab-individual-item" onclick="switchMainTab('individual')">📄 Individual
-            </div>
-            <div class="dropdown-item" id="tab-grupal-item" onclick="switchMainTab('grupal')">👥 Grupal</div>
-            <div class="dropdown-item" id="tab-asignatura-item" onclick="switchMainTab('asignatura')">📚 Por Asignatura
-            </div>
+          <div id="menu-informes" style="display: none; flex-direction: column; background: rgba(0,0,0,0.2); border-radius: 8px; margin-top: 4px; overflow: hidden;">
+             <button id="tab-individual-item" onclick="switchMainTab('individual')" style="padding: 10px 15px 10px 35px; border: none; background: transparent; color: #cbd5e1; text-align: left; cursor: pointer; font-size: 0.85rem;">📄 Individual</button>
+             <button id="tab-grupal-item" onclick="switchMainTab('grupal')" style="padding: 10px 15px 10px 35px; border: none; background: transparent; color: #cbd5e1; text-align: left; cursor: pointer; font-size: 0.85rem;">👥 Grupal</button>
+             <button id="tab-asignatura-item" onclick="switchMainTab('asignatura')" style="padding: 10px 15px 10px 35px; border: none; background: transparent; color: #cbd5e1; text-align: left; cursor: pointer; font-size: 0.85rem;">📚 Por Asignatura</button>
           </div>
         </div>
 
-        <!-- Period Tabs Integradas -->
-        <div class="period-tabs"
-          style="margin: 0; background: #f1f5f9; padding: 4px; border-radius: 10px; border: 1px solid #e2e8f0;">
-          <div id="tab-1" class="period-tab active" onclick="setPeriodo(1)"
-            style="font-size: 0.75rem; padding: 6px 15px;">P1</div>
-          <div id="tab-2" class="period-tab" onclick="setPeriodo(2)" style="font-size: 0.75rem; padding: 6px 15px;">P2
+        <p style="font-size: 0.7rem; font-weight: 800; color: #94a3b8; margin: 15px 0 5px 5px; text-transform: uppercase; letter-spacing: 1px;">Configuración</p>
+
+        <!-- Dropdown AÑO -->
+        <div style="position: relative;">
+          <button onclick="toggleSidebarMenu('menu-anio')" style="width: 100%; text-align: left; padding: 12px 15px; border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; background: rgba(255,255,255,0.05); color: white; cursor: pointer; font-weight: 800; font-size: 0.9rem; display: flex; align-items: center; justify-content: space-between;">
+            <span style="display: flex; align-items: center; gap: 8px;">📅 Año: <span id="lbl-anio">2026</span></span>
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M6 9l6 6 6-6" /></svg>
+          </button>
+          <div id="menu-anio" style="display: none; flex-direction: column; background: rgba(0,0,0,0.2); border-radius: 8px; margin-top: 4px; overflow: hidden;">
+             <button onclick="setAnio(2026)" style="padding: 10px 15px 10px 35px; border: none; background: transparent; color: white; text-align: left; cursor: pointer; font-size: 0.85rem; font-weight:bold;">📅 2026</button>
+             <button onclick="setAnio(2027)" style="padding: 10px 15px 10px 35px; border: none; background: transparent; color: white; text-align: left; cursor: pointer; font-size: 0.85rem; font-weight:bold;">📅 2027</button>
           </div>
-          <div id="tab-3" class="period-tab" onclick="setPeriodo(3)" style="font-size: 0.75rem; padding: 6px 15px;">
-            Final</div>
         </div>
 
-        <button onclick="toggleAdmin()" class="admin-trigger"
-          style="display:none; background:#1e293b; color:white; border:none; padding:8px 15px; border-radius:10px; font-weight:800; cursor:pointer; font-size:0.75rem;">
-          ⚙️ ADMIN
+        <button onclick="toggleAdmin()" class="admin-trigger" style="display:none; width: 100%; text-align: left; padding: 12px 15px; border: none; border-radius: 8px; background: #4f46e5; color: white; cursor: pointer; font-weight: 800; font-size: 0.9rem; align-items: center; gap: 8px; margin-top: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+          ⚙️ PANEL ADMIN
         </button>
 
-        <button id="clean-arch-trigger" onclick="toggleCleanArchitecture()"
-          style="display:none; background:#6366f1; color:white; border:none; padding:8px 15px; border-radius:10px; font-weight:800; cursor:pointer; font-size:0.75rem; align-items:center; gap:5px; box-shadow:0 4px 6px rgba(99,102,241,0.2);">
-          ✨ MODULAR
-        </button>
-
-        <div id="user-badge" style="display: none;">
-          <div id="user-avatar"
-            style="width:30px; height:30px; background:#4f46e5; color:white; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:800; font-size:0.8rem;">
-            U</div>
-          <div style="text-align: right; line-height: 1.2;">
-            <div id="user-nombre" style="font-size: 0.8rem; font-weight: 800; color: #1e293b;">Cargando...</div>
-            <div id="user-role-label"
-              style="font-size: 0.65rem; font-weight: 700; color: #6366f1; text-transform: uppercase;">Rol</div>
-          </div>
-          <button onclick="logout()"
-            style="background:#fee2e2; border:none; color:#ef4444; cursor:pointer; padding:5px; border-radius:5px; display:flex; align-items:center; margin-left: 5px;">
-            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="3">
-              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
-              <polyline points="16 17 21 12 16 7" />
-              <line x1="21" y1="12" x2="9" y2="12" />
-            </svg>
-          </button>
+        <div style="margin-top: auto; padding: 20px; display: flex; justify-content: center; opacity: 0.3;">
+          <img src="https://txnecdeccianklqqyrav.supabase.co/storage/v1/object/public/assets/logo%20solo%20copia.png" style="width: 120px; max-width: 100%; object-fit: contain;">
         </div>
-      </div>
-    </div>
-  </header>
+      </nav>
+    </aside>
 
-  <main class="container" style="padding-top: 10px;">
+    <!-- ÁREA PRINCIPAL DERECHA (DESLIZABLE) -->
+    <div id="main-content" style="flex: 1; display: flex; flex-direction: column; overflow-y: auto; position: relative;">
+      
+      <!-- TOP BAR DERECHO CON LOGO INCLUIDO -->
+      <header style="height: 80px; min-height: 80px; background: white; border-bottom: 1px solid #e2e8f0; display: flex; justify-content: space-between; align-items: center; padding: 0 30px; position: sticky; top: 0; z-index: 999; box-shadow: 0 2px 10px rgba(0,0,0,0.02);">
+        
+        <!-- Izquierda: Pestañas de Período -->
+        <div class="period-tabs" style="margin: 0; background: #f1f5f9; padding: 4px; border-radius: 12px; display: flex; gap: 5px; border: 1px solid #cbd5e1;">
+           <div id="tab-1" class="period-tab active" onclick="setPeriodo(1)" style="font-size: 0.85rem; padding: 8px 20px; font-weight: 800; border-radius: 8px; cursor:pointer;">E1</div>
+           <div id="tab-2" class="period-tab" onclick="setPeriodo(2)" style="font-size: 0.85rem; padding: 8px 20px; font-weight: 800; border-radius: 8px; cursor:pointer;">E2</div>
+           <div id="tab-3" class="period-tab" onclick="setPeriodo(3)" style="font-size: 0.85rem; padding: 8px 20px; font-weight: 800; border-radius: 8px; cursor:pointer;">EF</div>
+        </div>
+
+        <!-- Centro / Derecha: Logo Evaluándonos -->
+        <div style="flex: 1; display: flex; justify-content: flex-end; padding-right: 25px; height: 100%; overflow: hidden; align-items: center;">
+            <!-- La imagen se recorta para eliminar márgenes blancos y se ancla a la derecha -->
+            <img src="https://txnecdeccianklqqyrav.supabase.co/storage/v1/object/public/assets/evaluandonos.png" alt="Evaluándonos" style="height: 60px; transform: scale(1.4); transform-origin: right center; mix-blend-mode: multiply;">
+        </div>
+
+        <!-- Derecha Extrema: Usuario -->
+        <div id="user-badge" style="display: none; align-items: center; gap: 12px; border-left: 1px solid #e2e8f0; padding-left: 20px;">
+           <div style="text-align: right;">
+             <div id="user-nombre" style="font-size: 0.9rem; font-weight: 800; color: #1e293b;">Cargando...</div>
+             <div id="user-role-label" style="font-size: 0.75rem; font-weight: 700; color: #4f46e5; text-transform: uppercase;">Rol</div>
+           </div>
+           <div id="user-avatar" style="width:42px; height:42px; background:#4f46e5; color:white; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:800; font-size:1.1rem; flex-shrink: 0; box-shadow: 0 4px 6px rgba(79, 70, 229, 0.3);">U</div>
+           <button onclick="logout()" style="background:rgba(239, 68, 68, 0.1); border:none; color:#ef4444; cursor:pointer; padding:10px; border-radius:10px; display:flex; align-items:center; transition: 0.2s; margin-left:5px;" title="Cerrar Sesión">
+             <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="3">
+               <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+               <polyline points="16 17 21 12 16 7" />
+               <line x1="21" y1="12" x2="9" y2="12" />
+             </svg>
+           </button>
+        </div>
+      </header>
+
+      <!-- Contenedor general de vistas scrollable -->
+      <div id="scrollable-views" style="padding: 0 30px 20px 30px; flex: 1;">
+<main class="container" style="padding-top: 0;">
     <div id="resultado-container" style="display: none;">
-      <!-- Espacio superior para separación -->
-      <div style="margin-top: 1rem;"></div>
+      
 
       <!-- VISTA 1: ANÁLISIS GENERAL -->
       <div id="analisis-general-view">
         <div id="filtros-container" class="controls"
-          style="display: grid; grid-template-columns: 1fr 1.5fr 0.8fr; gap: 1.5rem; align-items: end; background: rgba(255, 255, 255, 0.6); backdrop-filter: blur(20px); padding: 1.5rem; border-radius: 20px; border: 1px solid rgba(255, 255, 255, 0.5); width: 100%; box-sizing: border-box; margin-bottom: 2rem;">
+          style="display: grid; grid-template-columns: 1fr 1.5fr 0.8fr; gap: 0.8rem; align-items: end; background: rgba(255, 255, 255, 0.6); backdrop-filter: blur(20px); padding: 1rem; border-radius: 20px; border: 1px solid rgba(255, 255, 255, 0.5); width: 100%; box-sizing: border-box; margin-bottom: 2rem;">
           <div class="control-group">
             <label
               style="display: block; font-size: 0.75rem; font-weight: 800; color: #64748b; margin-bottom: 8px; text-transform: uppercase;">Grado</label>
@@ -2027,7 +1985,7 @@
           <div>
             <h2 style="margin:0; font-size:1.5rem; font-weight:800;">👤 Análisis por Estudiante</h2>
             <p style="margin:5px 0 0 0; opacity:0.9; font-size:0.9rem;">Consulta el desempeño detallado y respuestas de
-              cada alumno.</p>
+              cada estudiante.</p>
           </div>
           <div style="display:flex; gap:10px; flex-wrap:wrap;">
             <select id="sel-est-det-grado" onchange="cargarEstudiantesDetalle()"
@@ -2445,7 +2403,7 @@
   </div>
 
   <!-- SECCIÓN MAIN DE ARQUITECTURA LIMPIA (DEMO / PARALELO) -->
-  <section id="section-main" style="display: none; background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(20px); border-radius: 24px; border: 1px solid rgba(255, 255, 255, 0.5); padding: 2rem; margin-top: 1rem; box-shadow: 0 8px 32px rgba(0,0,0,0.08);">
+  <section id="section-main" style="display: none; background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(20px); border-radius: 16px; border: 1px solid rgba(255, 255, 255, 0.5); padding: 2rem; margin-top: 1rem; box-shadow: 0 8px 32px rgba(0,0,0,0.08);">
     
     <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #f1f5f9; padding-bottom: 15px; margin-bottom: 20px;">
       <h2 style="margin: 0; color: #1e293b; font-weight: 900; font-size: 1.5rem; display: flex; align-items: center; gap: 10px;">
@@ -2915,6 +2873,17 @@
         }
       }
 
+      
+      function toggleSidebarMenu(id) {
+        const el = document.getElementById(id);
+        const isVisible = el.style.display === 'flex';
+        // Opcional: Cerrar los demás
+        // ['menu-analisis', 'menu-informes', 'menu-anio'].forEach(menuId => {
+        //   if(menuId !== id) document.getElementById(menuId).style.display = 'none';
+        // });
+        el.style.display = isVisible ? 'none' : 'flex';
+      }
+    
       function toggleDropdown(id) {
         const el = $(id);
         const isOpen = el.classList.contains('open');
@@ -2984,9 +2953,9 @@
 
       function calcularPuestoNivel(zipId, gradoBase) {
         if (!dataPeriodoActual || dataPeriodoActual.length === 0) return "-";
-        const alumnosNivel = dataPeriodoActual.filter(t => extraerGradoBase(extraerGrupo(t.zipgrade_id)) === gradoBase);
-        if (alumnosNivel.length === 0) return "-";
-        const sortedNivel = [...alumnosNivel].sort((a, b) => (b.porcentaje || 0) - (a.porcentaje || 0));
+        const estudiantesNivel = dataPeriodoActual.filter(t => extraerGradoBase(extraerGrupo(t.zipgrade_id)) === gradoBase);
+        if (estudiantesNivel.length === 0) return "-";
+        const sortedNivel = [...estudiantesNivel].sort((a, b) => (b.porcentaje || 0) - (a.porcentaje || 0));
         const pos = sortedNivel.findIndex(t => t.zipgrade_id === zipId);
         return pos !== -1 ? (pos + 1) : "-";
       }
@@ -3911,13 +3880,7 @@
         let imageCounter = 0;
 
         // Paleta de colores para recuadros de instrucciones (Premium glassmorphism)
-        const INSTRUCCION_COLORS = [
-          { bg: 'rgba(239, 246, 255, 0.9)', border: '#3b82f6', text: '#1e40af' },
-          { bg: 'rgba(240, 253, 244, 0.9)', border: '#22c55e', text: '#14532d' },
-          { bg: 'rgba(255, 247, 237, 0.9)', border: '#f97316', text: '#7c2d12' },
-          { bg: 'rgba(253, 244, 255, 0.9)', border: '#a855f7', text: '#581c87' },
-          { bg: 'rgba(254, 249, 195, 0.9)', border: '#eab308', text: '#713f12' },
-        ];
+        const INSTRUCCION_COLORS = [{ bg: 'rgba(238, 242, 255, 0.9)', border: '#6366f1', text: '#3730a3' }];
         let instruccionColorIdx = 0;
 
         parts.forEach((part, index) => {
@@ -3947,18 +3910,18 @@
                 const instructionText = contentPart.substring(lastIdx).trim();
 
                 if (contextText) {
-                  combinedHtml += `<div style="margin-bottom:12px; line-height:1.5; color:#334155;">${contextText.replace(/\n/g, '<br>')}</div>`;
+                  combinedHtml += `<div style="margin-bottom:6px; line-height:1.4; color:#334155; font-size:0.95em;">${contextText.replace(/\n/g, '<br>')}</div>`;
                 }
 
                 const c = INSTRUCCION_COLORS[instruccionColorIdx % INSTRUCCION_COLORS.length];
                 instruccionColorIdx++;
                 combinedHtml += `
-                <div style="margin-bottom:14px; padding:10px 16px; background:${c.bg}; border:1px solid ${c.border}44; border-left:6px solid ${c.border}; border-radius:10px; color:${c.text}; font-weight:700; font-size:1em; box-shadow: 0 2px 4px rgba(0,0,0,0.05); line-height:1.4;">
+                <div style="margin-bottom:14px; padding:6px 12px; background:${c.bg}; border:1px solid ${c.border}44; border-left:4px solid ${c.border}; border-radius:8px; color:${c.text}; font-weight:700; font-size:0.85em; box-shadow: 0 2px 4px rgba(0,0,0,0.05); line-height:1.2;">
                   <span style="display:block; font-size:0.6rem; text-transform:uppercase; margin-bottom:2px; opacity:0.7; font-weight:900; letter-spacing:0.5px;">Acción requerida</span>
                   ${instructionText.replace(/\n/g, '<br>')}
                 </div>`;
               } else {
-                combinedHtml += `<div style="margin-bottom:12px; line-height:1.5; color:#334155;">${contentPart.replace(/\n/g, '<br>')}</div>`;
+                combinedHtml += `<div style="margin-bottom:6px; line-height:1.4; color:#334155; font-size:0.95em;">${contentPart.replace(/\n/g, '<br>')}</div>`;
               }
             }
           } else {
@@ -4701,7 +4664,7 @@
           const totalEst = p_corr > 0 ? Math.round((c_corr * 100) / p_corr) : 0;
           const correctKey = (row[keyIdx] || "").toUpperCase();
 
-          // Extraer distribución de respuestas (ZipGrade da porcentajes, convertimos a cantidad de alumnos)
+          // Extraer distribución de respuestas (ZipGrade da porcentajes, convertimos a cantidad de estudiantes)
           const dist = { 'A': 0, 'B': 0, 'C': 0, 'D': 0 };
           const mapping = [[r1Idx, r1pIdx], [r2Idx, r2pIdx], [r3Idx, r3pIdx], [r4Idx, r4pIdx]];
           mapping.forEach(pair => {
@@ -5526,24 +5489,24 @@
           const actualPeriodoNum = parseInt(est.periodo);
           const grupoEst = est.grado ? est.grado.toString().trim() : extraerGrupo(actualZipId);
 
-          const alumnosGrupo = todos.filter(t => {
+          const estudiantesGrupo = todos.filter(t => {
             if (parseInt(t.periodo) !== actualPeriodoNum) return false;
             const g = t.grado ? t.grado.toString().trim() : extraerGrupo(t.zipgrade_id);
             return g === grupoEst;
           });
 
           const gradoBase = extraerGradoBase(grupoEst);
-          const alumnosNivel = todos.filter(t => {
+          const estudiantesNivel = todos.filter(t => {
             if (parseInt(t.periodo) !== actualPeriodoNum) return false;
             const g = t.grado ? t.grado.toString().trim() : extraerGrupo(t.zipgrade_id);
             return extraerGradoBase(g) === gradoBase;
           });
 
-          const sortedGrupo = [...alumnosGrupo].sort((a, b) => (b.porcentaje || 0) - (a.porcentaje || 0));
+          const sortedGrupo = [...estudiantesGrupo].sort((a, b) => (b.porcentaje || 0) - (a.porcentaje || 0));
           const idxG = sortedGrupo.findIndex(t => t.zipgrade_id.toString().trim() === actualZipId);
           const puestoGrupo = idxG >= 0 ? idxG + 1 : "-";
 
-          const sortedNivel = [...alumnosNivel].sort((a, b) => (b.porcentaje || 0) - (a.porcentaje || 0));
+          const sortedNivel = [...estudiantesNivel].sort((a, b) => (b.porcentaje || 0) - (a.porcentaje || 0));
           const idxN = sortedNivel.findIndex(t => t.zipgrade_id.toString().trim() === actualZipId);
           const puestoNivelFinal = idxN >= 0 ? idxN + 1 : "-";
 
@@ -5557,7 +5520,7 @@
           // Calcular puestos por cada asignatura (DENTRO DEL GRUPO)
           const puestosMaterias = {};
           config.forEach(subj => {
-            const rankings = alumnosGrupo.map(student => {
+            const rankings = estudiantesGrupo.map(student => {
               let ok = 0;
               for (let i = subj.start; i <= subj.end; i++) {
                 if (student.respuestas && student.respuestas[i] === 1) ok++;
@@ -5571,7 +5534,7 @@
             puestosMaterias[subj.label] = rankings.findIndex(r => r.id.toString().trim() === actualZipId) + 1;
           });
 
-          const html = construirHTMLBoletin(est, puestoGrupo, alumnosGrupo.length, puestosMaterias, config, historico, puestoNivelFinal, alumnosNivel.length);
+          const html = construirHTMLBoletin(est, puestoGrupo, estudiantesGrupo.length, puestosMaterias, config, historico, puestoNivelFinal, estudiantesNivel.length);
 
           const printActions = `
           <div class="no-print" style="margin-bottom:1rem; display:flex; gap:10px; justify-content: flex-end;">
@@ -5899,12 +5862,12 @@
           const { data: todosData, error } = await supabaseClient.from('eval_estudiantes_notas').select('*').eq('periodo', currentPeriodo);
           if (error) throw error;
 
-          const alumnosGrupo = (todosData || []).filter(t => {
+          const estudiantesGrupo = (todosData || []).filter(t => {
             const g = t.grado ? t.grado.toString().trim() : extraerGrupo(t.zipgrade_id);
             return g === grupo;
           }).sort((a, b) => a.estudiante_nombre.localeCompare(b.estudiante_nombre, 'es', { sensitivity: 'base' }));
 
-          if (alumnosGrupo.length === 0) {
+          if (estudiantesGrupo.length === 0) {
             $('grupal-content').innerHTML = '<p style="text-align:center; padding:2rem;">No hay datos.</p>';
             showLoading(false);
             return;
@@ -5952,7 +5915,7 @@
               <th style="padding:12px 8px; text-align:center; min-width:70px; background:white; border-bottom:2px solid #e2e8f0; position:sticky; top:0; z-index:99; box-shadow: 0 4px 6px -2px rgba(0,0,0,0.1);">PROM.</th></tr>
             </thead><tbody>`;
 
-          alumnosGrupo.forEach(est => {
+          estudiantesGrupo.forEach(est => {
             let sumaPct = 0;
             html += `<tr style="border-bottom:1px solid #f1f5f9;"><td style="padding:10px 12px; font-weight:700; position:sticky; left:0; background:white; border-right:1px solid #f1f5f9; white-space:nowrap; z-index:5;">${est.estudiante_nombre}</td>`;
             config.forEach(subj => {
@@ -6152,12 +6115,12 @@
           const { data: todosData, error } = await supabaseClient.from('eval_estudiantes_notas').select('*').eq('periodo', currentPeriodo);
           if (error) throw error;
 
-          const alumnosGrupo = (todosData || []).filter(t => {
+          const estudiantesGrupo = (todosData || []).filter(t => {
             const g = t.grado ? t.grado.toString().trim() : extraerGrupo(t.zipgrade_id);
             return g === grupo;
           }).sort((a, b) => a.estudiante_nombre.localeCompare(b.estudiante_nombre, 'es', { sensitivity: 'base' }));
 
-          if (alumnosGrupo.length === 0) {
+          if (estudiantesGrupo.length === 0) {
             $('asignatura-content').innerHTML = '<p style="text-align:center; padding:2rem;">No hay datos.</p>';
             showLoading(false); return;
           }
@@ -6209,7 +6172,7 @@
                     <tbody style="z-index:1;">
             `;
 
-          alumnosGrupo.forEach(est => {
+          estudiantesGrupo.forEach(est => {
             let sumaPct = 0;
             html += `<tr style="border-bottom:1px solid #f1f5f9;">
                     <td class="estudiante-col-base" style="padding:10px 12px; font-weight:700; position:sticky; left:0; background:white; white-space:nowrap; z-index:5;">${est.estudiante_nombre}</td>`;
@@ -6239,12 +6202,12 @@
           let totalGeneral = 0;
           config.forEach(subj => {
             let sumaSub = 0;
-            alumnosGrupo.forEach(est => {
+            estudiantesGrupo.forEach(est => {
               let ok = 0, totalSub = 0;
               for (let i = subj.start; i <= subj.end; i++) { totalSub++; if (est.respuestas && est.respuestas[i] === 1) ok++; }
               sumaSub += Math.round((ok / totalSub) * 100);
             });
-            const promSub = Math.round(sumaSub / alumnosGrupo.length);
+            const promSub = Math.round(sumaSub / estudiantesGrupo.length);
             totalGeneral += promSub;
             html += `<td class="subject-col-base" style="padding:12px; text-align:center;">${promSub}</td>`;
           });
@@ -6380,18 +6343,18 @@
 
           if (error) throw error;
 
-          const alumnosActuales = todosData.filter(t => extraerGrupo(t.zipgrade_id) === grupo && t.periodo === parseInt(currentPeriodo))
+          const estudiantesActuales = todosData.filter(t => extraerGrupo(t.zipgrade_id) === grupo && t.periodo === parseInt(currentPeriodo))
             .sort((a, b) => a.estudiante_nombre.localeCompare(b.estudiante_nombre, 'es', { sensitivity: 'base' }));
 
-          if (alumnosActuales.length === 0) {
+          if (estudiantesActuales.length === 0) {
             printWindow.close();
             showLoading(false);
             return alert("No hay datos para este grupo en el periodo actual.");
           }
 
           const gNum = extraerGradoBase(grupo);
-          const alumnosNivel = todosData.filter(t => t.periodo === parseInt(currentPeriodo) && extraerGradoBase(extraerGrupo(t.zipgrade_id)) === gNum);
-          const sortedNivel = [...alumnosNivel].sort((a, b) => (b.porcentaje || 0) - (a.porcentaje || 0));
+          const estudiantesNivel = todosData.filter(t => t.periodo === parseInt(currentPeriodo) && extraerGradoBase(extraerGrupo(t.zipgrade_id)) === gNum);
+          const sortedNivel = [...estudiantesNivel].sort((a, b) => (b.porcentaje || 0) - (a.porcentaje || 0));
 
           let mKey = '6-9';
           if (gNum <= 4) mKey = '3-4';
@@ -6400,16 +6363,16 @@
           const config = MATRIZ_RANGOS[mKey];
 
           const historicosMap = {};
-          alumnosActuales.forEach(a => {
+          estudiantesActuales.forEach(a => {
             historicosMap[a.zipgrade_id] = todosData.filter(t => t.zipgrade_id === a.zipgrade_id).sort((x, y) => x.periodo - y.periodo);
           });
 
-          const sortedGrupoParaPuesto = [...alumnosActuales].sort((a, b) => (b.porcentaje || 0) - (a.porcentaje || 0));
+          const sortedGrupoParaPuesto = [...estudiantesActuales].sort((a, b) => (b.porcentaje || 0) - (a.porcentaje || 0));
 
-          let contentHTML = alumnosActuales.map((est, idx) => {
+          let contentHTML = estudiantesActuales.map((est, idx) => {
             const puestosMaterias = {};
             config.forEach(subj => {
-              const rankings = alumnosActuales.map(student => {
+              const rankings = estudiantesActuales.map(student => {
                 let ok = 0;
                 for (let q = subj.start; q <= subj.end; q++) {
                   if (student.respuestas && student.respuestas[q] === 1) ok++;
@@ -6425,7 +6388,7 @@
             const puestoGrupo = sortedGrupoParaPuesto.findIndex(t => t.zipgrade_id === est.zipgrade_id) + 1;
             const pNivel = sortedNivel.findIndex(t => t.zipgrade_id === est.zipgrade_id) + 1;
             const tNivel = sortedNivel.length;
-            const html = construirHTMLBoletin(est, puestoGrupo, alumnosActuales.length, puestosMaterias, config, historicosMap[est.zipgrade_id], pNivel, tNivel);
+            const html = construirHTMLBoletin(est, puestoGrupo, estudiantesActuales.length, puestosMaterias, config, historicosMap[est.zipgrade_id], pNivel, tNivel);
             const materiasContadas = config.length;
             const forzarSuperior = materiasContadas > 6;
             return `<div class="individual-report-wrapper ${forzarSuperior ? 'compact-superior' : ''}">${html}</div>`;
@@ -6541,7 +6504,7 @@
           if (error) throw error;
 
           // 1. Filtrar estudiantes de la sede y rango seleccionado
-          const alumnosSede = todosData.filter(t => {
+          const estudiantesSede = todosData.filter(t => {
             if (t.periodo !== parseInt(currentPeriodo)) return false;
             if (detectarSede(extraerGrupo(t.zipgrade_id)) !== sede) return false;
             const g = extraerGradoBase(extraerGrupo(t.zipgrade_id));
@@ -6550,14 +6513,14 @@
             return true;
           });
 
-          if (alumnosSede.length === 0) {
+          if (estudiantesSede.length === 0) {
             showLoading(false);
             return alert(`No hay datos para el rango ${desc} en la sede "${sede}".`);
           }
 
           // 2. Agrupar por grupo para calcular puestos
           const gruposMap = {};
-          alumnosSede.forEach(a => {
+          estudiantesSede.forEach(a => {
             const g = extraerGrupo(a.zipgrade_id);
             if (!gruposMap[g]) gruposMap[g] = [];
             gruposMap[g].push(a);
@@ -6568,10 +6531,10 @@
           const gruposOrdenados = Object.keys(gruposMap).sort((a, b) => a.localeCompare(b, undefined, { numeric: true }));
 
           for (const grupo of gruposOrdenados) {
-            const alumnosGrupo = gruposMap[grupo];
+            const estudiantesGrupo = gruposMap[grupo];
             const gNum = extraerGradoBase(grupo);
-            const alumnosNivel = todosData.filter(t => t.periodo === parseInt(currentPeriodo) && extraerGradoBase(extraerGrupo(t.zipgrade_id)) === gNum);
-            const sortedNivel = [...alumnosNivel].sort((a, b) => (b.porcentaje || 0) - (a.porcentaje || 0));
+            const estudiantesNivel = todosData.filter(t => t.periodo === parseInt(currentPeriodo) && extraerGradoBase(extraerGrupo(t.zipgrade_id)) === gNum);
+            const sortedNivel = [...estudiantesNivel].sort((a, b) => (b.porcentaje || 0) - (a.porcentaje || 0));
 
             let mKey = '6-9';
             if (gNum <= 4) mKey = '3-4';
@@ -6580,15 +6543,15 @@
             const config = MATRIZ_RANGOS[mKey];
             const isSuperior = gNum >= 10;
 
-            const sortedGrupoParaPuesto = [...alumnosGrupo].sort((a, b) => (b.porcentaje || 0) - (a.porcentaje || 0));
-            const rankingsGrupo = alumnosGrupo.sort((a, b) => a.estudiante_nombre.localeCompare(b.estudiante_nombre, 'es', { sensitivity: 'base' }));
+            const sortedGrupoParaPuesto = [...estudiantesGrupo].sort((a, b) => (b.porcentaje || 0) - (a.porcentaje || 0));
+            const rankingsGrupo = estudiantesGrupo.sort((a, b) => a.estudiante_nombre.localeCompare(b.estudiante_nombre, 'es', { sensitivity: 'base' }));
 
             rankingsGrupo.forEach((est, idxRank) => {
               const zId = est.zipgrade_id.toString();
               const isSuperior = zId.startsWith("10") || zId.startsWith("11");
               const puestosMaterias = {};
               config.forEach(subj => {
-                const subjRank = alumnosGrupo.map(student => {
+                const subjRank = estudiantesGrupo.map(student => {
                   let ok = 0;
                   for (let q = subj.start; q <= subj.end; q++) { if (student.respuestas && student.respuestas[q] === 1) ok++; }
                   return { id: student.zipgrade_id, ok, promedioGlobal: student.porcentaje || 0 };
@@ -6603,7 +6566,7 @@
               const puestoGrupo = sortedGrupoParaPuesto.findIndex(t => t.zipgrade_id === est.zipgrade_id) + 1;
               const pNivel = sortedNivel.findIndex(t => t.zipgrade_id === est.zipgrade_id) + 1;
               const tNivel = sortedNivel.length;
-              const html = construirHTMLBoletin(est, puestoGrupo, alumnosGrupo.length, puestosMaterias, config, historicosMap[est.zipgrade_id], pNivel, tNivel);
+              const html = construirHTMLBoletin(est, puestoGrupo, estudiantesGrupo.length, puestosMaterias, config, historicosMap[est.zipgrade_id], pNivel, tNivel);
               const materiasContadas = config.length;
               const forzarSuperior = materiasContadas > 6;
 
@@ -6828,7 +6791,7 @@
         const grupo = $('est-sel-grado').value;
         if (!grupo) return;
 
-        const alumnos = dataPeriodoActual.filter(d => extraerGrupo(d.zipgrade_id) === grupo);
+        const estudiantes = dataPeriodoActual.filter(d => extraerGrupo(d.zipgrade_id) === grupo);
         const gNum = extraerGradoBase(grupo);
         let mKey = '6-9';
         if (gNum <= 4) mKey = '3-4'; else if (gNum === 5) mKey = '5'; else if (gNum >= 10) mKey = '10-11';
@@ -6838,7 +6801,7 @@
         const data = config.map(subj => {
           let suma = 0;
           let validos = 0;
-          alumnos.forEach(est => {
+          estudiantes.forEach(est => {
             let ok = 0;
             for (let i = subj.start; i <= subj.end; i++) { if (est.respuestas && est.respuestas[i] === 1) ok++; }
             suma += Math.round((ok / (subj.end - subj.start + 1)) * 100);
@@ -6881,13 +6844,13 @@
         console.log('[COMP] grado seleccionado:', gBase);
         // === FIN DEBUG ===
 
-        // 1. Filtrar alumnos del nivel usando TODOS los datos del periodo (sin filtro de permisos)
+        // 1. Filtrar estudiantes del nivel usando TODOS los datos del periodo (sin filtro de permisos)
         const fuente = (dataTodoPeriodo && dataTodoPeriodo.length > 0) ? dataTodoPeriodo : dataPeriodoActual;
-        const alumnosNivel = fuente.filter(d => extraerGradoBase(extraerGrupo(d.zipgrade_id)) === gBase);
-        console.log('[COMP] alumnosNivel.length para grado', gBase, ':', alumnosNivel.length);
+        const estudiantesNivel = fuente.filter(d => extraerGradoBase(extraerGrupo(d.zipgrade_id)) === gBase);
+        console.log('[COMP] estudiantesNivel.length para grado', gBase, ':', estudiantesNivel.length);
 
         // === DEBUG: zipgrade_ids del grado específico ===
-        const muestraGrado = alumnosNivel.slice(0, 15).map(d => ({
+        const muestraGrado = estudiantesNivel.slice(0, 15).map(d => ({
           id: d.zipgrade_id,
           grupo: extraerGrupo(d.zipgrade_id),
           sede: detectarSede(extraerGrupo(d.zipgrade_id))
@@ -6896,7 +6859,7 @@
         // ================================================
 
         // 2. Identificar sedes únicas en este nivel
-        const sedesUnicas = [...new Set(alumnosNivel.map(d => detectarSede(extraerGrupo(d.zipgrade_id))))]
+        const sedesUnicas = [...new Set(estudiantesNivel.map(d => detectarSede(extraerGrupo(d.zipgrade_id))))]
           .filter(s => s)
           .sort((a, b) => a.localeCompare(b));
         console.log('[COMP] sedesUnicas:', sedesUnicas);
@@ -6921,11 +6884,11 @@
 
         // 5. Crear datasets: uno por cada SEDE
         const datasets = sedesUnicas.map(sede => {
-          const alumnosSede = alumnosNivel.filter(d => detectarSede(extraerGrupo(d.zipgrade_id)) === sede);
+          const estudiantesSede = estudiantesNivel.filter(d => detectarSede(extraerGrupo(d.zipgrade_id)) === sede);
           const data = config.map(subj => {
             let suma = 0;
             let count = 0;
-            alumnosSede.forEach(est => {
+            estudiantesSede.forEach(est => {
               let ok = 0;
               for (let i = subj.start; i <= subj.end; i++) {
                 if (est.respuestas && est.respuestas[i] === 1) ok++;
@@ -7025,6 +6988,10 @@
       });
     </script>
     <script type="module" src="./src/app.js"></script>
+
+      </div> <!-- #scrollable-views -->
+    </div> <!-- #main-content -->
+  </div> <!-- #app-body -->
 </body>
 
 </html>
