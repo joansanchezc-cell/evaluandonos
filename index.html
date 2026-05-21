@@ -1935,13 +1935,20 @@
 
         <!-- Derecha: Formulario -->
         <div style="display:flex; flex-direction:column; gap:15px; background: #f8fafc; padding: 25px; border-radius: 16px; border: 1px solid #e2e8f0; height: fit-content;">
-          <h3 id="users-form-title" style="margin:0; font-size:1.2rem; color:#1e293b; font-weight: 800;">Crear Nuevo Usuario</h3>
-          <p style="font-size: 0.8rem; color: #64748b; margin-top: -10px;">Completa los datos para registrar o actualizar un perfil.</p>
+          
+          <div style="display: flex; gap: 10px; border-bottom: 2px solid #e2e8f0; padding-bottom: 10px;">
+            <button id="tab-form-docente" onclick="switchUserForm('docente')" style="flex: 1; padding: 10px; border: none; background: transparent; cursor: pointer; font-weight: 800; font-size: 0.9rem; color: var(--primary); border-bottom: 3px solid var(--primary); transition: 0.2s;">👨‍🏫 Staff</button>
+            <button id="tab-form-estudiante" onclick="switchUserForm('estudiante')" style="flex: 1; padding: 10px; border: none; background: transparent; cursor: pointer; font-weight: 800; font-size: 0.9rem; color: #64748b; border-bottom: 3px solid transparent; transition: 0.2s;">🎓 Estudiante</button>
+          </div>
+
+          <h3 id="users-form-title" style="margin:0; font-size:1.2rem; color:#1e293b; font-weight: 800;">Crear Nuevo Docente</h3>
+          <p id="users-form-desc" style="font-size: 0.8rem; color: #64748b; margin-top: -10px;">Administradores o docentes.</p>
           
           <input type="hidden" id="nu-id">
+          <input type="hidden" id="nu-form-type" value="docente">
           
           <div>
-            <label style="font-size: 0.75rem; font-weight: 800; color: #64748b; text-transform: uppercase;">Correo Electrónico</label>
+            <label style="font-size: 0.75rem; font-weight: 800; color: #64748b; text-transform: uppercase;">Correo / Identificación</label>
             <input type="email" id="nu-email" placeholder="ejemplo@colegio.edu.co" style="width:100%; padding:12px; border-radius:8px; border:1px solid #cbd5e1; font-size:0.95rem; margin-top: 4px; box-sizing:border-box;">
           </div>
           
@@ -1955,19 +1962,17 @@
             <input type="password" id="nu-pass" placeholder="***" style="width:100%; padding:12px; border-radius:8px; border:1px solid #cbd5e1; font-size:0.95rem; margin-top: 4px; box-sizing:border-box;">
           </div>
           
-          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
-              <div>
-                <label style="font-size: 0.75rem; font-weight: 800; color: #64748b; text-transform: uppercase;">Rol</label>
+          <div id="row-rol-grado" style="display: grid; grid-template-columns: 1fr; gap: 15px;">
+              <div id="col-rol">
+                <label style="font-size: 0.75rem; font-weight: 800; color: #64748b; text-transform: uppercase;">Nivel de Acceso</label>
                 <select id="nu-rol" style="width:100%; padding:12px; border-radius:8px; border:1px solid #cbd5e1; font-size:0.95rem; margin-top: 4px; box-sizing:border-box;">
-                  <option value="estudiante">Estudiante</option>
-                  <option value="docente">Docente</option>
-                  <option value="lector">Lector</option>
-                  <option value="admin">Admin</option>
-                  <option value="superadmin">Superadmin</option>
+                  <option value="lector">Docente (Lector)</option>
+                  <option value="admin">Administrador</option>
+                  <option value="superadmin">Super Administrador</option>
                 </select>
               </div>
-              <div>
-                <label style="font-size: 0.75rem; font-weight: 800; color: #64748b; text-transform: uppercase;">Grado (opcional)</label>
+              <div id="col-grado" style="display: none;">
+                <label style="font-size: 0.75rem; font-weight: 800; color: #64748b; text-transform: uppercase;">Grado Asignado</label>
                 <input type="text" id="nu-grado" placeholder="Ej: 11A" style="width:100%; padding:12px; border-radius:8px; border:1px solid #cbd5e1; font-size:0.95rem; margin-top: 4px; box-sizing:border-box;">
               </div>
           </div>
@@ -4368,6 +4373,38 @@
         renderUsuariosTabla(filtrados);
       };
 
+      window.switchUserForm = function(type) {
+        $('nu-form-type').value = type;
+        const btnD = $('tab-form-docente');
+        const btnE = $('tab-form-estudiante');
+        const colRol = $('col-rol');
+        const colGrado = $('col-grado');
+        const title = $('users-form-title');
+        const desc = $('users-form-desc');
+        const id = $('nu-id').value;
+        const accion = id ? 'Editar' : 'Crear Nuevo';
+
+        if (type === 'estudiante') {
+          btnE.style.color = 'var(--primary)';
+          btnE.style.borderBottomColor = 'var(--primary)';
+          btnD.style.color = '#64748b';
+          btnD.style.borderBottomColor = 'transparent';
+          colRol.style.display = 'none';
+          colGrado.style.display = 'block';
+          title.innerText = accion + ' Estudiante';
+          desc.innerText = 'Asigna el grado al que pertenece.';
+        } else {
+          btnD.style.color = 'var(--primary)';
+          btnD.style.borderBottomColor = 'var(--primary)';
+          btnE.style.color = '#64748b';
+          btnE.style.borderBottomColor = 'transparent';
+          colRol.style.display = 'block';
+          colGrado.style.display = 'none';
+          title.innerText = accion + ' Docente/Staff';
+          desc.innerText = 'Administradores o docentes.';
+        }
+      };
+
       window.prepararNuevoUsuario = function() {
         $('nu-id').value = '';
         $('nu-nombre').value = '';
@@ -4375,12 +4412,12 @@
         $('nu-pass').value = '';
         $('nu-pass').placeholder = '***';
         $('pass-hint').innerText = '(requerido)';
-        $('nu-rol').value = 'estudiante';
+        $('nu-rol').value = 'lector';
         $('nu-grado').value = '';
-        $('users-form-title').innerText = 'Crear Nuevo Usuario';
         $('btn-save-user').innerText = 'CREAR';
         $('btn-save-user').style.background = 'var(--primary)';
         $('users-status').style.display = 'none';
+        switchUserForm($('nu-form-type').value);
       };
 
       window.editarUsuario = function(id) {
@@ -4392,12 +4429,19 @@
         $('nu-pass').value = '';
         $('nu-pass').placeholder = 'Dejar vacío para no cambiar';
         $('pass-hint').innerText = '(Opcional)';
-        $('nu-rol').value = user.rol || 'estudiante';
         $('nu-grado').value = user.grado_asignado || '';
-        $('users-form-title').innerText = 'Editar Usuario: ' + (user.nombre || '').split(' ')[0];
+        
+        $('users-status').style.display = 'none';
         $('btn-save-user').innerText = 'ACTUALIZAR';
         $('btn-save-user').style.background = '#f59e0b';
-        $('users-status').style.display = 'none';
+        
+        if (user.rol === 'estudiante') {
+          switchUserForm('estudiante');
+        } else {
+          $('nu-rol').value = user.rol || 'lector';
+          switchUserForm('docente');
+        }
+        $('users-form-title').innerText += ': ' + (user.nombre || '').split(' ')[0];
       };
 
       async function guardarUsuario() {
@@ -4405,12 +4449,15 @@
         const email = $('nu-email').value.trim();
         const nombre = $('nu-nombre').value.trim();
         const pass = $('nu-pass').value;
-        const rol = $('nu-rol').value;
-        const gradoAsig = $('nu-grado').value.trim();
+        const formType = $('nu-form-type').value;
+        
+        // Si es estudiante, forzamos el rol 'estudiante' y tomamos el grado. Si es docente, tomamos el rol del select y sin grado.
+        const rol = (formType === 'estudiante') ? 'estudiante' : $('nu-rol').value;
+        const gradoAsig = (formType === 'estudiante') ? $('nu-grado').value.trim() : '';
         const status = $('users-status');
 
         if (!email || !nombre) {
-            status.innerText = '❌ El nombre y el email son obligatorios.';
+            status.innerText = '❌ El nombre y el email/ID son obligatorios.';
             status.style.display = 'block';
             status.style.background = '#fef2f2';
             status.style.color = '#ef4444';
@@ -4436,7 +4483,7 @@
             });
             if (error) {
               if (error.message.includes('already registered') || error.status === 422) {
-                 throw new Error('El correo ya está registrado en Auth. Usa una cuenta diferente.');
+                 throw new Error('El correo o ID ya está registrado en Auth. Usa uno diferente.');
               }
               throw error;
             }
