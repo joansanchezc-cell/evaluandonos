@@ -3432,7 +3432,7 @@
             $('user-role-label').innerText = roleTexts[currentRole] || 'Docente';
           }
 
-          const adminBtn = document.querySelector('.admin-trigger');
+          const adminBtns = document.querySelectorAll('.admin-trigger');
           const adminElements = document.querySelectorAll('.admin-only');
           const printButtons = document.querySelectorAll('.print-btn');
           const individualTab = $('tab-individual-item');
@@ -3442,10 +3442,10 @@
 
           // Solo el botón de panel administrador para superadmin
           if (currentRole === 'superadmin') {
-            if (adminBtn) adminBtn.style.display = 'flex';
+            adminBtns.forEach(btn => btn.style.display = 'flex');
             adminElements.forEach(el => el.style.display = 'inline-block');
           } else {
-            if (adminBtn) adminBtn.style.display = 'none';
+            adminBtns.forEach(btn => btn.style.display = 'none');
             adminElements.forEach(el => el.style.display = 'none');
           }
 
