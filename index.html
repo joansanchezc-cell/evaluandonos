@@ -7359,13 +7359,23 @@
           }
 
           // 1. Obtener la pregunta del banco
-          const { data: pregDataArr } = await supabaseClient.from('eval_preguntas')
+          let { data: pregDataArr } = await supabaseClient.from('eval_preguntas')
             .select('*')
             .eq('grado', gBase)
             .eq('periodo', currentPeriodo)
-            .or(`asignatura.eq."${queryAsig}",asignatura.eq."${asigLabel}"`)
+            .or(`asignatura.ilike."${queryAsig}",asignatura.ilike."${asigLabel}"`)
             .eq('pregunta_num', qNum)
             .limit(1);
+
+          if (!pregDataArr || pregDataArr.length === 0) {
+            const res = await supabaseClient.from('eval_preguntas')
+              .select('*')
+              .eq('grado', gBase)
+              .eq('periodo', currentPeriodo)
+              .eq('pregunta_num', qNum)
+              .limit(1);
+            if (res.data) pregDataArr = res.data;
+          }
 
           const qData = (pregDataArr && pregDataArr.length > 0) ? pregDataArr[0] : null;
 
