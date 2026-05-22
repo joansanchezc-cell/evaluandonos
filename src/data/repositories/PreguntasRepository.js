@@ -10,7 +10,7 @@
  * Fuente original: index.html líneas ~2945+
  */
 
-import { supabaseDatasource } from './SupabaseDatasource.js';
+import { supabaseDatasource } from '../datasources/SupabaseDatasource.js';
 
 export class PreguntasRepository {
   /**
