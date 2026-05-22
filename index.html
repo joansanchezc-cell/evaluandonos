@@ -1079,7 +1079,9 @@
         display: block !important;
       }
 
-      #user-badge {
+            #user-badge > div:first-child { display: none !important; }
+      #user-badge { gap: 5px !important; padding: 4px 8px !important; }
+#user-badge {
         position: relative !important;
         top: auto !important;
         right: auto !important;
@@ -2529,29 +2531,6 @@
           <div id="aimg-detalle"
             style="display:none; background:#f8fafc; padding:10px; border-radius:12px; border:1px solid #e2e8f0;">
             <div id="aimg-fields" style="display:flex; flex-direction:column; gap:8px;"></div>
-          </div>
-        </div>
-
-        <!-- CARD 3: USUARIOS -->
-        <div class="admin-card">
-          <h5>👥 Gestión de Usuarios</h5>
-          <div style="display:flex; flex-direction:column; gap:8px;">
-            <input type="email" id="nu-email" placeholder="Email"
-              style="padding:8px; border-radius:8px; border:1px solid #e2e8f0; font-size:0.8rem;">
-            <input type="text" id="nu-nombre" placeholder="Nombre"
-              style="padding:8px; border-radius:8px; border:1px solid #e2e8f0; font-size:0.8rem;">
-            <input type="password" id="nu-pass" placeholder="Password"
-              style="padding:8px; border-radius:8px; border:1px solid #e2e8f0; font-size:0.8rem;">
-            <select id="nu-rol" style="padding:8px; border-radius:8px; border:1px solid #e2e8f0; font-size:0.8rem;">
-              <option value="lector">Lector</option>
-              <option value="admin">Admin</option>
-              <option value="superadmin">Superadmin</option>
-            </select>
-            <input type="text" id="nu-grado" placeholder="Grado/Grupo (Ej: 1101 o primaria)"
-              style="padding:8px; border-radius:8px; border:1px solid #e2e8f0; font-size:0.8rem;">
-            <button onclick="crearUsuario()"
-              style="background:var(--primary); color:white; border:none; padding:10px; border-radius:8px; font-weight:700; cursor:pointer;">CREAR
-              USUARIO</button>
           </div>
         </div>
 
@@ -6026,7 +6005,7 @@
       // Duplicado de showLoading removido.
 
 
-      async function cargarAsignaturasAdminImg() {
+      async async function cargarAsignaturasAdminImg() {
         const g = $('aimg-grado').value;
         const p = $('aimg-periodo').value;
         if (!g) return;
