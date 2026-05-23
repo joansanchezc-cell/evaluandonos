@@ -5292,7 +5292,7 @@
         reader.readAsText(file);
       }
 
-      function loguearExitosoEstudiante(nombre, id) {
+      window.loguearExitosoEstudiante = function loguearExitosoEstudiante(nombre, id) {
         if ($('login-mask')) $('login-mask').style.display = 'none';
         if ($('loading')) $('loading').style.display = 'none';
 
@@ -5386,7 +5386,7 @@
         }
       };
 
-      async function loguearExitoso(user) {
+      window.loguearExitoso = async function loguearExitoso(user) {
         if (!user) return;
         currentUser = user;
 
