@@ -1,0 +1,11 @@
+const fs = require('fs');
+const c = fs.readFileSync('index.html', 'utf8');
+const m1 = c.indexOf('user-badge');
+const m2 = c.indexOf('user-badge', m1 + 10);
+const m3 = c.indexOf('user-badge', m2 + 10);
+const m4 = c.indexOf('user-badge', m3 + 10);
+const m5 = c.indexOf('user-badge', m4 + 10);
+const m6 = c.indexOf('user-badge', m5 + 10);
+const m7 = c.indexOf('user-badge', m6 + 10);
+console.log('Match 6:', c.substring(m6 - 200, m6 + 500));
+console.log('Match 7:', c.substring(m7 - 200, m7 + 500));
