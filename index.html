@@ -7646,9 +7646,9 @@
           const historico = Array.from(histMap.values());
 
           // Deduplicar todos por zipgrade_id
-          const todosMap = new Map();
+          let todosMap = new Map();
           todosData.forEach(t => todosMap.set(t.zipgrade_id.toString().trim(), t));
-          const todos = Array.from(todosMap.values());
+          let todos = Array.from(todosMap.values());
 
           // NO usar fallback por nombre para evitar confusiones entre estudiantes con apellidos iguales.
           // El sistema ahora es 100% basado en el Número de Identificación para garantizar privacidad.
@@ -7669,8 +7669,23 @@
             return;
           }
 
-          const actualZipId = est.zipgrade_id.toString().trim();
           const actualPeriodoNum = parseInt(est.periodo);
+          
+          // REPARACIÓN: Si el estudiante cayó en un periodo anterior (ej. no hay datos del P2, cayó al P1),
+          // los datos de 'todos' que descargamos inicialmente eran para el P2. 
+          // Debemos descargar 'todos' para el periodo real del reporte (P1) para calcular los puestos correctamente.
+          if (actualPeriodoNum !== parseInt(currentPeriodo)) {
+            const [fallbackNotas, fallbackComp] = await Promise.all([
+              supabaseClient.from('eval_estudiantes_notas').select('*').eq('periodo', actualPeriodoNum),
+              supabaseClient.from('eval_estudiantes_completos').select('*').eq('periodo', actualPeriodoNum)
+            ]);
+            const fbTodosData = [...(fallbackNotas.data || []), ...normComp(fallbackComp.data)];
+            todosMap = new Map();
+            fbTodosData.forEach(t => todosMap.set(t.zipgrade_id.toString().trim(), t));
+            todos = Array.from(todosMap.values());
+          }
+
+          const actualZipId = est.zipgrade_id.toString().trim();
           const grupoEst = est.grado ? est.grado.toString().trim() : extraerGrupo(actualZipId);
 
           const estudiantesGrupo = todos.filter(t => {
@@ -9164,7 +9179,7 @@
       window.addEventListener('DOMContentLoaded', () => {
         if (typeof checkSession === 'function') {
           checkSession().then(() => {
-            if (typeof switchMainTab === 'function') {
+            if (typeof switchMainTab === 'function' && !window.isStudentMode) {
               switchMainTab('analisis');
             }
           });
