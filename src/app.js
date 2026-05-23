@@ -41,6 +41,7 @@ async function initApp() {
     console.log('✅ Controllers inicializados');
 
     // 3. Exposición global para garantizar 100% de compatibilidad con botones onclick legado
+    window.supabaseClient = supabaseDatasource.getClient();
     window.authController = authController;
     window.analisisController = analisisController;
     window.adminController = adminController;
