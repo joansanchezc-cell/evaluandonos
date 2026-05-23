@@ -53,8 +53,13 @@ export class AuthService {
     try {
       const client = supabaseDatasource.getClient();
 
+      let emailToUse = email.trim();
+      if (!emailToUse.includes('@')) {
+        emailToUse = emailToUse + "@liceo.edu";
+      }
+
       const { data, error } = await client.auth.signInWithPassword({
-        email,
+        email: emailToUse,
         password
       });
 
