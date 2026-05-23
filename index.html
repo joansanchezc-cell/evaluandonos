@@ -1717,6 +1717,85 @@
       .periodo-toggle {
         flex-wrap: wrap;
       }
+
+      /* Corrección de Cabecera y Perfil de Usuario en Celulares */
+      header {
+        display: flex !important;
+        flex-direction: row !important;
+        justify-content: space-between !important;
+        align-items: center !important;
+        height: 70px !important;
+        min-height: 70px !important;
+        padding: 0 10px !important;
+      }
+      
+      header div[style*="justify-content: flex-end"] {
+        justify-content: center !important;
+        padding-right: 0 !important;
+      }
+
+      header img[alt="Evaluándonos"] {
+        transform: none !important;
+        height: 40px !important;
+        width: auto !important;
+        object-fit: contain !important;
+      }
+
+      .period-tabs {
+        width: auto !important;
+        margin: 0 !important;
+        padding: 2px !important;
+        border-radius: 8px !important;
+      }
+
+      .period-tab {
+        padding: 6px 10px !important;
+        font-size: 0.75rem !important;
+      }
+
+      #user-badge {
+        display: flex !important;
+        align-items: center !important;
+        gap: 8px !important;
+        position: relative !important;
+        top: auto !important;
+        right: auto !important;
+        background: transparent !important;
+        box-shadow: none !important;
+        border: none !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        border-left: none !important;
+        padding-left: 0 !important;
+      }
+
+      #user-badge > div:first-child {
+        display: none !important;
+      }
+
+      #user-avatar {
+        width: 32px !important;
+        height: 32px !important;
+        font-size: 0.8rem !important;
+      }
+      
+      #user-badge button {
+        padding: 6px !important;
+        margin: 0 !important;
+      }
+
+      /* Desplazamiento vertical en login con teclado abierto */
+      #login-mask {
+        overflow-y: auto !important;
+        align-items: flex-start !important;
+        padding: 20px 10px !important;
+      }
+
+      .login-card {
+        margin-top: 30px !important;
+        margin-bottom: 30px !important;
+        padding: 25px 20px !important;
+      }
     }
   </style>
   <script>
@@ -4545,6 +4624,85 @@
       .periodo-toggle {
         flex-wrap: wrap;
       }
+
+      /* Corrección de Cabecera y Perfil de Usuario en Celulares */
+      header {
+        display: flex !important;
+        flex-direction: row !important;
+        justify-content: space-between !important;
+        align-items: center !important;
+        height: 70px !important;
+        min-height: 70px !important;
+        padding: 0 10px !important;
+      }
+      
+      header div[style*="justify-content: flex-end"] {
+        justify-content: center !important;
+        padding-right: 0 !important;
+      }
+
+      header img[alt="Evaluándonos"] {
+        transform: none !important;
+        height: 40px !important;
+        width: auto !important;
+        object-fit: contain !important;
+      }
+
+      .period-tabs {
+        width: auto !important;
+        margin: 0 !important;
+        padding: 2px !important;
+        border-radius: 8px !important;
+      }
+
+      .period-tab {
+        padding: 6px 10px !important;
+        font-size: 0.75rem !important;
+      }
+
+      #user-badge {
+        display: flex !important;
+        align-items: center !important;
+        gap: 8px !important;
+        position: relative !important;
+        top: auto !important;
+        right: auto !important;
+        background: transparent !important;
+        box-shadow: none !important;
+        border: none !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        border-left: none !important;
+        padding-left: 0 !important;
+      }
+
+      #user-badge > div:first-child {
+        display: none !important;
+      }
+
+      #user-avatar {
+        width: 32px !important;
+        height: 32px !important;
+        font-size: 0.8rem !important;
+      }
+      
+      #user-badge button {
+        padding: 6px !important;
+        margin: 0 !important;
+      }
+
+      /* Desplazamiento vertical en login con teclado abierto */
+      #login-mask {
+        overflow-y: auto !important;
+        align-items: flex-start !important;
+        padding: 20px 10px !important;
+      }
+
+      .login-card {
+        margin-top: 30px !important;
+        margin-bottom: 30px !important;
+        padding: 25px 20px !important;
+      }
     }
   </style>
   <script>
@@ -4736,6 +4894,9 @@
       async function switchMainTab(tab) {
         showLoading(true);
         try {
+          if (tab === 'informes') {
+            tab = 'individual';
+          }
           currentView = tab;
           isEnPestañaGrupal = (tab === 'grupal');
 
@@ -4750,6 +4911,13 @@
           if (activeBtn) {
             activeBtn.classList.add('active');
           }
+
+          // Update Mobile Nav Active Item
+          document.querySelectorAll('.mobile-nav-item').forEach(el => el.classList.remove('active'));
+          let navKey = tab;
+          if (['individual', 'grupal', 'asignatura'].includes(tab)) navKey = 'informes';
+          const activeNav = document.getElementById(`m-nav-${navKey}`);
+          if (activeNav) activeNav.classList.add('active');
 
           // Visibility Toggle
           const containerIds = ['resultado-container', 'individual-container', 'estadisticas-container', 'grupal-container', 'asignatura-container', 'estudiante-detalle-container', 'section-main', 'usuarios-container', 'admin-modal'];

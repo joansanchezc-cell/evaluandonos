@@ -10,6 +10,7 @@
  */
 
 import { AuthService } from '../../domain/services/index.js';
+import { supabaseDatasource } from '../../data/index.js';
 
 export class AuthController {
   constructor() {
@@ -46,6 +47,9 @@ export class AuthController {
       console.warn('⚠️ Elementos de login estudiante no encontrados');
       return;
     }
+
+    // Remover onclick legado para evitar doble ejecución
+    btnLogin.removeAttribute('onclick');
 
     btnLogin.addEventListener('click', async () => {
       const identificacion = inputId.value.trim();
@@ -93,6 +97,9 @@ export class AuthController {
       console.warn('⚠️ Elementos de login docente no encontrados');
       return;
     }
+
+    // Remover onclick legado para evitar doble ejecución
+    if (btnLogin) btnLogin.removeAttribute('onclick');
 
     const emailInput = document.getElementById('input-email-docente') || document.getElementById('li-user');
     const passwordInput = document.getElementById('input-password-docente') || document.getElementById('li-pass');
@@ -188,10 +195,38 @@ export class AuthController {
    */
   async validarSesionExistente() {
     try {
-      const hasSession = await AuthService.validarSesion();
+      // 1. Prioridad a sesión de estudiante local
+      const sId = localStorage.getItem('studentId');
+      const sName = localStorage.getItem('studentName');
+      if (sId && sName) {
+        this.currentUser = { 
+          estudiante_nombre: sName, 
+          nombre: sName,
+          student_id: sId, 
+          identificacion: sId 
+        };
+        this.userType = 'estudiante';
+        console.log('✅ Sesión activa de estudiante encontrada:', sName);
+        this.mostrarVistaPrincipal();
+        return;
+      }
 
-      if (hasSession) {
-        console.log('✅ Sesión activa encontrada');
+      // 2. Verificar docente con Supabase
+      const client = supabaseDatasource.getClient();
+      if (!client) {
+        console.warn('Supabase client not initialized yet.');
+        this.mostrarVistaLogin();
+        return;
+      }
+
+      const { data: { session }, error } = await client.auth.getSession();
+
+      if (error) throw error;
+
+      if (session && session.user) {
+        this.currentUser = session.user;
+        this.userType = 'docente';
+        console.log('✅ Sesión activa de docente encontrada:', session.user.email);
         this.mostrarVistaPrincipal();
       } else {
         this.mostrarVistaLogin();

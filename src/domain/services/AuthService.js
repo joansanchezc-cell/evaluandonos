@@ -31,7 +31,11 @@ export class AuthService {
         return { success: false, student: null, error: 'Estudiante no encontrado' };
       }
 
-      // Aquí se guardarían datos en localStorage
+      // Guardar sesión en localStorage
+      localStorage.setItem('studentId', identificacion);
+      localStorage.setItem('studentName', student.nombre || student.estudiante_nombre || 'Estudiante');
+      localStorage.setItem('studentZipId', student.zipgrade_id || "");
+
       return { success: true, student, error: null };
     } catch (err) {
       console.error('Error loginEstudiante:', err);
@@ -100,6 +104,11 @@ export class AuthService {
    */
   static async logout() {
     try {
+      // Limpiar localStorage de estudiante
+      localStorage.removeItem('studentId');
+      localStorage.removeItem('studentName');
+      localStorage.removeItem('studentZipId');
+
       const client = supabaseDatasource.getClient();
       const { error } = await client.auth.signOut();
 
