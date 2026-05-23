@@ -241,11 +241,24 @@ export class AuthController {
   }
 
   mostrarVistaPrincipal() {
-    const loginSection = document.getElementById('section-login') || document.getElementById('login-mask');
-    const mainSection = document.getElementById('section-main');
+    if (this.userType === 'estudiante') {
+      if (typeof window.loguearExitosoEstudiante === 'function') {
+        const nombre = this.currentUser.estudiante_nombre || this.currentUser.nombre || 'Estudiante';
+        const id = this.currentUser.student_id || this.currentUser.identificacion || this.currentUser.zipgrade_id || '0000';
+        window.loguearExitosoEstudiante(nombre, id);
+      }
+      return;
+    }
 
-    if (loginSection) loginSection.style.display = 'none';
-    if (mainSection) mainSection.style.display = 'block';
+    if (typeof window.loguearExitoso === 'function') {
+      window.loguearExitoso(this.currentUser);
+    } else {
+      const loginSection = document.getElementById('section-login') || document.getElementById('login-mask');
+      const mainSection = document.getElementById('section-main');
+
+      if (loginSection) loginSection.style.display = 'none';
+      if (mainSection) mainSection.style.display = 'block';
+    }
   }
 
   /**
