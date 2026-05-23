@@ -54,19 +54,11 @@ export class SupabaseDatasource {
     return this.client;
   }
 
-  /**
-   * Valida conexión a Supabase
-   * @returns {Promise<boolean>}
-   */
   async validateConnection() {
     try {
-      const { data, error } = await this.getClient()
-        .from('eval_resultados')
-        .select('periodo')
-        .limit(1);
-
-      if (error) throw error;
-      return true;
+      // Avoid querying tables that might be blocked by RLS for unauthenticated users
+      const client = this.getClient();
+      return !!client;
     } catch (err) {
       console.error('❌ Fallo validación de conexión Supabase:', err);
       return false;

@@ -4772,7 +4772,9 @@
       let supabaseClient;
 
       if (typeof supabase !== 'undefined') {
-        supabaseClient = supabase.createClient(SB_URL, SB_KEY);
+        try {
+          supabaseClient = window.supabaseClient || (typeof SB_URL !== 'undefined' ? supabase.createClient(SB_URL, SB_KEY) : null);
+        } catch(e) { console.error(e); }
       }
 
       // --- UTILIDADES GLOBALES ---
@@ -5194,7 +5196,7 @@
         try {
           if (!supabaseClient && typeof supabase !== 'undefined') {
             console.log("🔄 Inicializando supabaseClient bajo demanda en login estudiante...");
-            supabaseClient = supabase.createClient(SB_URL, SB_KEY);
+            supabaseClient = window.supabaseClient || (typeof SB_URL !== 'undefined' ? supabase.createClient(SB_URL, SB_KEY) : null);
           }
           if (!supabaseClient) {
             throw new Error("El servicio de conexión no está listo. Por favor verifica tu red o recarga la página.");
@@ -5362,7 +5364,7 @@
         try {
           if (!supabaseClient && typeof supabase !== 'undefined') {
             console.log("🔄 Inicializando supabaseClient bajo demanda en login docente...");
-            supabaseClient = supabase.createClient(SB_URL, SB_KEY);
+            supabaseClient = window.supabaseClient || (typeof SB_URL !== 'undefined' ? supabase.createClient(SB_URL, SB_KEY) : null);
           }
           if (!supabaseClient) {
             throw new Error("El servicio de conexión no está listo. Por favor verifica tu red o recarga la página.");
@@ -5404,7 +5406,7 @@
             console.error("Supabase client not initialized in loguearExitoso");
             // Intentar re-inicializar
             if (typeof supabase !== 'undefined') {
-              supabaseClient = supabase.createClient(SB_URL, SB_KEY);
+              supabaseClient = window.supabaseClient || (typeof SB_URL !== 'undefined' ? supabase.createClient(SB_URL, SB_KEY) : null);
             }
             if (!supabaseClient) throw new Error("Servicio de datos no disponible. Recarga la página.");
           }
