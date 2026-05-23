@@ -55,7 +55,7 @@ export class AuthService {
 
       let emailToUse = email.trim();
       if (!emailToUse.includes('@')) {
-        emailToUse = emailToUse + "@liceo.edu";
+        emailToUse = emailToUse + "@andresan.com";
       }
 
       const { data, error } = await client.auth.signInWithPassword({
