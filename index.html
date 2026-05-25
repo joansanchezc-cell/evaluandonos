@@ -7086,9 +7086,14 @@
         const porcIdx = getColIdx(header, ["Percent Correct", "% Correct"]);
 
         const resultadosEstudiantes = [];
+        console.log(`[DEBUG] procesarEstudiantes: rows.length=${rows.length}, zipIdIdx=${zipIdIdx}, fNameIdx=${fNameIdx}, lNameIdx=${lNameIdx}`);
+
         for (const row of rows) {
           const zipId = (row[zipIdIdx] || "").toString().trim();
-          if (!zipId || zipId.toLowerCase() === "primary key") continue;
+          if (!zipId || zipId.toLowerCase() === "primary key") {
+            console.warn(`⛔ [DEBUG-SKIP0] zipId vacío/primary key → row[0]="${row[0]}", row[2]="${row[2]}"`);
+            continue;
+          }
 
           const quizRaw = row[quizIdx] || "";
           const quizName = quizRaw.toString().trim();
