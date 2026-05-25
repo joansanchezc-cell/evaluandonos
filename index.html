@@ -4942,6 +4942,12 @@
             tabMap[tab].forEach(id => { const el = document.getElementById(id); if (el) el.style.display = 'block'; });
           }
 
+          // Ocultar el footer si estamos en el panel de admin o usuarios
+          const footerEl = document.querySelector('footer');
+          if (footerEl) {
+            footerEl.style.display = (tab === 'admin' || tab === 'usuarios') ? 'none' : 'block';
+          }
+
           // Background Effect
           if (['individual', 'grupal', 'asignatura'].includes(tab)) {
             document.body.classList.add('blurred-bg');
@@ -6792,9 +6798,10 @@
           ]);
         }
 
-        const manualType = document.querySelector('input[name="upload-type"]:checked').value;
+        const selectedType = document.querySelector('input[name="upload-type"]:checked').value;
 
         for (let i = 0; i < pendingFiles.length; i++) {
+          let manualType = selectedType;
           const fileObj = pendingFiles[i];
           const rows = [...fileObj.rows];
           const header = rows[0];
