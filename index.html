@@ -7102,7 +7102,10 @@
             if (esGrupoValido(classVal)) grupo = classVal;
           }
 
-          if (!esGrupoValido(grupo)) continue; // Ignorar si el grupo no es válido después de extraerlo
+          if (!esGrupoValido(grupo)) {
+            console.warn(`⛔ [DEBUG] Descartando ID="${zipId}" → grupo="${grupo}" → esGrupoValido=false | classVal="${classVal}"`);
+            continue; // Ignorar si el grupo no es válido después de extraerlo
+          }
 
           const sede = detectarSede(grupo);
           const gradoNumBase = extraerGradoBase(grupo);
