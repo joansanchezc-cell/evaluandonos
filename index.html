@@ -6839,17 +6839,21 @@
             }
           }
 
+          let isCompletos = false;
           if (manualType === 'completos') {
-            updateStatus(`📝 Procesando Reporte Completo en ${fileObj.name}...`);
-            await procesarCompletos(rows, header, true, fileObj.name);
+            isCompletos = true;
           } else {
             if (manualType === 'banco') isBanco = true;
             if (manualType === 'item_analysis' || manualType === 'consolidado') isItemAnalysis = true;
             if (manualType === 'estudiantes') isEstudiantes = true;
           }
 
-          console.log(`File: ${fileObj.name} | Type: ${isEstudiantes ? 'Estudiantes' : isBanco ? 'Banco' : isItemAnalysis ? 'Análisis' : 'Desconocido'}`);
+          console.log(`File: ${fileObj.name} | Type: ${isEstudiantes ? 'Estudiantes' : isBanco ? 'Banco' : isItemAnalysis ? 'Análisis' : isCompletos ? 'Completos' : 'Desconocido'}`);
           try {
+            if (isCompletos) {
+              updateStatus(`📝 Procesando Reporte Completo en ${fileObj.name}...`);
+              await procesarCompletos(rows, header, true, fileObj.name);
+            }
             if (isBanco) {
               updateStatus(`🧠 Procesando Banco de Preguntas en ${fileObj.name}...`);
               await procesarBancoPreguntas(rows, header, true, fileObj.name);
@@ -6862,7 +6866,7 @@
               updateStatus(`🎓 Procesando Notas de Estudiantes en ${fileObj.name}...`);
               await procesarEstudiantes(rows, header, true, fileObj.name);
             }
-            if (!isBanco && !isItemAnalysis && !isEstudiantes) {
+            if (!isBanco && !isItemAnalysis && !isEstudiantes && !isCompletos) {
               console.warn(`⚠️ El archivo ${fileObj.name} no coincide con ningún tipo conocido.`);
             }
             updateStatus(`✅ Completado: ${fileObj.name}`);
