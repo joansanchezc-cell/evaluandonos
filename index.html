@@ -2932,7 +2932,7 @@
   <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
   <script>
-    var CURRENT_APP_VERSION = "v110";
+    var CURRENT_APP_VERSION = "v111";
     window.MathJax = {
       tex: {
         inlineMath: [['$', '$'], ['\\(', '\\)']],
@@ -7085,36 +7085,81 @@
         const okIdx = getColIdx(header, ["Num Correct", "# Correct"]);
         const porcIdx = getColIdx(header, ["Percent Correct", "% Correct"]);
 
-        const resultadosEstudiantes = [];
-        console.log(`[DEBUG] procesarEstudiantes: rows.length=${rows.length}, zipIdIdx=${zipIdIdx}, fNameIdx=${fNameIdx}, lNameIdx=${lNameIdx}`);
+        // --- Validación de grupos inline (evita depender de caché antigua de helpers.js) ---
+        const CENTRAL_PERMITIDOS = [
+          "301","401","501",
+          "601","602","603",
+          "701","702","703",
+          "801","802",
+          "901","902","903",
+          "1001","1002","1003",
+          "1101","1102","1103"
+        ];
+        function _extraerGrupoLocal(zipId) {
+          if (!zipId) return "";
+          let s = zipId.toString().trim();
+          if (s.includes("-")) return s; // ya tiene formato grupo
+          if (s.startsWith("0") && s.length > 1) s = s.replace(/^0+/, '');
+          const len = s.length;
+          if (len === 5) {
+            const isHigh = s.startsWith("10") || s.startsWith("11");
+            const grado = isHigh ? s.substring(0, 2) : s.substring(0, 1);
+            const sel = s.substring(2, 3);
+            if (sel === "4") return grado + "-PJ";
+            if (sel === "5") return grado + "-YA";
+            if (sel === "6") return grado + "-SE";
+            if (sel === "7") return grado + "-PU";
+            if (sel === "1" || sel === "2" || sel === "3") {
+              return isHigh ? grado + "0" + sel : s.substring(0, 3);
+            }
+          }
+          if (len === 6) return s.substring(0, 3);
+          if (len === 4) return s.substring(0, 3);
+          return s;
+        }
+        function _esGrupoValidoLocal(g) {
+          if (!g) return false;
+          const s = g.toString().trim().toUpperCase();
+          if (CENTRAL_PERMITIDOS.includes(s)) return true;
+          // Sedes rurales con sufijo
+          if (/-PJ$|-YA$|-SE$|-PU$/.test(s)) {
+            const base = parseInt(s);
+            return base >= 1 && base <= 11;
+          }
+          return false;
+        }
+        // Usar funciones locales (con fallback a helpers.js si está disponible)
+        const _exGrupo = (typeof extraerGrupo === 'function') ? extraerGrupo : _extraerGrupoLocal;
+        const _esValido = (typeof esGrupoValido === 'function') ? (g) => {
+          // Asegurar que la función del helpers.js incluye 703 (parche por caché)
+          if (CENTRAL_PERMITIDOS.includes(g ? g.toString().trim().toUpperCase() : '')) return true;
+          return esGrupoValido(g);
+        } : _esGrupoValidoLocal;
 
+        const resultadosEstudiantes = [];
         for (const row of rows) {
           const zipId = (row[zipIdIdx] || "").toString().trim();
-          if (!zipId || zipId.toLowerCase() === "primary key") {
-            console.warn(`⛔ [DEBUG-SKIP0] zipId vacío/primary key → row[0]="${row[0]}", row[2]="${row[2]}"`);
-            continue;
-          }
+          if (!zipId || zipId.toLowerCase() === "primary key") continue;
 
           const quizRaw = row[quizIdx] || "";
           const quizName = quizRaw.toString().trim();
 
           // Obtener grupo del ZipGrade ID o de la columna Class
-          let grupo = extraerGrupo(zipId);
+          let grupo = _exGrupo(zipId);
           const classVal = (row[classIdx] || "").toString().trim();
 
           // Si el ID no nos dio un grupo claro pero la columna Class sí, usamos Class
-          if (!esGrupoValido(grupo)) {
-            if (esGrupoValido(classVal)) grupo = classVal;
+          if (!_esValido(grupo)) {
+            if (_esValido(classVal)) grupo = classVal;
           }
 
-          if (!esGrupoValido(grupo)) {
-            console.warn(`⛔ [DEBUG] Descartando ID="${zipId}" → grupo="${grupo}" → esGrupoValido=false | classVal="${classVal}"`);
-            continue; // Ignorar si el grupo no es válido después de extraerlo
-          }
+          if (!_esValido(grupo)) continue; // Ignorar si el grupo no es válido
 
-          const sede = detectarSede(grupo);
-          const gradoNumBase = extraerGradoBase(grupo);
+
+          const sede = (typeof detectarSede === 'function') ? detectarSede(grupo) : (/-PJ$/i.test(grupo) ? 'Pisoje Bajo' : /-YA$/i.test(grupo) ? 'Yanaconas' : /-SE$/i.test(grupo) ? 'Sendero' : /-PU$/i.test(grupo) ? 'Pueblillo' : 'Central');
+          const gradoNumBase = (typeof extraerGradoBase === 'function') ? extraerGradoBase(grupo) : parseInt(grupo.toString().startsWith('10') || grupo.toString().startsWith('11') ? grupo.substring(0, 2) : grupo.substring(0, 1)) || 0;
           let gradoLimpio = grupo || gradoNumBase.toString();
+
 
           if (!gradoLimpio) {
             const matchG = quizName.match(/(\d+)/);
