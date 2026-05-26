@@ -306,6 +306,46 @@ button.primary:hover {
   text-transform: uppercase;
 }
 
+/* Desktop Footer */
+.desktop-footer {
+  position: fixed;
+  bottom: 0;
+  left: var(--sidebar-width);
+  right: 0;
+  height: var(--nav-height);
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(12px);
+  border-top: 1px solid rgba(0, 0, 0, 0.05);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 900;
+  transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.footer-content {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.footer-logo-1 { height: 30px; object-fit: contain; }
+.footer-logo-2 { height: 28px; object-fit: contain; }
+.footer-divider { width: 1px; height: 25px; background: rgba(0,0,0,0.1); }
+.footer-copy { margin: 0; color: #64748b; font-weight: 800; font-size: 0.8rem; letter-spacing: 0.5px; }
+
+@media (max-width: 768px) {
+  .desktop-footer {
+    display: none !important;
+  }
+}
+
+@media (min-width: 769px) {
+  .mobile-nav {
+    display: none !important;
+  }
+}
+
 /* Mobile Nav */
 .mobile-nav {
   position: fixed;
