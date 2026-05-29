@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mockup de Estadísticas V4</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8fafc;
+            padding: 20px;
+        }
+        .chart-container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+            height: 400px;
+            position: relative;
+        }
+        h2 {
+            text-align: center;
+            color: #1e293b;
+        }
+    </style>
+</head>
+<body>
+
+    <h2>[NUEVA] Gráfica Comparativa por Grupos del Nivel (V4)</h2>
+    <div class="chart-container">
+        <canvas id="chartComparativoGrupos"></canvas>
+    </div>
+
+    <h2>Rendimiento por Asignatura (Líneas y Zonas de Niveles)</h2>
+    <div class="chart-container">
+        <canvas id="chartMaterias"></canvas>
+    </div>
+
+    <script>
+        // -------------------------------------------------------------------------
+        // 1. NUEVA Gráfica Comparativa (Niveles horizontales y grados debajo)
+        // -------------------------------------------------------------------------
+        const nivelesHorizontalesPlugin = {
+            id: 'nivelesHorizontalesPlugin',
+            beforeDraw: (chart) => {
+                const { ctx, chartArea: { top, bottom, left, right }, scales: { y } } = chart;
+                
+                const dibujarZona = (start, end, color, texto) => {
+                    // En canvas, Y=0 es arriba, por lo que getPixelForValue(100) es menor que getPixelForValue(50)
+                    const yStart = y.getPixelForValue(start);
+                    const yEnd = end === 100 ? top : y.getPixelForValue(end);
+                    
+                    ctx.save();
+                    ctx.fillStyle = color;
+                    ctx.globalAlpha = 0.1;
+                    ctx.fillRect(left, yEnd, right - left, yStart - yEnd);
+                    
+                    ctx.globalAlpha = 1;
+                    ctx.beginPath();
+                    ctx.strokeStyle = color;
+                    ctx.lineWidth = 1.5;
+                    ctx.setLineDash([5, 5]);
+                    ctx.moveTo(left, yEnd);
+                    ctx.lineTo(right, yEnd);
+                    ctx.stroke();
+                    
+                    ctx.fillStyle = color;
+                    ctx.font = 'bold 12px Arial';
+                    ctx.textAlign = 'left';
+                    ctx.fillText(texto, left + 5, yEnd + 15);
+                    ctx.restore();
+                };
+
+                if (y.min <= 100 && y.max >= 0) {
+                    dibujarZona(0, 50, '#ef4444', 'Nivel 1');
+                    dibujarZona(50, 70, '#facc15', 'Nivel 2');
+                    dibujarZona(70, 90, '#22c55e', 'Nivel 3');
+                    dibujarZona(90, 100, '#a855f7', 'Nivel 4');
+                }
+            }
+        };
+
+        const gruposEjePlugin = {
+            id: 'gruposEjePlugin',
+            afterDraw(chart) {
+                const { ctx, chartArea: { bottom }, scales: { x } } = chart;
+                ctx.save();
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'top';
+                ctx.font = 'bold 11px Arial';
+                ctx.fillStyle = '#1e293b';
+
+                chart.data.datasets.forEach((dataset, i) => {
+                    const meta = chart.getDatasetMeta(i);
+                    if (!meta.hidden) {
+                        meta.data.forEach((element, index) => {
+                            // Imprimir el label del dataset (el grupo) justo debajo de cada barra
+                            ctx.fillText(dataset.label, element.x, bottom + 5);
+                        });
+                    }
+                });
+                ctx.restore();
+            }
+        };
+
+        const ctxNuevosGrupos = document.getElementById('chartComparativoGrupos').getContext('2d');
+        const labelsAsignaturas = ['Matemáticas', 'Lenguaje', 'Ciencias Nat.', 'Ciencias Soc.', 'Inglés'];
+        
+        new Chart(ctxNuevosGrupos, {
+            type: 'bar',
+            plugins: [ChartDataLabels, nivelesHorizontalesPlugin, gruposEjePlugin],
+            data: {
+                labels: labelsAsignaturas,
+                datasets: [
+                    { label: '601', data: [75, 80, 65, 70, 85], backgroundColor: '#4f46e5', borderRadius: 5 },
+                    { label: '602', data: [68, 85, 70, 75, 80], backgroundColor: '#10b981', borderRadius: 5 },
+                    { label: '603', data: [80, 72, 78, 65, 90], backgroundColor: '#f59e0b', borderRadius: 5 },
+                    { label: '6 PJ', data: [60, 65, 55, 60, 70], backgroundColor: '#ef4444', borderRadius: 5 },
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { position: 'top', labels: { usePointStyle: true } },
+                    datalabels: {
+                        color: '#1e293b',
+                        font: { weight: 'bold', size: 11 },
+                        anchor: 'end',
+                        align: 'end',
+                        formatter: v => v
+                    }
+                },
+                scales: {
+                    y: { min: 0, max: 100, title: { display: true, text: 'Promedio' } },
+                    x: { 
+                        ticks: { 
+                            padding: 25, // Empuja el texto de Matemáticas hacia abajo para hacer espacio a los grupos
+                            font: { weight: 'bold', size: 14 } 
+                        } 
+                    }
+                }
+            }
+        });
+
+        // -------------------------------------------------------------------------
+        // 2. Rendimiento por asignatura con líneas de nivel (Horizontal)
+        // -------------------------------------------------------------------------
+        const nivelesVerticalesPlugin = {
+            id: 'nivelesVerticalesPlugin',
+            beforeDraw: (chart) => {
+                const { ctx, chartArea: { top, bottom, left, right }, scales: { x } } = chart;
+                
+                const dibujarZona = (start, end, color, texto) => {
+                    const xStart = x.getPixelForValue(start);
+                    const xEnd = end === 100 ? right : x.getPixelForValue(end);
+                    
+                    ctx.save();
+                    ctx.fillStyle = color;
+                    ctx.globalAlpha = 0.1;
+                    ctx.fillRect(xStart, top, xEnd - xStart, bottom - top);
+                    
+                    ctx.globalAlpha = 1;
+                    ctx.beginPath();
+                    ctx.strokeStyle = color;
+                    ctx.lineWidth = 1.5;
+                    ctx.setLineDash([5, 5]);
+                    ctx.moveTo(xEnd, top);
+                    ctx.lineTo(xEnd, bottom);
+                    ctx.stroke();
+                    
+                    ctx.fillStyle = color;
+                    ctx.font = 'bold 12px Arial';
+                    ctx.textAlign = 'center';
+                    if (xEnd > xStart) {
+                        ctx.fillText(texto, xStart + (xEnd - xStart) / 2, top + 15);
+                    }
+                    ctx.restore();
+                };
+
+                if (x.min <= 100 && x.max >= 0) {
+                    dibujarZona(0, 50, '#ef4444', 'Nivel 1');
+                    dibujarZona(50, 70, '#facc15', 'Nivel 2');
+                    dibujarZona(70, 90, '#22c55e', 'Nivel 3');
+                    dibujarZona(90, 100, '#a855f7', 'Nivel 4');
+                }
+            }
+        };
+
+        const ctxMaterias = document.getElementById('chartMaterias').getContext('2d');
+        new Chart(ctxMaterias, {
+            type: 'bar',
+            plugins: [ChartDataLabels, nivelesVerticalesPlugin],
+            data: {
+                labels: labelsAsignaturas,
+                datasets: [{
+                    data: [45, 60, 85, 95, 75],
+                    backgroundColor: ['#ef4444', '#facc15', '#22c55e', '#a855f7', '#22c55e'],
+                    borderRadius: 5
+                }]
+            },
+            options: {
+                indexAxis: 'y',
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false },
+                    datalabels: {
+                        color: '#1e293b',
+                        font: { weight: 'bold', size: 14 },
+                        anchor: 'end',
+                        align: 'right',
+                        formatter: v => v
+                    }
+                },
+                scales: {
+                    x: { min: 0, max: 100 },
+                    y: { ticks: { font: { weight: 'bold', size: 14 } } }
+                }
+            }
+        });
+    </script>
+</body>
+</html>
