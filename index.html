@@ -2457,7 +2457,7 @@
         </div>
       </div>
 
-      <h3 style="color:#64748b; font-size:0.9rem; margin-bottom:1rem;">Comparativo por Grupos (Asignaturas separadas)</h3>
+      <h3 style="color:#64748b; font-size:0.9rem; margin-bottom:1rem;">Comparativo de Grupos y Sedes (Asignaturas separadas)</h3>
       <div class="chart-container" style="height: 450px; margin-bottom: 2rem;">
         <canvas id="chart-comparativo-grupos-nuevo"></canvas>
       </div>
@@ -9279,8 +9279,8 @@
                   ctx.stroke();
                   ctx.fillStyle = color;
                   ctx.font = 'bold 12px Arial';
-                  ctx.textAlign = 'right';
-                  ctx.fillText(texto, left - 10, yEnd + 15);
+                  ctx.textAlign = 'left';
+                  ctx.fillText(texto, 5, yEnd + 15);
                   ctx.restore();
               };
               if (y.min <= 100 && y.max >= 0) {
@@ -9523,7 +9523,7 @@
           data: { labels: labels, datasets: datasets },
           options: {
             responsive: true, maintainAspectRatio: false,
-            layout: { padding: { left: 45 } },
+            layout: { padding: { left: 55 } },
             plugins: {
               legend: { display: true, position: 'top', labels: { font: { size: 10, weight: 'bold' }, usePointStyle: true } },
               datalabels: {
