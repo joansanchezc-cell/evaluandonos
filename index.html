@@ -9246,7 +9246,7 @@
                   ctx.fillStyle = color;
                   ctx.font = 'bold 12px Arial';
                   ctx.textAlign = 'center';
-                  if (xEnd > xStart) ctx.fillText(texto, xStart + (xEnd - xStart) / 2, top + 15);
+                  if (xEnd > xStart) ctx.fillText(texto, xStart + (xEnd - xStart) / 2, top - 10);
                   ctx.restore();
               };
               if (x.min <= 100 && x.max >= 0) {
@@ -9279,8 +9279,8 @@
                   ctx.stroke();
                   ctx.fillStyle = color;
                   ctx.font = 'bold 12px Arial';
-                  ctx.textAlign = 'left';
-                  ctx.fillText(texto, left + 5, yEnd + 15);
+                  ctx.textAlign = 'right';
+                  ctx.fillText(texto, left - 10, yEnd + 15);
                   ctx.restore();
               };
               if (y.min <= 100 && y.max >= 0) {
@@ -9352,6 +9352,7 @@
           options: {
             indexAxis: 'y',
             responsive: true, maintainAspectRatio: false,
+            layout: { padding: { top: 25 } },
             plugins: {
               legend: { display: false },
               datalabels: { color: '#1e293b', font: { weight: 'bold', size: 16 }, anchor: 'end', align: 'right', formatter: v => v }
@@ -9522,6 +9523,7 @@
           data: { labels: labels, datasets: datasets },
           options: {
             responsive: true, maintainAspectRatio: false,
+            layout: { padding: { left: 45 } },
             plugins: {
               legend: { display: true, position: 'top', labels: { font: { size: 10, weight: 'bold' }, usePointStyle: true } },
               datalabels: {
